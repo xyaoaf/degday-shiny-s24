@@ -1,0 +1,266 @@
+---
+title: "Exercise 1: Compute Degree Days"
+format: 
+  html:
+    theme: cosmo
+    df-print: paged
+    code-link: true
+    number-sections: true
+editor: source
+---
+
+# Import Some Weather Data
+
+To compute degree days, the first thing we need is daily temperature data. 
+
+For this exercise, we will import some data from CIMIS that has already been downloaded, cleaned, and saved as CSV. Specifically, we will import temperature data from the Oakville CIMIS station ( Napa County, CA) from 2023.
+
+First, define the data directory:
+
+```{r}
+data_dir <- here::here("exercises/data")
+dir.exists(data_dir)
+```
+\
+
+Next, define the CSV file that has data which has already been cleaned:
+
+```{r}
+oakville_fn <- file.path(data_dir, "oakville-cimis-2023.csv")
+file.exists(oakville_fn)
+```
+
+\
+
+Import with `readr`:
+
+```{r}
+library(readr)
+oakville_tbl <- read_csv(oakville_fn)
+head(oakville_tbl)
+```
+
+\
+
+# Select your Degree Day Model
+
+We compute degree days with specific parameters for a specific model (i.e., there is no "one size fits all" degree day). Hence before you can compute degree days you have to select a degree day model you are computing degree days for. There are many degree models for pests on the [UC IPM website](https://ipm.ucanr.edu/MODELS/index.html). 
+
+For this exercise, we are using a degree day model developed to inform vineyard managers when to till the soil to disrupt the life cycle of the three-cornered alfalfa hopper (which transmits a disease) ((Kron, 2022)[https://youtu.be/VDB0XU2PTbU], (Bick, Kron and Zalom, 2020)[https://doi.org/10.1093/jee/toaa165]). 
+
+![](./images/threecornered-alfalfa-hopper-model_1000x450x256.png)
+
+\
+
+The model provides us four important parameters:
+
+__Prediction__: recommended window for tilling
+__Lower limit__: 32 degrees F  
+__Upper limit__: none  
+__Method__: single size  
+__Cutoff__: horizontal  
+__Accumulated degree day threshhold__: 2358-2817 DD (Fahrenheit)
+
+::: {.callout-important}
+## Units
+Make sure the temperature units for the lower thresshold and the phenology events match the units from the weather data. If you need to convert them, you can use the `units` package.
+:::
+
+\
+
+# Compute Degree Days
+
+The [degday](https://ucanr-igis.github.io/degday/) package has functions for most of the degree day methods.
+
+First, load the dplyr package that we'll be using to add new columns:
+
+```{r message=FALSE}
+library(dplyr)
+
+# Set preferences for functions with common names 
+library(conflicted)
+conflict_prefer("filter", "dplyr")
+conflict_prefer("count", "dplyr")
+conflict_prefer("select", "dplyr")
+conflict_prefer("arrange", "dplyr")
+```
+
+\
+
+Now we can add columns for degree days and accumulated degree days:
+
+```{r}
+library(degday)
+
+oakville_dd_tbl <- oakville_tbl |> 
+  mutate(dd_f = dd_sng_sine(daily_min = tasmin_f, 
+                          daily_max = tasmax_f, 
+                          thresh_low = 32,
+                          thresh_up = 999),
+         acc_dd_f = cumsum(dd_f))
+
+oakville_dd_tbl
+```
+
+\
+
+# Identify the Dates that Reach the Degree Day Threshholds
+
+At this point, we could simply scroll down the accumulated degree day and "look up" the dates that fall within our accumulated degree day range (2358-2817). We can also write a function:
+
+```{r}
+till_yn <- function(x) {
+  x >= 2358 & x <= 2817
+}
+
+## Test it:
+till_yn(seq(from = 2300, to = 2900, by = 50))
+```
+
+\
+
+Add it as a column:
+
+```{r}
+oakville_till_tbl <- oakville_dd_tbl |> 
+  mutate(till = till_yn(acc_dd_f))
+
+oakville_till_tbl |> filter(till)
+```
+
+\
+
+To pull out just the beginning and end:
+
+```{r}
+oakville_till_tbl |> filter(till) |> pull(dt) |> range()
+```
+
+# Challenge Question #1
+
+The same degree day model by (Bick et al, 2020)[https://doi.org/10.1093/jee/toaa165] predicts that you can expect to find adults from the first in-field generation between 3137-3447 accumulated degree days (F). When would we expect to find adults in 2023?
+
+
+```{r}
+adults_yn <- function(x) {
+  x >= 3137 & x <= 3447
+}
+
+oakville_dd_tbl |> 
+  filter(adults_yn(acc_dd_f)) |> 
+  pull(dt) |> 
+  range()
+```
+
+\
+
+# Double-Triangle Method
+
+
+
+# Visualizing the Model Predictions
+
+## Make a better table with conditional formatting
+
+BUILD THIS INCREMENTALLY
+
+
+```{r}
+library(lubridate)
+library(DT)
+library(dplyr)
+
+oakville_till4print_tbl <- oakville_till_tbl |> 
+  # filter(month(dt) == 5) |> 
+  select(dt, tasmin_f, tasmax_f, dd_f, acc_dd_f, till)
+  
+till_rows_idx <- which(oakville_till4print_tbl$till)
+
+DT::datatable(oakville_till4print_tbl |> select(-till), 
+              colnames = c("Date", "Min temp", "Max temp", "Deg Day", "Accum DD"),
+              caption = "Recommended Days to Till, Oakville",
+              rownames = FALSE,
+              autoHideNavigation = FALSE,
+              escape =FALSE,
+              options = list(pageLength = 8,
+                             searching = FALSE,
+                             info = FALSE)) |> 
+  formatStyle(columns = 0, 
+              target = "row", 
+              color = styleRow(till_rows_idx, "red"),
+              backgroundColor = styleRow(till_rows_idx, "#eee"),
+              fontWeight = styleRow(till_rows_idx, "bold"))
+```
+
+\
+
+## plotly
+
+```{r}
+library(plotly)
+conflict_prefer("layout", "plotly")
+
+my_margins <- list(l = 50, r = 50, b = 50, t = 50, pad = 20)
+
+plot_ly(oakville_till_tbl, x = ~dt, y = ~acc_dd_f) |>
+  add_lines() |> 
+  layout(title = "Degree Day Accumulation, Oakville",
+         xaxis = list(title = ""), 
+         yaxis = list(title = "degree days (F)"),
+         hovermode = 'x',
+         margin = my_margins) |> 
+  config(
+    displayModeBar = TRUE, 
+    staticPlot = FALSE,
+    showTips = FALSE,
+    displaylogo = FALSE
+  )
+```
+
+
+
+
+# END
+
+
+## Other Challenges / Homework
+
+Identify the best time to till in 2023 using data from the Santa Rosa CIMIS Station (see santarosa-cimis-2023.csv)
+
+
+
+According to UC IPM [NOW model](https://ipm.ucanr.edu/calludt.cgi/DDMODEL?MODEL=NOW),
+
+Biofix (start date): The first biofix is the beginning of a consistent increase in egg laying on egg traps. When at least 75% of the egg traps in a given location show increases in the number of eggs on two consecutive monitoring dates, the biofix is the first of those two dates. ([UC IPM](https://ipm.ucanr.edu/calludt.cgi/DDMODEL?MODEL=NOW&CROP=almonds))
+
+Lower/upper threshold: 55/94°F
+
+Calculation/upper cutoff method: single sine/horizontal
+
+Typical Generation Length is [1056 degree-days]
+
+
+In 2023, the biofox for Navel orangeworm in Arbuckle was April 22, 2023. 
+https://www.sacvalleyorchards.com/almonds/insects-mites/navel-orangeworm-biofix-in-a-wet-spring/
+
+Compute when adults from the first flight were predicted in 2023.
+
+Workflow:
+
+Find the closest CIMIS station 
+
+Use CIMIR to get the data for April - July 2023
+
+Compute the degree days
+
+Find the correct data
+
+
+Other
+
+ - Egg hatch of the first brood is expected when 100 DD have accumulated after biofix (ignore)
+
+ - [Degree-days video](https://www.youtube.com/watch?v=RNYevBVIhYQ)
+
+
+

@@ -1,0 +1,19 @@
+~*
+*.bak
+slides/*_cache/*
+slides/rpt_taglist.rda
+slides/*.Rmd
+index*.Rmd
+.Rhistory
+.Rproj.user
+*_ans.R
+*_ans.Rmd
+*gtag.js
+/head.html
+/data_hide
+/zips
+
+# Temporary ignores below:
+# /data
+# /slides/agclim*
+# *_nb*

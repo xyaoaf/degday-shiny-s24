@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Exercise 1: Compute Degree Days</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+<script src="ex01_compte-degree-days_files/libs/clipboard/clipboard.min.js"></script>
+<script src="ex01_compte-degree-days_files/libs/quarto-html/quarto.js"></script>
+<script src="ex01_compte-degree-days_files/libs/quarto-html/popper.min.js"></script>
+<script src="ex01_compte-degree-days_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="ex01_compte-degree-days_files/libs/quarto-html/anchor.min.js"></script>
+<link href="ex01_compte-degree-days_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="ex01_compte-degree-days_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="ex01_compte-degree-days_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="ex01_compte-degree-days_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="ex01_compte-degree-days_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script src="ex01_compte-degree-days_files/libs/htmlwidgets-1.6.2/htmlwidgets.js"></script><link href="ex01_compte-degree-days_files/libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet">
+<script src="ex01_compte-degree-days_files/libs/datatables-binding-0.33/datatables.js"></script><script src="ex01_compte-degree-days_files/libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><link href="ex01_compte-degree-days_files/libs/dt-core-1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
+<link href="ex01_compte-degree-days_files/libs/dt-core-1.13.6/css/jquery.dataTables.extra.css" rel="stylesheet">
+<script src="ex01_compte-degree-days_files/libs/dt-core-1.13.6/js/jquery.dataTables.min.js"></script><link href="ex01_compte-degree-days_files/libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet">
+<script src="ex01_compte-degree-days_files/libs/crosstalk-1.2.0/js/crosstalk.min.js"></script><script src="ex01_compte-degree-days_files/libs/plotly-binding-4.10.4/plotly.js"></script><script src="ex01_compte-degree-days_files/libs/typedarray-0.1/typedarray.min.js"></script><link href="ex01_compte-degree-days_files/libs/plotly-htmlwidgets-css-2.11.1/plotly-htmlwidgets.css" rel="stylesheet">
+<script src="ex01_compte-degree-days_files/libs/plotly-main-2.11.1/plotly-latest.min.js"></script><link href="ex01_compte-degree-days_files/libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="ex01_compte-degree-days_files/libs/pagedtable-1.1/js/pagedtable.js"></script>
+</head>
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title">Exercise 1: Compute Degree Days</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header><section id="import-some-weather-data" class="level1" data-number="1"><h1 data-number="1">
+<span class="header-section-number">1</span> Import Some Weather Data</h1>
+<p>To compute degree days, the first need daily temperature data. We will import some data from 2023 from the Oakville CIMIS station in Napa County, CA.</p>
+<p>First, define the data directory:</p>
+<div class="cell">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">data_dir</span> <span class="op">&lt;-</span> <span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org//reference/here.html">here</a></span><span class="op">(</span><span class="st">"exercises/data"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/files2.html">dir.exists</a></span><span class="op">(</span><span class="va">data_dir</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+<p><br></p>
+<p>Next, define the CSV file that has data which has already been cleaned:</p>
+<div class="cell">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">oakville_fn</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"oakville-cimis-2023.csv"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/files.html">file.exists</a></span><span class="op">(</span><span class="va">oakville_fn</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+<p><br></p>
+<p>Import with <code>readr</code>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://readr.tidyverse.org">readr</a></span><span class="op">)</span></span>
+<span><span class="va">oakville_tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html">read_csv</a></span><span class="op">(</span><span class="va">oakville_fn</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 181 Columns: 4
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+dbl  (3): station_id, tasmin_f, tasmax_f
+date (1): dt
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">oakville_tbl</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["station_id"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["dt"],"name":[2],"type":["date"],"align":["right"]},{"label":["tasmin_f"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["tasmax_f"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"77","2":"2023-01-01","3":"39.5","4":"61.7"},{"1":"77","2":"2023-01-02","3":"37.7","4":"50.5"},{"1":"77","2":"2023-01-03","3":"41.4","4":"49.6"},{"1":"77","2":"2023-01-04","3":"41.1","4":"57.6"},{"1":"77","2":"2023-01-05","3":"42.9","4":"57.0"},{"1":"77","2":"2023-01-06","3":"45.0","4":"57.2"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p><br></p>
+</section><section id="select-your-degree-day-model" class="level1" data-number="2"><h1 data-number="2">
+<span class="header-section-number">2</span> Select your Degree Day Model</h1>
+<p>We compute degree days with specific parameters for a specific model (i.e., there is no “one size fits all” degree day). Hence before you can compute degree days you have to select a degree day model you are computing degree days for. There are many degree models for pests on the <a href="https://ipm.ucanr.edu/MODELS/index.html">UC IPM website</a>.</p>
+<p>For this exercise, we are using a degree day model developed to inform vineyard managers when to till the soil to disrupt the life cycle of the three-cornered alfalfa hopper (which transmits a disease) ((Kron, 2022)[https://youtu.be/VDB0XU2PTbU], (Bick, Kron and Zalom, 2020)[https://doi.org/10.1093/jee/toaa165]).</p>
+<p><img src="./images/threecornered-alfalfa-hopper-model_1000x450x256.png" class="img-fluid"></p>
+<p><br></p>
+<p>The model provides us four important parameters:</p>
+<p><strong>Prediction</strong>: recommended window for tilling <strong>Lower limit</strong>: 32 degrees F<br><strong>Upper limit</strong>: none<br><strong>Method</strong>: single size<br><strong>Cutoff</strong>: horizontal<br><strong>Accumulated degree day threshhold</strong>: 2358-2817 DD (Fahrenheit)</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Units
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Make sure the temperature units for the lower thresshold and the phenology events match the units from the weather data. If you need to convert them, you can use the <code>units</code> package.</p>
+</div>
+</div>
+<p><br></p>
+</section><section id="compute-degree-days" class="level1" data-number="3"><h1 data-number="3">
+<span class="header-section-number">3</span> Compute Degree Days</h1>
+<p>The <a href="https://ucanr-igis.github.io/degday/">degday</a> package has functions for most of the degree day methods.</p>
+<p>First, load the dplyr package that we’ll be using to add new columns:</p>
+<div class="cell">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Set preferences for functions with common names </span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://conflicted.r-lib.org/">conflicted</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://conflicted.r-lib.org/reference/conflict_prefer.html">conflict_prefer</a></span><span class="op">(</span><span class="st">"filter"</span>, <span class="st">"dplyr"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://conflicted.r-lib.org/reference/conflict_prefer.html">conflict_prefer</a></span><span class="op">(</span><span class="st">"count"</span>, <span class="st">"dplyr"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://conflicted.r-lib.org/reference/conflict_prefer.html">conflict_prefer</a></span><span class="op">(</span><span class="st">"select"</span>, <span class="st">"dplyr"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://conflicted.r-lib.org/reference/conflict_prefer.html">conflict_prefer</a></span><span class="op">(</span><span class="st">"arrange"</span>, <span class="st">"dplyr"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><br></p>
+<p>Now we can add columns for degree days and accumulated degree days:</p>
+<div class="cell">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ucanr-igis/degday/">degday</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">oakville_dd_tbl</span> <span class="op">&lt;-</span> <span class="va">oakville_tbl</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>dd_f <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/degday/man/dd_calc.html">dd_sng_sine</a></span><span class="op">(</span>daily_min <span class="op">=</span> <span class="va">tasmin_f</span>, </span>
+<span>                          daily_max <span class="op">=</span> <span class="va">tasmax_f</span>, </span>
+<span>                          thresh_low <span class="op">=</span> <span class="fl">32</span>,</span>
+<span>                          thresh_up <span class="op">=</span> <span class="fl">999</span><span class="op">)</span>,</span>
+<span>         acc_dd_f <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cumsum.html">cumsum</a></span><span class="op">(</span><span class="va">dd_f</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code> - using single sine method</code></pre>
+</div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">oakville_dd_tbl</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["station_id"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["dt"],"name":[2],"type":["date"],"align":["right"]},{"label":["tasmin_f"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["tasmax_f"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["dd_f"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["acc_dd_f"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"77","2":"2023-01-01","3":"39.5","4":"61.7","5":"18.60","6":"18.60"},{"1":"77","2":"2023-01-02","3":"37.7","4":"50.5","5":"12.10","6":"30.70"},{"1":"77","2":"2023-01-03","3":"41.4","4":"49.6","5":"13.50","6":"44.20"},{"1":"77","2":"2023-01-04","3":"41.1","4":"57.6","5":"17.35","6":"61.55"},{"1":"77","2":"2023-01-05","3":"42.9","4":"57.0","5":"17.95","6":"79.50"},{"1":"77","2":"2023-01-06","3":"45.0","4":"57.2","5":"19.10","6":"98.60"},{"1":"77","2":"2023-01-07","3":"46.3","4":"53.2","5":"17.75","6":"116.35"},{"1":"77","2":"2023-01-08","3":"45.8","4":"59.2","5":"20.50","6":"136.85"},{"1":"77","2":"2023-01-09","3":"41.7","4":"60.3","5":"19.00","6":"155.85"},{"1":"77","2":"2023-01-10","3":"44.2","4":"54.5","5":"17.35","6":"173.20"},{"1":"77","2":"2023-01-11","3":"46.4","4":"51.7","5":"17.05","6":"190.25"},{"1":"77","2":"2023-01-12","3":"47.6","4":"63.2","5":"23.40","6":"213.65"},{"1":"77","2":"2023-01-13","3":"50.3","4":"59.1","5":"22.70","6":"236.35"},{"1":"77","2":"2023-01-14","3":"41.2","4":"57.1","5":"17.15","6":"253.50"},{"1":"77","2":"2023-01-15","3":"40.0","4":"53.0","5":"14.50","6":"268.00"},{"1":"77","2":"2023-01-16","3":"36.6","4":"55.2","5":"13.90","6":"281.90"},{"1":"77","2":"2023-01-17","3":"32.6","4":"58.9","5":"13.75","6":"295.65"},{"1":"77","2":"2023-01-18","3":"32.6","4":"51.9","5":"10.25","6":"305.90"},{"1":"77","2":"2023-01-19","3":"33.2","4":"55.7","5":"12.45","6":"318.35"},{"1":"77","2":"2023-01-20","3":"31.5","4":"56.7","5":"12.13","6":"330.48"},{"1":"77","2":"2023-01-21","3":"28.3","4":"59.6","5":"12.50","6":"342.98"},{"1":"77","2":"2023-01-22","3":"32.4","4":"59.3","5":"13.85","6":"356.83"},{"1":"77","2":"2023-01-23","3":"42.6","4":"65.8","5":"22.20","6":"379.03"},{"1":"77","2":"2023-01-24","3":"37.6","4":"66.7","5":"20.15","6":"399.18"},{"1":"77","2":"2023-01-25","3":"34.1","4":"72.3","5":"21.20","6":"420.38"},{"1":"77","2":"2023-01-26","3":"40.0","4":"73.0","5":"24.50","6":"444.88"},{"1":"77","2":"2023-01-27","3":"34.0","4":"61.8","5":"15.90","6":"460.78"},{"1":"77","2":"2023-01-28","3":"29.5","4":"58.2","5":"12.17","6":"472.95"},{"1":"77","2":"2023-01-29","3":"34.1","4":"49.5","5":"9.80","6":"482.75"},{"1":"77","2":"2023-01-30","3":"36.1","4":"56.9","5":"14.50","6":"497.25"},{"1":"77","2":"2023-01-31","3":"32.6","4":"59.4","5":"14.00","6":"511.25"},{"1":"77","2":"2023-02-01","3":"29.7","4":"59.2","5":"12.72","6":"523.97"},{"1":"77","2":"2023-02-02","3":"32.3","4":"58.7","5":"13.50","6":"537.47"},{"1":"77","2":"2023-02-03","3":"42.0","4":"54.6","5":"16.30","6":"553.77"},{"1":"77","2":"2023-02-04","3":"44.5","4":"57.1","5":"18.80","6":"572.57"},{"1":"77","2":"2023-02-05","3":"37.5","4":"54.5","5":"14.00","6":"586.57"},{"1":"77","2":"2023-02-06","3":"31.9","4":"65.1","5":"16.50","6":"603.07"},{"1":"77","2":"2023-02-07","3":"32.8","4":"62.0","5":"15.40","6":"618.47"},{"1":"77","2":"2023-02-08","3":"33.2","4":"66.2","5":"17.70","6":"636.17"},{"1":"77","2":"2023-02-09","3":"34.2","4":"66.6","5":"18.40","6":"654.57"},{"1":"77","2":"2023-02-10","3":"31.9","4":"60.4","5":"14.15","6":"668.72"},{"1":"77","2":"2023-02-11","3":"37.1","4":"60.1","5":"16.60","6":"685.32"},{"1":"77","2":"2023-02-12","3":"36.0","4":"73.6","5":"22.80","6":"708.12"},{"1":"77","2":"2023-02-13","3":"33.7","4":"68.2","5":"18.95","6":"727.07"},{"1":"77","2":"2023-02-14","3":"31.0","4":"53.7","5":"10.44","6":"737.51"},{"1":"77","2":"2023-02-15","3":"32.1","4":"62.3","5":"15.20","6":"752.71"},{"1":"77","2":"2023-02-16","3":"28.7","4":"55.1","5":"10.40","6":"763.11"},{"1":"77","2":"2023-02-17","3":"33.9","4":"64.1","5":"17.00","6":"780.11"},{"1":"77","2":"2023-02-18","3":"28.8","4":"64.7","5":"15.16","6":"795.27"},{"1":"77","2":"2023-02-19","3":"31.1","4":"67.5","5":"17.36","6":"812.63"},{"1":"77","2":"2023-02-20","3":"35.0","4":"69.7","5":"20.35","6":"832.98"},{"1":"77","2":"2023-02-21","3":"36.3","4":"64.4","5":"18.35","6":"851.33"},{"1":"77","2":"2023-02-22","3":"30.8","4":"52.5","5":"9.77","6":"861.10"},{"1":"77","2":"2023-02-23","3":"26.2","4":"48.6","5":"6.69","6":"867.79"},{"1":"77","2":"2023-02-24","3":"33.1","4":"49.0","5":"9.05","6":"876.84"},{"1":"77","2":"2023-02-25","3":"36.4","4":"48.7","5":"10.55","6":"887.39"},{"1":"77","2":"2023-02-26","3":"34.8","4":"49.0","5":"9.90","6":"897.29"},{"1":"77","2":"2023-02-27","3":"31.0","4":"49.3","5":"8.25","6":"905.54"},{"1":"77","2":"2023-02-28","3":"33.5","4":"53.0","5":"11.25","6":"916.79"},{"1":"77","2":"2023-03-01","3":"29.8","4":"55.5","5":"10.93","6":"927.72"},{"1":"77","2":"2023-03-02","3":"33.1","4":"61.4","5":"15.25","6":"942.97"},{"1":"77","2":"2023-03-03","3":"31.5","4":"60.8","5":"14.18","6":"957.15"},{"1":"77","2":"2023-03-04","3":"37.7","4":"52.3","5":"13.00","6":"970.15"},{"1":"77","2":"2023-03-05","3":"33.0","4":"51.7","5":"10.35","6":"980.50"},{"1":"77","2":"2023-03-06","3":"33.2","4":"53.0","5":"11.10","6":"991.60"},{"1":"77","2":"2023-03-07","3":"33.2","4":"52.8","5":"11.00","6":"1002.60"},{"1":"77","2":"2023-03-08","3":"35.9","4":"57.1","5":"14.50","6":"1017.10"},{"1":"77","2":"2023-03-09","3":"34.0","4":"53.2","5":"11.60","6":"1028.70"},{"1":"77","2":"2023-03-10","3":"43.7","4":"58.5","5":"19.10","6":"1047.80"},{"1":"77","2":"2023-03-11","3":"41.1","4":"54.0","5":"15.55","6":"1063.35"},{"1":"77","2":"2023-03-12","3":"51.3","4":"57.1","5":"22.20","6":"1085.55"},{"1":"77","2":"2023-03-13","3":"53.2","4":"60.5","5":"24.85","6":"1110.40"},{"1":"77","2":"2023-03-14","3":"41.0","4":"58.9","5":"17.95","6":"1128.35"},{"1":"77","2":"2023-03-15","3":"35.1","4":"65.9","5":"18.50","6":"1146.85"},{"1":"77","2":"2023-03-16","3":"34.3","4":"65.8","5":"18.05","6":"1164.90"},{"1":"77","2":"2023-03-17","3":"36.0","4":"68.1","5":"20.05","6":"1184.95"},{"1":"77","2":"2023-03-18","3":"39.1","4":"65.4","5":"20.25","6":"1205.20"},{"1":"77","2":"2023-03-19","3":"48.9","4":"55.5","5":"20.20","6":"1225.40"},{"1":"77","2":"2023-03-20","3":"40.6","4":"59.5","5":"18.05","6":"1243.45"},{"1":"77","2":"2023-03-21","3":"43.3","4":"50.2","5":"14.75","6":"1258.20"},{"1":"77","2":"2023-03-22","3":"44.7","4":"56.8","5":"18.75","6":"1276.95"},{"1":"77","2":"2023-03-23","3":"38.9","4":"60.3","5":"17.60","6":"1294.55"},{"1":"77","2":"2023-03-24","3":"33.7","4":"59.6","5":"14.65","6":"1309.20"},{"1":"77","2":"2023-03-25","3":"32.7","4":"61.0","5":"14.85","6":"1324.05"},{"1":"77","2":"2023-03-26","3":"31.2","4":"60.1","5":"13.71","6":"1337.76"},{"1":"77","2":"2023-03-27","3":"28.8","4":"63.2","5":"14.42","6":"1352.18"},{"1":"77","2":"2023-03-28","3":"40.1","4":"51.9","5":"14.00","6":"1366.18"},{"1":"77","2":"2023-03-29","3":"41.3","4":"47.5","5":"12.40","6":"1378.58"},{"1":"77","2":"2023-03-30","3":"34.8","4":"60.5","5":"15.65","6":"1394.23"},{"1":"77","2":"2023-03-31","3":"34.7","4":"60.5","5":"15.60","6":"1409.83"},{"1":"77","2":"2023-04-01","3":"35.0","4":"62.9","5":"16.95","6":"1426.78"},{"1":"77","2":"2023-04-02","3":"40.0","4":"61.9","5":"18.95","6":"1445.73"},{"1":"77","2":"2023-04-03","3":"33.9","4":"59.1","5":"14.50","6":"1460.23"},{"1":"77","2":"2023-04-04","3":"33.2","4":"60.5","5":"14.85","6":"1475.08"},{"1":"77","2":"2023-04-05","3":"34.0","4":"62.3","5":"16.15","6":"1491.23"},{"1":"77","2":"2023-04-06","3":"35.6","4":"64.7","5":"18.15","6":"1509.38"},{"1":"77","2":"2023-04-07","3":"46.9","4":"61.1","5":"22.00","6":"1531.38"},{"1":"77","2":"2023-04-08","3":"42.5","4":"67.7","5":"23.10","6":"1554.48"},{"1":"77","2":"2023-04-09","3":"39.1","4":"75.9","5":"25.50","6":"1579.98"},{"1":"77","2":"2023-04-10","3":"44.2","4":"76.9","5":"28.55","6":"1608.53"},{"1":"77","2":"2023-04-11","3":"45.5","4":"70.6","5":"26.05","6":"1634.58"},{"1":"77","2":"2023-04-12","3":"37.0","4":"66.6","5":"19.80","6":"1654.38"},{"1":"77","2":"2023-04-13","3":"41.5","4":"69.5","5":"23.50","6":"1677.88"},{"1":"77","2":"2023-04-14","3":"35.5","4":"67.3","5":"19.40","6":"1697.28"},{"1":"77","2":"2023-04-15","3":"38.1","4":"68.6","5":"21.35","6":"1718.63"},{"1":"77","2":"2023-04-16","3":"36.8","4":"68.9","5":"20.85","6":"1739.48"},{"1":"77","2":"2023-04-17","3":"40.4","4":"62.6","5":"19.50","6":"1758.98"},{"1":"77","2":"2023-04-18","3":"36.8","4":"60.4","5":"16.60","6":"1775.58"},{"1":"77","2":"2023-04-19","3":"35.8","4":"66.8","5":"19.30","6":"1794.88"},{"1":"77","2":"2023-04-20","3":"38.2","4":"74.0","5":"24.10","6":"1818.98"},{"1":"77","2":"2023-04-21","3":"47.3","4":"83.9","5":"33.60","6":"1852.58"},{"1":"77","2":"2023-04-22","3":"47.3","4":"84.3","5":"33.80","6":"1886.38"},{"1":"77","2":"2023-04-23","3":"49.5","4":"80.4","5":"32.95","6":"1919.33"},{"1":"77","2":"2023-04-24","3":"43.0","4":"77.0","5":"28.00","6":"1947.33"},{"1":"77","2":"2023-04-25","3":"41.2","4":"85.4","5":"31.30","6":"1978.63"},{"1":"77","2":"2023-04-26","3":"43.0","4":"87.4","5":"33.20","6":"2011.83"},{"1":"77","2":"2023-04-27","3":"47.3","4":"91.2","5":"37.25","6":"2049.08"},{"1":"77","2":"2023-04-28","3":"49.0","4":"86.6","5":"35.80","6":"2084.88"},{"1":"77","2":"2023-04-29","3":"45.4","4":"77.9","5":"29.65","6":"2114.53"},{"1":"77","2":"2023-04-30","3":"40.8","4":"73.9","5":"25.35","6":"2139.88"},{"1":"77","2":"2023-05-01","3":"46.7","4":"58.5","5":"20.60","6":"2160.48"},{"1":"77","2":"2023-05-02","3":"46.9","4":"57.4","5":"20.15","6":"2180.63"},{"1":"77","2":"2023-05-03","3":"44.8","4":"61.7","5":"21.25","6":"2201.88"},{"1":"77","2":"2023-05-04","3":"41.9","4":"60.7","5":"19.30","6":"2221.18"},{"1":"77","2":"2023-05-05","3":"44.0","4":"61.7","5":"20.85","6":"2242.03"},{"1":"77","2":"2023-05-06","3":"42.9","4":"64.6","5":"21.75","6":"2263.78"},{"1":"77","2":"2023-05-07","3":"38.9","4":"65.7","5":"20.30","6":"2284.08"},{"1":"77","2":"2023-05-08","3":"46.0","4":"66.1","5":"24.05","6":"2308.13"},{"1":"77","2":"2023-05-09","3":"43.2","4":"70.6","5":"24.90","6":"2333.03"},{"1":"77","2":"2023-05-10","3":"40.9","4":"69.7","5":"23.30","6":"2356.33"},{"1":"77","2":"2023-05-11","3":"41.5","4":"75.3","5":"26.40","6":"2382.73"},{"1":"77","2":"2023-05-12","3":"44.6","4":"79.6","5":"30.10","6":"2412.83"},{"1":"77","2":"2023-05-13","3":"47.3","4":"92.0","5":"37.65","6":"2450.48"},{"1":"77","2":"2023-05-14","3":"51.2","4":"74.8","5":"31.00","6":"2481.48"},{"1":"77","2":"2023-05-15","3":"46.3","4":"80.6","5":"31.45","6":"2512.93"},{"1":"77","2":"2023-05-16","3":"46.5","4":"90.4","5":"36.45","6":"2549.38"},{"1":"77","2":"2023-05-17","3":"47.3","4":"83.1","5":"33.20","6":"2582.58"},{"1":"77","2":"2023-05-18","3":"45.9","4":"77.6","5":"29.75","6":"2612.33"},{"1":"77","2":"2023-05-19","3":"46.2","4":"77.1","5":"29.65","6":"2641.98"},{"1":"77","2":"2023-05-20","3":"46.0","4":"75.3","5":"28.65","6":"2670.63"},{"1":"77","2":"2023-05-21","3":"51.2","4":"78.9","5":"33.05","6":"2703.68"},{"1":"77","2":"2023-05-22","3":"50.5","4":"84.2","5":"35.35","6":"2739.03"},{"1":"77","2":"2023-05-23","3":"50.7","4":"70.6","5":"28.65","6":"2767.68"},{"1":"77","2":"2023-05-24","3":"48.3","4":"71.2","5":"27.75","6":"2795.43"},{"1":"77","2":"2023-05-25","3":"48.7","4":"70.0","5":"27.35","6":"2822.78"},{"1":"77","2":"2023-05-26","3":"51.2","4":"68.8","5":"28.00","6":"2850.78"},{"1":"77","2":"2023-05-27","3":"51.5","4":"73.0","5":"30.25","6":"2881.03"},{"1":"77","2":"2023-05-28","3":"51.4","4":"69.2","5":"28.30","6":"2909.33"},{"1":"77","2":"2023-05-29","3":"48.1","4":"66.2","5":"25.15","6":"2934.48"},{"1":"77","2":"2023-05-30","3":"46.6","4":"67.0","5":"24.80","6":"2959.28"},{"1":"77","2":"2023-05-31","3":"51.5","4":"72.4","5":"29.95","6":"2989.23"},{"1":"77","2":"2023-06-01","3":"48.4","4":"75.0","5":"29.70","6":"3018.93"},{"1":"77","2":"2023-06-02","3":"46.6","4":"80.7","5":"31.65","6":"3050.58"},{"1":"77","2":"2023-06-03","3":"47.2","4":"87.6","5":"35.40","6":"3085.98"},{"1":"77","2":"2023-06-04","3":"47.2","4":"82.0","5":"32.60","6":"3118.58"},{"1":"77","2":"2023-06-05","3":"52.8","4":"77.0","5":"32.90","6":"3151.48"},{"1":"77","2":"2023-06-06","3":"54.5","4":"70.2","5":"30.35","6":"3181.83"},{"1":"77","2":"2023-06-07","3":"52.8","4":"65.7","5":"27.25","6":"3209.08"},{"1":"77","2":"2023-06-08","3":"51.9","4":"78.8","5":"33.35","6":"3242.43"},{"1":"77","2":"2023-06-09","3":"50.9","4":"74.4","5":"30.65","6":"3273.08"},{"1":"77","2":"2023-06-10","3":"48.3","4":"75.3","5":"29.80","6":"3302.88"},{"1":"77","2":"2023-06-11","3":"50.2","4":"73.0","5":"29.60","6":"3332.48"},{"1":"77","2":"2023-06-12","3":"54.2","4":"74.6","5":"32.40","6":"3364.88"},{"1":"77","2":"2023-06-13","3":"53.3","4":"78.4","5":"33.85","6":"3398.73"},{"1":"77","2":"2023-06-14","3":"49.9","4":"75.3","5":"30.60","6":"3429.33"},{"1":"77","2":"2023-06-15","3":"52.4","4":"79.9","5":"34.15","6":"3463.48"},{"1":"77","2":"2023-06-16","3":"46.6","4":"79.6","5":"31.10","6":"3494.58"},{"1":"77","2":"2023-06-17","3":"49.4","4":"79.3","5":"32.35","6":"3526.93"},{"1":"77","2":"2023-06-18","3":"48.3","4":"83.8","5":"34.05","6":"3560.98"},{"1":"77","2":"2023-06-19","3":"42.4","4":"76.1","5":"27.25","6":"3588.23"},{"1":"77","2":"2023-06-20","3":"44.8","4":"77.8","5":"29.30","6":"3617.53"},{"1":"77","2":"2023-06-21","3":"42.4","4":"83.4","5":"30.90","6":"3648.43"},{"1":"77","2":"2023-06-22","3":"44.0","4":"74.2","5":"27.10","6":"3675.53"},{"1":"77","2":"2023-06-23","3":"49.6","4":"75.2","5":"30.40","6":"3705.93"},{"1":"77","2":"2023-06-24","3":"46.2","4":"78.4","5":"30.30","6":"3736.23"},{"1":"77","2":"2023-06-25","3":"48.4","4":"75.0","5":"29.70","6":"3765.93"},{"1":"77","2":"2023-06-26","3":"51.3","4":"75.4","5":"31.35","6":"3797.28"},{"1":"77","2":"2023-06-27","3":"48.0","4":"74.0","5":"29.00","6":"3826.28"},{"1":"77","2":"2023-06-28","3":"50.8","4":"76.0","5":"31.40","6":"3857.68"},{"1":"77","2":"2023-06-29","3":"48.7","4":"89.7","5":"37.20","6":"3894.88"},{"1":"77","2":"2023-06-30","3":"50.1","4":"95.5","5":"40.80","6":"3935.68"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p><br></p>
+</section><section id="identify-the-dates-that-reach-the-degree-day-threshholds" class="level1" data-number="4"><h1 data-number="4">
+<span class="header-section-number">4</span> Identify the Dates that Reach the Degree Day Threshholds</h1>
+<p>At this point, we could simply scroll down the accumulated degree day and “look up” the dates that fall within our accumulated degree day range (2358-2817). We can also write a function:</p>
+<div class="cell">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">till_yn</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">x</span> <span class="op">&gt;=</span> <span class="fl">2358</span> <span class="op">&amp;</span> <span class="va">x</span> <span class="op">&lt;=</span> <span class="fl">2817</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="co">## Test it:</span></span>
+<span><span class="fu">till_yn</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span>from <span class="op">=</span> <span class="fl">2300</span>, to <span class="op">=</span> <span class="fl">2900</span>, by <span class="op">=</span> <span class="fl">50</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] FALSE FALSE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE
+[13] FALSE</code></pre>
+</div>
+</div>
+<p><br></p>
+<p>Add it as a column:</p>
+<div class="cell">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">oakville_till_tbl</span> <span class="op">&lt;-</span> <span class="va">oakville_dd_tbl</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>till <span class="op">=</span> <span class="fu">till_yn</span><span class="op">(</span><span class="va">acc_dd_f</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">oakville_till_tbl</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">till</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["station_id"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["dt"],"name":[2],"type":["date"],"align":["right"]},{"label":["tasmin_f"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["tasmax_f"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["dd_f"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["acc_dd_f"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["till"],"name":[7],"type":["lgl"],"align":["right"]}],"data":[{"1":"77","2":"2023-05-11","3":"41.5","4":"75.3","5":"26.40","6":"2382.73","7":"TRUE"},{"1":"77","2":"2023-05-12","3":"44.6","4":"79.6","5":"30.10","6":"2412.83","7":"TRUE"},{"1":"77","2":"2023-05-13","3":"47.3","4":"92.0","5":"37.65","6":"2450.48","7":"TRUE"},{"1":"77","2":"2023-05-14","3":"51.2","4":"74.8","5":"31.00","6":"2481.48","7":"TRUE"},{"1":"77","2":"2023-05-15","3":"46.3","4":"80.6","5":"31.45","6":"2512.93","7":"TRUE"},{"1":"77","2":"2023-05-16","3":"46.5","4":"90.4","5":"36.45","6":"2549.38","7":"TRUE"},{"1":"77","2":"2023-05-17","3":"47.3","4":"83.1","5":"33.20","6":"2582.58","7":"TRUE"},{"1":"77","2":"2023-05-18","3":"45.9","4":"77.6","5":"29.75","6":"2612.33","7":"TRUE"},{"1":"77","2":"2023-05-19","3":"46.2","4":"77.1","5":"29.65","6":"2641.98","7":"TRUE"},{"1":"77","2":"2023-05-20","3":"46.0","4":"75.3","5":"28.65","6":"2670.63","7":"TRUE"},{"1":"77","2":"2023-05-21","3":"51.2","4":"78.9","5":"33.05","6":"2703.68","7":"TRUE"},{"1":"77","2":"2023-05-22","3":"50.5","4":"84.2","5":"35.35","6":"2739.03","7":"TRUE"},{"1":"77","2":"2023-05-23","3":"50.7","4":"70.6","5":"28.65","6":"2767.68","7":"TRUE"},{"1":"77","2":"2023-05-24","3":"48.3","4":"71.2","5":"27.75","6":"2795.43","7":"TRUE"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p><br></p>
+<p>To pull out just the beginning and end:</p>
+<div class="cell">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">oakville_till_tbl</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">till</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">dt</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/range.html">range</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2023-05-11" "2023-05-24"</code></pre>
+</div>
+</div>
+</section><section id="challenge-question-1" class="level1" data-number="5"><h1 data-number="5">
+<span class="header-section-number">5</span> Challenge Question #1</h1>
+<p>The same degree day model by (Bick et al, 2020)[https://doi.org/10.1093/jee/toaa165] predicts that you can expect to find adults from the first in-field generation between 3137-3447 accumulated degree days (F). When would we expect to find adults in 2023?</p>
+<div class="cell">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">adults_yn</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">x</span> <span class="op">&gt;=</span> <span class="fl">3137</span> <span class="op">&amp;</span> <span class="va">x</span> <span class="op">&lt;=</span> <span class="fl">3447</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">oakville_dd_tbl</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="fu">adults_yn</span><span class="op">(</span><span class="va">acc_dd_f</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">dt</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/range.html">range</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2023-06-05" "2023-06-14"</code></pre>
+</div>
+</div>
+<p><br></p>
+</section><section id="double-triangle-method" class="level1" data-number="6"><h1 data-number="6">
+<span class="header-section-number">6</span> Double-Triangle Method</h1>
+</section><section id="visualizing-the-model-predictions" class="level1" data-number="7"><h1 data-number="7">
+<span class="header-section-number">7</span> Visualizing the Model Predictions</h1>
+<section id="make-a-better-table-with-conditional-formatting" class="level2" data-number="7.1"><h2 data-number="7.1" class="anchored" data-anchor-id="make-a-better-table-with-conditional-formatting">
+<span class="header-section-number">7.1</span> Make a better table with conditional formatting</h2>
+<p>BUILD THIS INCREMENTALLY</p>
+<div class="cell">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://lubridate.tidyverse.org">lubridate</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rstudio/DT">DT</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">oakville_till4print_tbl</span> <span class="op">&lt;-</span> <span class="va">oakville_till_tbl</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="co"># filter(month(dt) == 5) |&gt; </span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">dt</span>, <span class="va">tasmin_f</span>, <span class="va">tasmax_f</span>, <span class="va">dd_f</span>, <span class="va">acc_dd_f</span>, <span class="va">till</span><span class="op">)</span></span>
+<span>  </span>
+<span><span class="va">till_rows_idx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="va">oakville_till4print_tbl</span><span class="op">$</span><span class="va">till</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">DT</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DT/man/datatable.html">datatable</a></span><span class="op">(</span><span class="va">oakville_till4print_tbl</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">till</span><span class="op">)</span>, </span>
+<span>              colnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Date"</span>, <span class="st">"Min temp"</span>, <span class="st">"Max temp"</span>, <span class="st">"Deg Day"</span>, <span class="st">"Accum DD"</span><span class="op">)</span>,</span>
+<span>              caption <span class="op">=</span> <span class="st">"Recommended Days to Till, Oakville"</span>,</span>
+<span>              rownames <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>              autoHideNavigation <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>              escape <span class="op">=</span><span class="cn">FALSE</span>,</span>
+<span>              options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>pageLength <span class="op">=</span> <span class="fl">8</span>,</span>
+<span>                             searching <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>                             info <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/DT/man/formatCurrency.html">formatStyle</a></span><span class="op">(</span>columns <span class="op">=</span> <span class="fl">0</span>, </span>
+<span>              target <span class="op">=</span> <span class="st">"row"</span>, </span>
+<span>              color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/DT/man/styleInterval.html">styleRow</a></span><span class="op">(</span><span class="va">till_rows_idx</span>, <span class="st">"red"</span><span class="op">)</span>,</span>
+<span>              backgroundColor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/DT/man/styleInterval.html">styleRow</a></span><span class="op">(</span><span class="va">till_rows_idx</span>, <span class="st">"#eee"</span><span class="op">)</span>,</span>
+<span>              fontWeight <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/DT/man/styleInterval.html">styleRow</a></span><span class="op">(</span><span class="va">till_rows_idx</span>, <span class="st">"bold"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-1acd6f8291529cbfbdca" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-1acd6f8291529cbfbdca">{"x":{"filter":"none","vertical":false,"caption":"<caption>Recommended Days to Till, Oakville<\/caption>","autoHideNavigation":false,"data":[["2023-01-01","2023-01-02","2023-01-03","2023-01-04","2023-01-05","2023-01-06","2023-01-07","2023-01-08","2023-01-09","2023-01-10","2023-01-11","2023-01-12","2023-01-13","2023-01-14","2023-01-15","2023-01-16","2023-01-17","2023-01-18","2023-01-19","2023-01-20","2023-01-21","2023-01-22","2023-01-23","2023-01-24","2023-01-25","2023-01-26","2023-01-27","2023-01-28","2023-01-29","2023-01-30","2023-01-31","2023-02-01","2023-02-02","2023-02-03","2023-02-04","2023-02-05","2023-02-06","2023-02-07","2023-02-08","2023-02-09","2023-02-10","2023-02-11","2023-02-12","2023-02-13","2023-02-14","2023-02-15","2023-02-16","2023-02-17","2023-02-18","2023-02-19","2023-02-20","2023-02-21","2023-02-22","2023-02-23","2023-02-24","2023-02-25","2023-02-26","2023-02-27","2023-02-28","2023-03-01","2023-03-02","2023-03-03","2023-03-04","2023-03-05","2023-03-06","2023-03-07","2023-03-08","2023-03-09","2023-03-10","2023-03-11","2023-03-12","2023-03-13","2023-03-14","2023-03-15","2023-03-16","2023-03-17","2023-03-18","2023-03-19","2023-03-20","2023-03-21","2023-03-22","2023-03-23","2023-03-24","2023-03-25","2023-03-26","2023-03-27","2023-03-28","2023-03-29","2023-03-30","2023-03-31","2023-04-01","2023-04-02","2023-04-03","2023-04-04","2023-04-05","2023-04-06","2023-04-07","2023-04-08","2023-04-09","2023-04-10","2023-04-11","2023-04-12","2023-04-13","2023-04-14","2023-04-15","2023-04-16","2023-04-17","2023-04-18","2023-04-19","2023-04-20","2023-04-21","2023-04-22","2023-04-23","2023-04-24","2023-04-25","2023-04-26","2023-04-27","2023-04-28","2023-04-29","2023-04-30","2023-05-01","2023-05-02","2023-05-03","2023-05-04","2023-05-05","2023-05-06","2023-05-07","2023-05-08","2023-05-09","2023-05-10","2023-05-11","2023-05-12","2023-05-13","2023-05-14","2023-05-15","2023-05-16","2023-05-17","2023-05-18","2023-05-19","2023-05-20","2023-05-21","2023-05-22","2023-05-23","2023-05-24","2023-05-25","2023-05-26","2023-05-27","2023-05-28","2023-05-29","2023-05-30","2023-05-31","2023-06-01","2023-06-02","2023-06-03","2023-06-04","2023-06-05","2023-06-06","2023-06-07","2023-06-08","2023-06-09","2023-06-10","2023-06-11","2023-06-12","2023-06-13","2023-06-14","2023-06-15","2023-06-16","2023-06-17","2023-06-18","2023-06-19","2023-06-20","2023-06-21","2023-06-22","2023-06-23","2023-06-24","2023-06-25","2023-06-26","2023-06-27","2023-06-28","2023-06-29","2023-06-30"],[39.5,37.7,41.4,41.1,42.9,45,46.3,45.8,41.7,44.2,46.4,47.6,50.3,41.2,40,36.6,32.6,32.6,33.2,31.5,28.3,32.4,42.6,37.6,34.1,40,34,29.5,34.1,36.1,32.6,29.7,32.3,42,44.5,37.5,31.9,32.8,33.2,34.2,31.9,37.1,36,33.7,31,32.1,28.7,33.9,28.8,31.1,35,36.3,30.8,26.2,33.1,36.4,34.8,31,33.5,29.8,33.1,31.5,37.7,33,33.2,33.2,35.9,34,43.7,41.1,51.3,53.2,41,35.1,34.3,36,39.1,48.9,40.6,43.3,44.7,38.9,33.7,32.7,31.2,28.8,40.1,41.3,34.8,34.7,35,40,33.9,33.2,34,35.6,46.9,42.5,39.1,44.2,45.5,37,41.5,35.5,38.1,36.8,40.4,36.8,35.8,38.2,47.3,47.3,49.5,43,41.2,43,47.3,49,45.4,40.8,46.7,46.9,44.8,41.9,44,42.9,38.9,46,43.2,40.9,41.5,44.6,47.3,51.2,46.3,46.5,47.3,45.9,46.2,46,51.2,50.5,50.7,48.3,48.7,51.2,51.5,51.4,48.1,46.6,51.5,48.4,46.6,47.2,47.2,52.8,54.5,52.8,51.9,50.9,48.3,50.2,54.2,53.3,49.9,52.4,46.6,49.4,48.3,42.4,44.8,42.4,44,49.6,46.2,48.4,51.3,48,50.8,48.7,50.1],[61.7,50.5,49.6,57.6,57,57.2,53.2,59.2,60.3,54.5,51.7,63.2,59.1,57.1,53,55.2,58.9,51.9,55.7,56.7,59.6,59.3,65.8,66.7,72.3,73,61.8,58.2,49.5,56.9,59.4,59.2,58.7,54.6,57.1,54.5,65.09999999999999,62,66.2,66.59999999999999,60.4,60.1,73.59999999999999,68.2,53.7,62.3,55.1,64.09999999999999,64.7,67.5,69.7,64.40000000000001,52.5,48.6,49,48.7,49,49.3,53,55.5,61.4,60.8,52.3,51.7,53,52.8,57.1,53.2,58.5,54,57.1,60.5,58.9,65.90000000000001,65.8,68.09999999999999,65.40000000000001,55.5,59.5,50.2,56.8,60.3,59.6,61,60.1,63.2,51.9,47.5,60.5,60.5,62.9,61.9,59.1,60.5,62.3,64.7,61.1,67.7,75.90000000000001,76.90000000000001,70.59999999999999,66.59999999999999,69.5,67.3,68.59999999999999,68.90000000000001,62.6,60.4,66.8,74,83.90000000000001,84.3,80.40000000000001,77,85.40000000000001,87.40000000000001,91.2,86.59999999999999,77.90000000000001,73.90000000000001,58.5,57.4,61.7,60.7,61.7,64.59999999999999,65.7,66.09999999999999,70.59999999999999,69.7,75.3,79.59999999999999,92,74.8,80.59999999999999,90.40000000000001,83.09999999999999,77.59999999999999,77.09999999999999,75.3,78.90000000000001,84.2,70.59999999999999,71.2,70,68.8,73,69.2,66.2,67,72.40000000000001,75,80.7,87.59999999999999,82,77,70.2,65.7,78.8,74.40000000000001,75.3,73,74.59999999999999,78.40000000000001,75.3,79.90000000000001,79.59999999999999,79.3,83.8,76.09999999999999,77.8,83.40000000000001,74.2,75.2,78.40000000000001,75,75.40000000000001,74,76,89.7,95.5],[18.6,12.1,13.5,17.35,17.95,19.1,17.75,20.5,19,17.35,17.05,23.4,22.7,17.15,14.5,13.9,13.75,10.25,12.45,12.13,12.5,13.85,22.2,20.15,21.2,24.5,15.9,12.17,9.800000000000001,14.5,14,12.72,13.5,16.3,18.8,14,16.5,15.4,17.7,18.4,14.15,16.6,22.8,18.95,10.44,15.2,10.4,17,15.16,17.36,20.35,18.35,9.77,6.69,9.050000000000001,10.55,9.9,8.25,11.25,10.93,15.25,14.18,13,10.35,11.1,11,14.5,11.6,19.1,15.55,22.2,24.85,17.95,18.5,18.05,20.05,20.25,20.2,18.05,14.75,18.75,17.6,14.65,14.85,13.71,14.42,14,12.4,15.65,15.6,16.95,18.95,14.5,14.85,16.15,18.15,22,23.1,25.5,28.55,26.05,19.8,23.5,19.4,21.35,20.85,19.5,16.6,19.3,24.1,33.6,33.8,32.95,28,31.3,33.2,37.25,35.8,29.65,25.35,20.6,20.15,21.25,19.3,20.85,21.75,20.3,24.05,24.9,23.3,26.4,30.1,37.65,31,31.45,36.45,33.2,29.75,29.65,28.65,33.05,35.35,28.65,27.75,27.35,28,30.25,28.3,25.15,24.8,29.95,29.7,31.65,35.4,32.6,32.9,30.35,27.25,33.35,30.65,29.8,29.6,32.4,33.85,30.6,34.15,31.1,32.35,34.05,27.25,29.3,30.9,27.1,30.4,30.3,29.7,31.35,29,31.4,37.2,40.8],[18.6,30.7,44.2,61.55,79.5,98.60000000000001,116.35,136.85,155.85,173.2,190.25,213.65,236.35,253.5,268,281.9,295.65,305.9,318.35,330.48,342.98,356.83,379.03,399.18,420.38,444.88,460.78,472.95,482.75,497.25,511.25,523.97,537.47,553.77,572.5700000000001,586.5700000000001,603.0700000000001,618.47,636.17,654.5700000000001,668.72,685.3200000000001,708.12,727.0700000000001,737.51,752.71,763.11,780.11,795.27,812.63,832.98,851.33,861.1,867.79,876.84,887.39,897.29,905.54,916.79,927.72,942.97,957.15,970.15,980.5,991.6,1002.6,1017.1,1028.7,1047.8,1063.35,1085.55,1110.4,1128.35,1146.85,1164.9,1184.95,1205.2,1225.4,1243.45,1258.2,1276.95,1294.55,1309.2,1324.05,1337.76,1352.18,1366.18,1378.58,1394.23,1409.83,1426.78,1445.73,1460.23,1475.08,1491.23,1509.38,1531.38,1554.48,1579.98,1608.53,1634.58,1654.38,1677.88,1697.28,1718.63,1739.48,1758.98,1775.58,1794.88,1818.98,1852.58,1886.38,1919.33,1947.33,1978.63,2011.83,2049.08,2084.88,2114.53,2139.88,2160.48,2180.63,2201.88,2221.18,2242.03,2263.78,2284.08,2308.13,2333.03,2356.33,2382.73,2412.83,2450.48,2481.48,2512.93,2549.38,2582.58,2612.33,2641.98,2670.63,2703.68,2739.03,2767.68,2795.43,2822.78,2850.78,2881.03,2909.33,2934.48,2959.28,2989.23,3018.93,3050.58,3085.98,3118.58,3151.48,3181.83,3209.08,3242.43,3273.08,3302.88,3332.48,3364.88,3398.73,3429.33,3463.48,3494.58,3526.93,3560.98,3588.23,3617.53,3648.43,3675.53,3705.93,3736.23,3765.93,3797.28,3826.28,3857.68,3894.88,3935.68]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>Date<\/th>\n      <th>Min temp<\/th>\n      <th>Max temp<\/th>\n      <th>Deg Day<\/th>\n      <th>Accum DD<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":8,"searching":false,"info":false,"columnDefs":[{"className":"dt-right","targets":[1,2,3,4]},{"name":"dt","targets":0},{"name":"tasmin_f","targets":1},{"name":"tasmax_f","targets":2},{"name":"dd_f","targets":3},{"name":"acc_dd_f","targets":4}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[8,10,25,50,100],"rowCallback":"function(row, data, displayNum, displayIndex, dataIndex) {\nvar value=data[-1]; $(row).css({'font-weight':$.inArray(dataIndex + 1, [131]) >= 0 ? \"bold\" : $.inArray(dataIndex + 1, [132]) >= 0 ? \"bold\" : $.inArray(dataIndex + 1, [133]) >= 0 ? \"bold\" : $.inArray(dataIndex + 1, [134]) >= 0 ? \"bold\" : $.inArray(dataIndex + 1, [135]) >= 0 ? \"bold\" : $.inArray(dataIndex + 1, [136]) >= 0 ? \"bold\" : $.inArray(dataIndex + 1, [137]) >= 0 ? \"bold\" : $.inArray(dataIndex + 1, [138]) >= 0 ? \"bold\" : $.inArray(dataIndex + 1, [139]) >= 0 ? \"bold\" : $.inArray(dataIndex + 1, [140]) >= 0 ? \"bold\" : $.inArray(dataIndex + 1, [141]) >= 0 ? \"bold\" : $.inArray(dataIndex + 1, [142]) >= 0 ? \"bold\" : $.inArray(dataIndex + 1, [143]) >= 0 ? \"bold\" : $.inArray(dataIndex + 1, [144]) >= 0 ? \"bold\" : null,'color':$.inArray(dataIndex + 1, [131]) >= 0 ? \"red\" : $.inArray(dataIndex + 1, [132]) >= 0 ? \"red\" : $.inArray(dataIndex + 1, [133]) >= 0 ? \"red\" : $.inArray(dataIndex + 1, [134]) >= 0 ? \"red\" : $.inArray(dataIndex + 1, [135]) >= 0 ? \"red\" : $.inArray(dataIndex + 1, [136]) >= 0 ? \"red\" : $.inArray(dataIndex + 1, [137]) >= 0 ? \"red\" : $.inArray(dataIndex + 1, [138]) >= 0 ? \"red\" : $.inArray(dataIndex + 1, [139]) >= 0 ? \"red\" : $.inArray(dataIndex + 1, [140]) >= 0 ? \"red\" : $.inArray(dataIndex + 1, [141]) >= 0 ? \"red\" : $.inArray(dataIndex + 1, [142]) >= 0 ? \"red\" : $.inArray(dataIndex + 1, [143]) >= 0 ? \"red\" : $.inArray(dataIndex + 1, [144]) >= 0 ? \"red\" : null,'background-color':$.inArray(dataIndex + 1, [131]) >= 0 ? \"#eee\" : $.inArray(dataIndex + 1, [132]) >= 0 ? \"#eee\" : $.inArray(dataIndex + 1, [133]) >= 0 ? \"#eee\" : $.inArray(dataIndex + 1, [134]) >= 0 ? \"#eee\" : $.inArray(dataIndex + 1, [135]) >= 0 ? \"#eee\" : $.inArray(dataIndex + 1, [136]) >= 0 ? \"#eee\" : $.inArray(dataIndex + 1, [137]) >= 0 ? \"#eee\" : $.inArray(dataIndex + 1, [138]) >= 0 ? \"#eee\" : $.inArray(dataIndex + 1, [139]) >= 0 ? \"#eee\" : $.inArray(dataIndex + 1, [140]) >= 0 ? \"#eee\" : $.inArray(dataIndex + 1, [141]) >= 0 ? \"#eee\" : $.inArray(dataIndex + 1, [142]) >= 0 ? \"#eee\" : $.inArray(dataIndex + 1, [143]) >= 0 ? \"#eee\" : $.inArray(dataIndex + 1, [144]) >= 0 ? \"#eee\" : null});\n}"}},"evals":["options.rowCallback"],"jsHooks":[]}</script>
+</div>
+</div>
+<p><br></p>
+</section><section id="plotly" class="level2" data-number="7.2"><h2 data-number="7.2" class="anchored" data-anchor-id="plotly">
+<span class="header-section-number">7.2</span> plotly</h2>
+<div class="cell">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://plotly-r.com">plotly</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: ggplot2</code></pre>
+</div>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://conflicted.r-lib.org/reference/conflict_prefer.html">conflict_prefer</a></span><span class="op">(</span><span class="st">"layout"</span>, <span class="st">"plotly"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>[conflicted] Will prefer plotly::layout over any other package.</code></pre>
+</div>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">my_margins</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>l <span class="op">=</span> <span class="fl">50</span>, r <span class="op">=</span> <span class="fl">50</span>, b <span class="op">=</span> <span class="fl">50</span>, t <span class="op">=</span> <span class="fl">50</span>, pad <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/plotly/man/plot_ly.html">plot_ly</a></span><span class="op">(</span><span class="va">oakville_till_tbl</span>, x <span class="op">=</span> <span class="op">~</span><span class="va">dt</span>, y <span class="op">=</span> <span class="op">~</span><span class="va">acc_dd_f</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/plotly/man/add_trace.html">add_lines</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">layout</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Degree Day Accumulation, Oakville"</span>,</span>
+<span>         xaxis <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">""</span><span class="op">)</span>, </span>
+<span>         yaxis <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"degree days (F)"</span><span class="op">)</span>,</span>
+<span>         hovermode <span class="op">=</span> <span class="st">'x'</span>,</span>
+<span>         margin <span class="op">=</span> <span class="va">my_margins</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">config</span><span class="op">(</span></span>
+<span>    displayModeBar <span class="op">=</span> <span class="cn">TRUE</span>, </span>
+<span>    staticPlot <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>    showTips <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>    displaylogo <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="plotly html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-dfe2eef48fc76b39a3e1" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-dfe2eef48fc76b39a3e1">{"x":{"visdat":{"b378133134ce":["function () ","plotlyVisDat"]},"cur_data":"b378133134ce","attrs":{"b378133134ce":{"x":{},"y":{},"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter","mode":"lines","inherit":true}},"layout":{"margin":{"b":50,"l":50,"t":50,"r":50,"pad":20},"title":"Degree Day Accumulation, Oakville","xaxis":{"domain":[0,1],"automargin":true,"title":""},"yaxis":{"domain":[0,1],"automargin":true,"title":"degree days (F)"},"hovermode":"x","showlegend":false},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false,"displayModeBar":true,"staticPlot":false,"showTips":false,"displaylogo":false},"data":[{"x":["2023-01-01","2023-01-02","2023-01-03","2023-01-04","2023-01-05","2023-01-06","2023-01-07","2023-01-08","2023-01-09","2023-01-10","2023-01-11","2023-01-12","2023-01-13","2023-01-14","2023-01-15","2023-01-16","2023-01-17","2023-01-18","2023-01-19","2023-01-20","2023-01-21","2023-01-22","2023-01-23","2023-01-24","2023-01-25","2023-01-26","2023-01-27","2023-01-28","2023-01-29","2023-01-30","2023-01-31","2023-02-01","2023-02-02","2023-02-03","2023-02-04","2023-02-05","2023-02-06","2023-02-07","2023-02-08","2023-02-09","2023-02-10","2023-02-11","2023-02-12","2023-02-13","2023-02-14","2023-02-15","2023-02-16","2023-02-17","2023-02-18","2023-02-19","2023-02-20","2023-02-21","2023-02-22","2023-02-23","2023-02-24","2023-02-25","2023-02-26","2023-02-27","2023-02-28","2023-03-01","2023-03-02","2023-03-03","2023-03-04","2023-03-05","2023-03-06","2023-03-07","2023-03-08","2023-03-09","2023-03-10","2023-03-11","2023-03-12","2023-03-13","2023-03-14","2023-03-15","2023-03-16","2023-03-17","2023-03-18","2023-03-19","2023-03-20","2023-03-21","2023-03-22","2023-03-23","2023-03-24","2023-03-25","2023-03-26","2023-03-27","2023-03-28","2023-03-29","2023-03-30","2023-03-31","2023-04-01","2023-04-02","2023-04-03","2023-04-04","2023-04-05","2023-04-06","2023-04-07","2023-04-08","2023-04-09","2023-04-10","2023-04-11","2023-04-12","2023-04-13","2023-04-14","2023-04-15","2023-04-16","2023-04-17","2023-04-18","2023-04-19","2023-04-20","2023-04-21","2023-04-22","2023-04-23","2023-04-24","2023-04-25","2023-04-26","2023-04-27","2023-04-28","2023-04-29","2023-04-30","2023-05-01","2023-05-02","2023-05-03","2023-05-04","2023-05-05","2023-05-06","2023-05-07","2023-05-08","2023-05-09","2023-05-10","2023-05-11","2023-05-12","2023-05-13","2023-05-14","2023-05-15","2023-05-16","2023-05-17","2023-05-18","2023-05-19","2023-05-20","2023-05-21","2023-05-22","2023-05-23","2023-05-24","2023-05-25","2023-05-26","2023-05-27","2023-05-28","2023-05-29","2023-05-30","2023-05-31","2023-06-01","2023-06-02","2023-06-03","2023-06-04","2023-06-05","2023-06-06","2023-06-07","2023-06-08","2023-06-09","2023-06-10","2023-06-11","2023-06-12","2023-06-13","2023-06-14","2023-06-15","2023-06-16","2023-06-17","2023-06-18","2023-06-19","2023-06-20","2023-06-21","2023-06-22","2023-06-23","2023-06-24","2023-06-25","2023-06-26","2023-06-27","2023-06-28","2023-06-29","2023-06-30"],"y":[18.600000000000001,30.700000000000003,44.200000000000003,61.550000000000004,79.5,98.600000000000009,116.35000000000001,136.84999999999999,155.84999999999999,173.20000000000002,190.25,213.65000000000001,236.34999999999999,253.5,268,281.89999999999998,295.64999999999998,305.89999999999998,318.35000000000002,330.48000000000002,342.98000000000002,356.82999999999998,379.02999999999997,399.18000000000001,420.38,444.88,460.77999999999997,472.94999999999999,482.75,497.25,511.25,523.97000000000003,537.47000000000003,553.76999999999998,572.57000000000005,586.57000000000005,603.07000000000005,618.47000000000003,636.16999999999996,654.57000000000005,668.72000000000003,685.32000000000005,708.12,727.07000000000005,737.50999999999999,752.71000000000004,763.11000000000001,780.11000000000001,795.26999999999998,812.63,832.98000000000002,851.33000000000004,861.10000000000002,867.78999999999996,876.84000000000003,887.38999999999999,897.28999999999996,905.53999999999996,916.78999999999996,927.72000000000003,942.97000000000003,957.14999999999998,970.14999999999998,980.5,991.60000000000002,1002.6,1017.1,1028.7,1047.8,1063.3499999999999,1085.55,1110.4000000000001,1128.3499999999999,1146.8499999999999,1164.9000000000001,1184.95,1205.2,1225.4000000000001,1243.45,1258.2,1276.95,1294.55,1309.2,1324.05,1337.76,1352.1800000000001,1366.1800000000001,1378.5799999999999,1394.23,1409.8299999999999,1426.78,1445.73,1460.23,1475.0799999999999,1491.23,1509.3800000000001,1531.3800000000001,1554.48,1579.98,1608.53,1634.5799999999999,1654.3800000000001,1677.8800000000001,1697.28,1718.6300000000001,1739.48,1758.98,1775.5799999999999,1794.8800000000001,1818.98,1852.5799999999999,1886.3800000000001,1919.3299999999999,1947.3299999999999,1978.6300000000001,2011.8299999999999,2049.0799999999999,2084.8800000000001,2114.5300000000002,2139.8800000000001,2160.48,2180.6300000000001,2201.8800000000001,2221.1799999999998,2242.0300000000002,2263.7800000000002,2284.0799999999999,2308.1300000000001,2333.0300000000002,2356.3299999999999,2382.73,2412.8299999999999,2450.48,2481.48,2512.9299999999998,2549.3800000000001,2582.5799999999999,2612.3299999999999,2641.98,2670.6300000000001,2703.6799999999998,2739.0300000000002,2767.6799999999998,2795.4299999999998,2822.7800000000002,2850.7800000000002,2881.0300000000002,2909.3299999999999,2934.48,2959.2800000000002,2989.23,3018.9299999999998,3050.5799999999999,3085.98,3118.5799999999999,3151.48,3181.8299999999999,3209.0799999999999,3242.4299999999998,3273.0799999999999,3302.8800000000001,3332.48,3364.8800000000001,3398.73,3429.3299999999999,3463.48,3494.5799999999999,3526.9299999999998,3560.98,3588.23,3617.5300000000002,3648.4299999999998,3675.5300000000002,3705.9299999999998,3736.23,3765.9299999999998,3797.2800000000002,3826.2800000000002,3857.6799999999998,3894.8800000000001,3935.6799999999998],"type":"scatter","mode":"lines","marker":{"color":"rgba(31,119,180,1)","line":{"color":"rgba(31,119,180,1)"}},"error_y":{"color":"rgba(31,119,180,1)"},"error_x":{"color":"rgba(31,119,180,1)"},"line":{"color":"rgba(31,119,180,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section></section><section id="end" class="level1" data-number="8"><h1 data-number="8">
+<span class="header-section-number">8</span> END</h1>
+<section id="other-challenges-homework" class="level2" data-number="8.1"><h2 data-number="8.1" class="anchored" data-anchor-id="other-challenges-homework">
+<span class="header-section-number">8.1</span> Other Challenges / Homework</h2>
+<p>Identify the best time to till in 2023 using data from the Santa Rosa CIMIS Station (see santarosa-cimis-2023.csv)</p>
+<p>According to UC IPM <a href="https://ipm.ucanr.edu/calludt.cgi/DDMODEL?MODEL=NOW">NOW model</a>,</p>
+<p>Biofix (start date): The first biofix is the beginning of a consistent increase in egg laying on egg traps. When at least 75% of the egg traps in a given location show increases in the number of eggs on two consecutive monitoring dates, the biofix is the first of those two dates. (<a href="https://ipm.ucanr.edu/calludt.cgi/DDMODEL?MODEL=NOW&amp;CROP=almonds">UC IPM</a>)</p>
+<p>Lower/upper threshold: 55/94°F</p>
+<p>Calculation/upper cutoff method: single sine/horizontal</p>
+<p>Typical Generation Length is [1056 degree-days]</p>
+<p>In 2023, the biofox for Navel orangeworm in Arbuckle was April 22, 2023. https://www.sacvalleyorchards.com/almonds/insects-mites/navel-orangeworm-biofix-in-a-wet-spring/</p>
+<p>Compute when adults from the first flight were predicted in 2023.</p>
+<p>Workflow:</p>
+<p>Find the closest CIMIS station</p>
+<p>Use CIMIR to get the data for April - July 2023</p>
+<p>Compute the degree days</p>
+<p>Find the correct data</p>
+<p>Other</p>
+<ul>
+<li><p>Egg hatch of the first brood is expected when 100 DD have accumulated after biofix (ignore)</p></li>
+<li><p><a href="https://www.youtube.com/watch?v=RNYevBVIhYQ">Degree-days video</a></p></li>
+</ul></section></section></main><!-- /main column --><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
