@@ -9,9 +9,8 @@ index*.Rmd
 *_ans.R
 *_ans.Rmd
 *gtag.js
-/head.html
-/data_hide
-/zips
+rmd_assets/*
+
 
 # Temporary ignores below:
 # /data
