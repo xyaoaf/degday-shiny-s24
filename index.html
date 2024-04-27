@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Building a Degree Day Decision Support Tool in R</title>
+
+<script src="slides/lib/header-attrs-2.25/header-attrs.js"></script>
+<script src="slides/lib/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="slides/lib/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="slides/lib/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="slides/lib/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="slides/lib/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="slides/lib/navigation-1.1/tabsets.js"></script>
+<link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="./images/favicon-16x16.png">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<script language="javascript" type="text/javascript">w3c_slidy.mouse_click_enabled = false;</script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-41HMZ3JJJ6"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-41HMZ3JJJ6');
+</script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+      .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore"><img src='./images/soleil-avec-visage_120x120.png' style='float:right;'/>Building
+a Degree Day Decision Support Tool in R</h1>
+<h4 class="date">A Zoom workshop<br/>May 3 &amp; 10, 2024<br/>10:30a -
+12:00p Pacific Daylight Time</h4>
+
+</div>
+
+
+<style type="text/css">
+h1 {
+  font-size: 130%;
+  font-weight:bold;
+  color:darkgreen;
+}
+h1.title {
+  color:black;
+  font-size:150%;
+}
+h4.date {
+  font-size: 14px;
+  font-style:italic;
+  line-height: inherit;
+}
+p, li, summary {
+  font-size: 110%;
+}
+span.note {
+  font-size:80%;
+  font-style:italic;
+  display:inline-block;
+  margin-left:1.5em;
+}
+span.linote {
+  font-size:80%;
+  font-style:italic;
+}
+div.grayme > h1 {
+  color:#888;
+}
+div.grayme > ul > li {
+  color:#888;
+}
+</style>
+<p><br />
+</p>
+<!--------------
+<center><em>Recording:</em><br/>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/UPVC9AVV2aY?rel=0" title="YouTube video player" frameborder="1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="margin-left:1.5em; margin-top:1em;"></iframe>
+</center>
+------------->
+<div id="preparing-for-the-workshop" class="section level1"
+style="clear:both;">
+<h1 style="clear:both;">Preparing for the Workshop</h1>
+<div style="margin-left:2em;">
+<p>1. <strong>Registration</strong><br/><span class="note">Registration
+is required (free). If you haven’t already, you may register <a
+href="https://forms.gle/U8QWKJA54ZWZ8s9EA" target="_blank"
+rel="noopener">here</a>.</span></p>
+<p>2. <strong>Create a <a href="https://posit.cloud/" target="_blank"
+rel="noopener">posit Cloud</a> account</strong><br/><span
+class="note">We’ll be using <a href="https://posit.cloud/"
+target="_blank" rel="noopener">posit Cloud</a> for the hands-on
+exercises. Please create a free account if you don’t already have one
+(RStudio Cloud accounts work fine). Once you’ve created your posit Cloud
+account, you’re done for now.</span></p>
+<!---------------------
+<br/><br/>On the day of the workshop, please click the following link to make a clone of the workshop RStudio project:]{.note}
+
+<p style="font-family:monospace; font-size:110%; text-align:center; font-weight:bold;">[coming soon](coming soon){target="_blank"}</p>
+----->
+<div style="margin-left:2em; font-size:80%;">
+<p>Note #1: Doing the hands-on exercises are optional. You’ll still get
+a lot out of the workshop just by watching. The POSIT Cloud project link
+will continue to be active for some time to come if you want to go back.
+The recording will be available approximately 1 week after the
+workshop.</p>
+<p>Note #2: People who want to run RStudio Desktop on the their laptop
+are welcome to download the GitHub repo, but we won’t be able to provide
+any support during the workshop for setup problems. Install <a
+href="https://github.com/UCANR-IGIS/degday-shiny-s24/blob/main/scripts/install_packages.R"
+target="_blank" rel="noopener">these packages</a>.</p>
+</div>
+<div
+style="border:2px solid gray; margin:1em 6em; background-color:#eee; font-size:80%; padding:0.5em;">
+<p><strong>Tip:</strong> Using a second monitor is strongly recommended
+for those doing the hands-on exercises, so you can watch the
+instructor’s screen share on one monitor, while working on RStudio in
+another. See also <a
+href="https://ucanr-igis.github.io/caladaptr-res/workshops/ca_intro_feb22/workspace_tips.html"
+target="_blank" rel="noopener">these tips</a> for taking Zoom workshops
+on a single monitor.</p>
+</div>
+<p>3. <strong>Review tidyverse Data Wrangling</strong><br/><span
+class="note">This workshop will make extensive use of data wrangling
+techniques using the tidyverse packages dplyr and tidyr. If you’re not
+familiar with these, some review would be time well spent. See these <a
+href="https://www.youtube.com/watch?v=Zc_ufg4uW4U" target="_blank"
+rel="noopener">Data Wrangling video tutorials</a> from
+RStudio.</span></p>
+</div>
+<!-- click [here](coming soon){target="_blank" rel="noopener"} to make a copy of the workshop project. -->
+</div>
+<div id="part-i.-degree-days-and-weather-data" class="section level1">
+<h1>Part I. Degree Days and Weather Data</h1>
+<ul>
+<li><p><a href="./slides/pt1a_compute-degday.html" target="_blank"
+rel="noopener">Slides</a></p></li>
+<li><p>Notebook #1: <a
+href="https://raw.githubusercontent.com/UCANR-IGIS/agroclimR/main/agclim_nb01.Rmd"
+target="_blank" rel="noopener">Rmd</a> | <a
+href="agclim_nb01_answers.nb.html" target="_blank"
+rel="noopener">completed</a><br/><span class="linote">Notebooks are
+included in the Posit Cloud project.</span></p></li>
+<li><p><a href="./slides/pt1a_compute-degday.html" target="_blank"
+rel="noopener">Slides</a></p></li>
+<li><p>Notebook #2: <a
+href="https://raw.githubusercontent.com/UCANR-IGIS/agroclimR/main/agclim_nb01.Rmd"
+target="_blank" rel="noopener">Rmd</a> | <a
+href="agclim_nb01_answers.nb.html" target="_blank"
+rel="noopener">completed</a><br/><span class="linote">Notebooks are
+included in the Posit Cloud project.</span></p></li>
+</ul>
+<p><br />
+</p>
+</div>
+<div id="part-ii.-build-a-shiny-app" class="section level1">
+<h1>Part II. Build a Shiny App</h1>
+<ul>
+<li><p><a href="" target="_blank" rel="noopener">Slides</a></p></li>
+<li><p>app.R</p></li>
+</ul>
+<p><br />
+</p>
+<hr/>
+<div>
+<p><a href="https://igis.ucanr.edu/" target="_blank"><img src="images/igis-logo_550x58x256.png" style="width:550px; height:58px;"/></a></p>
+</div>
+<p><br />
+</p>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+
+</body>
+</html>
