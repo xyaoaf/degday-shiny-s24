@@ -169,17 +169,12 @@ till_dates
 
 # CHALLENGE #1
 
-The same degree day model by [Bick et al, 2020](https://doi.org/10.1093/jee/toaa165) predicts that you can expect to find adults from the first in-field generation between 3137-3447 accumulated degree days (F). Using this model, when would we expect to find adults in 2023?
+The same degree day model by [Bick et al, 2020](https://doi.org/10.1093/jee/toaa165) predicts that you can expect to find adults from the first in-field generation between 3137-3447 accumulated degree days (F). Using this model, when would we expect to find adults in 2023? [Solution](https://bit.ly/3JPAgm9)
 
 ```{r}
-adults_yn <- function(x) {
-  x >= 3137 & x <= 3447
-}
+## Your answer here
 
-oakville_dd_tbl |> 
-  filter(adults_yn(acc_dd_f)) |> 
-  pull(dt) |> 
-  range()
+
 ```
 
 \

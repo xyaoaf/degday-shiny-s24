@@ -111,7 +111,6 @@ To compute degree days, all we need is daily minimum (`day-air-tmp-min`) and max
 
 ```{r}
 cimis_items_chr <- "day-air-tmp-max,day-air-tmp-min"
-
 ```
 
 
@@ -124,7 +123,7 @@ cimis_data_rds
 
 \
 
-If we haven't already called the API today, call it now:
+Check to see if you have already called the API today. If not, call it now:
 
 ```{r}
 if (file.exists(cimis_data_rds)) {
@@ -134,7 +133,7 @@ if (file.exists(cimis_data_rds)) {
   
   ## The following command *does* work. It should take <5 seconds.
   
-  ## If you get an error message, the most likely reason is that the CIMIS 
+  ## If you get an error message, or it hangs, the most likely reason is that the CIMIS 
   ## API is down (even if the error message suggests your API key is invalid)
   
   oakville_temp_long_tbl <- cimis_data(targets = cimis_stn_id, 
@@ -164,14 +163,28 @@ oakville_temp_long_tbl
 
 ```{r}
 oakville_temp_wide_tbl <- oakville_temp_long_tbl |>
-  mutate(dt = ymd(Date)) |> 
-  select(station_id = Station, dt, Item, Value) |>  
-  pivot_wider(id_cols = c(station_id, dt), 
+  mutate(date = ymd(Date)) |> 
+  select(station_id = Station, date, Item, Value) |>  
+  pivot_wider(id_cols = c(station_id, date), 
               names_from = Item, 
               values_from = Value) |> 
-  rename(tasmax_f = DayAirTmpMax, tasmin_f = DayAirTmpMin) |> 
-  relocate(tasmin_f, .before = tasmax_f)
+  rename(tasmax = DayAirTmpMax, tasmin = DayAirTmpMin) |>
+  mutate(loc_id = "CI077", period = "rp") |> 
+  select(loc_id, period, date, tasmin, tasmax)
+
+# |> 
+#   relocate(tasmin_f, .before = tasmax_f)
 
 oakville_temp_wide_tbl
 ```
 
+\
+
+Save a copy to disk for use in other notebooks:
+
+```{r}
+saveRDS(oakville_temp_wide_tbl,
+        file = here::here("exercises/data/stn_rctpast_cimis_dlytas_tbl.Rds"))
+```
+
+\

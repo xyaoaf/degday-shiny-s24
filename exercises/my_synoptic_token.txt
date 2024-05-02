@@ -1,0 +1,10 @@
+f526ab98e29c4b7ca1ba7b3db51fff64
+
+THE SYNOPTIC TOKEN ABOVE IS A PLACEHOLDER THAT NO LONGER WORKS
+REPLACE THE TEXT WITH YOUR OWN
+
+To get a token, start here: https://customer.synopticdata.com/free-trial/
+
+After you've created your account, go to your Profile > Data Credentials > Public Tokens > Create token
+
+

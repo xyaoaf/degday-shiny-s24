@@ -9,8 +9,9 @@ library(cimir)
 ## (To get a CIMIS key, sign-up at https://cimis.water.ca.gov/Auth/Register.aspx)
 # my_cimis_key <- "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" 
 
-## The author of this script stores his CIMIS API key in a text file in "My Documents/My Tokens"
-my_cimis_key <- readLines("~/My Tokens/cimis_token.txt", n = 1)
+## Another option is to save your CIMIS API key in a text file outside the project folder, for example in "/My Documents/My Tokens"
+## my_cimis_key <- readLines("~/My Tokens/cimis_token.txt", n = 1)
+
 cimir::set_key(my_cimis_key)
 
 ## Define the CIMIS station we want
@@ -21,12 +22,15 @@ cimis_stn_name <- "oakville"
 start_dt <- make_date(2023, 1, 1)
 end_dt <- make_date(2023, 6, 30)
 
+# start_dt <- make_date(2024, 1, 1)
+# end_dt <- Sys.Date() - 1
+
 ## Define the data directory
 data_dir <- here::here("exercises/data")
 dir.exists(data_dir)
 
 ## Define the CSV file name
-(dailytemps_csv <- file.path(data_dir, paste0(cimis_stn_name, "-cimis-2023.csv")))
+(dailytemps_csv <- file.path(data_dir, paste0(cimis_stn_name, "-cimis-2024.csv")))
 file.exists(dailytemps_csv)
 
 ## Get the data
