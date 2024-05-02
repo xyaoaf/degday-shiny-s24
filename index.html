@@ -13,7 +13,7 @@
 
 <title>Building a Degree Day Decision Support Tool in R</title>
 
-<script src="slides/lib/header-attrs-2.25/header-attrs.js"></script>
+<script src="slides/lib/header-attrs-2.26/header-attrs.js"></script>
 <script src="slides/lib/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="slides/lib/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -219,35 +219,30 @@ style="clear:both;">
 <h1 style="clear:both;">Preparing for the Workshop</h1>
 <div style="margin-left:2em;">
 <p>1. <strong>Registration</strong><br/><span class="note">Registration
-is required (free). If you haven’t already, you may register <a
+is required (free). If you haven’t already done so, you may register <a
 href="https://forms.gle/U8QWKJA54ZWZ8s9EA" target="_blank"
 rel="noopener">here</a>.</span></p>
 <p>2. <strong>Create a <a href="https://posit.cloud/" target="_blank"
 rel="noopener">posit Cloud</a> account</strong><br/><span
 class="note">We’ll be using <a href="https://posit.cloud/"
 target="_blank" rel="noopener">posit Cloud</a> for the hands-on
-exercises. Please create a free account if you don’t already have one
-(RStudio Cloud accounts work fine). Once you’ve created your posit Cloud
-account, you’re done for now.</span></p>
+exercises. Please create a free account if you don’t already have one.
+Once you’ve created a Posit Cloud account, you’re done for
+now.</span></p>
 <!---------------------
 <br/><br/>On the day of the workshop, please click the following link to make a clone of the workshop RStudio project:]{.note}
 
 <p style="font-family:monospace; font-size:110%; text-align:center; font-weight:bold;">[coming soon](coming soon){target="_blank"}</p>
+
+::: {style="margin-left:2em; font-size:80%;"}
+Note #1: Doing the hands-on exercises are optional. You'll still get a lot out of the workshop just by watching. The POSIT Cloud project link will continue to be active for some time to come if you want to go back. The recording will be available approximately 1 week after the workshop.
+
+Note #2: People who want to run RStudio Desktop on the their laptop are welcome to download the GitHub repo, but we won't be able to provide any support during the workshop for setup problems. Install [these packages](https://github.com/UCANR-IGIS/degday-shiny-s24/blob/main/scripts/install_packages.R){target="_blank" rel="noopener"}.
+:::
+
 ----->
-<div style="margin-left:2em; font-size:80%;">
-<p>Note #1: Doing the hands-on exercises are optional. You’ll still get
-a lot out of the workshop just by watching. The POSIT Cloud project link
-will continue to be active for some time to come if you want to go back.
-The recording will be available approximately 1 week after the
-workshop.</p>
-<p>Note #2: People who want to run RStudio Desktop on the their laptop
-are welcome to download the GitHub repo, but we won’t be able to provide
-any support during the workshop for setup problems. Install <a
-href="https://github.com/UCANR-IGIS/degday-shiny-s24/blob/main/scripts/install_packages.R"
-target="_blank" rel="noopener">these packages</a>.</p>
-</div>
 <div
-style="border:2px solid gray; margin:1em 6em; background-color:#eee; font-size:80%; padding:0.5em;">
+style="border:2px solid gray; margin:2em 6em; background-color:#eee; padding:1em; border-radius:10px;">
 <p><strong>Tip:</strong> Using a second monitor is strongly recommended
 for those doing the hands-on exercises, so you can watch the
 instructor’s screen share on one monitor, while working on RStudio in
@@ -256,45 +251,47 @@ href="https://ucanr-igis.github.io/caladaptr-res/workshops/ca_intro_feb22/worksp
 target="_blank" rel="noopener">these tips</a> for taking Zoom workshops
 on a single monitor.</p>
 </div>
-<p>3. <strong>Review tidyverse Data Wrangling</strong><br/><span
-class="note">This workshop will make extensive use of data wrangling
-techniques using the tidyverse packages dplyr and tidyr. If you’re not
-familiar with these, some review would be time well spent. See these <a
-href="https://www.youtube.com/watch?v=Zc_ufg4uW4U" target="_blank"
-rel="noopener">Data Wrangling video tutorials</a> from
+<p>3. <strong>Review data wrangling methods with tidyverse packages
+</strong><br/><span class="note">This workshop will make extensive use
+of data wrangling techniques using the tidyverse packages <a
+href="https://dplyr.tidyverse.org/">dplyr</a>, <a
+href="https://tidyr.tidyverse.org/">tidyr</a>, and <a
+href="https://lubridate.tidyverse.org/">lubridate</a>. If you’re not
+familiar with these packages, some review would be time well spent. See
+these <a href="https://www.youtube.com/watch?v=Zc_ufg4uW4U"
+target="_blank" rel="noopener">Data Wrangling video tutorials</a> from
 RStudio.</span></p>
 </div>
 <!-- click [here](coming soon){target="_blank" rel="noopener"} to make a copy of the workshop project. -->
 </div>
-<div id="part-i.-degree-days-and-weather-data" class="section level1">
-<h1>Part I. Degree Days and Weather Data</h1>
-<ul>
-<li><p><a href="./slides/pt1a_compute-degday.html" target="_blank"
-rel="noopener">Slides</a></p></li>
-<li><p>Notebook #1: <a
-href="https://raw.githubusercontent.com/UCANR-IGIS/agroclimR/main/agclim_nb01.Rmd"
-target="_blank" rel="noopener">Rmd</a> | <a
-href="agclim_nb01_answers.nb.html" target="_blank"
-rel="noopener">completed</a><br/><span class="linote">Notebooks are
-included in the Posit Cloud project.</span></p></li>
-<li><p><a href="./slides/pt1a_compute-degday.html" target="_blank"
-rel="noopener">Slides</a></p></li>
-<li><p>Notebook #2: <a
-href="https://raw.githubusercontent.com/UCANR-IGIS/agroclimR/main/agclim_nb01.Rmd"
-target="_blank" rel="noopener">Rmd</a> | <a
-href="agclim_nb01_answers.nb.html" target="_blank"
-rel="noopener">completed</a><br/><span class="linote">Notebooks are
-included in the Posit Cloud project.</span></p></li>
-</ul>
+<div id="part-i.-working-with-degree-days-and-weather-data"
+class="section level1">
+<h1>Part I. Working with Degree Days and Weather Data</h1>
+<p>May 3, 2024</p>
+<!-------------
+
+- [Slides](./slides/pt1a_compute-degday.html){target="_blank" rel="noopener"}
+
+- Notebook #1: [Rmd](https://raw.githubusercontent.com/UCANR-IGIS/agroclimR/main/agclim_nb01.Rmd){target="_blank" rel="noopener"} | [completed](agclim_nb01_answers.nb.html){target="_blank" rel="noopener"}<br/>[Notebooks are included in the Posit Cloud project.]{.linote}
+
+- [Slides](./slides/pt1a_compute-degday.html){target="_blank" rel="noopener"}
+
+- Notebook #2: [Rmd](https://raw.githubusercontent.com/UCANR-IGIS/agroclimR/main/agclim_nb01.Rmd){target="_blank" rel="noopener"} | [completed](agclim_nb01_answers.nb.html){target="_blank" rel="noopener"}<br/>[Notebooks are included in the Posit Cloud project.]{.linote}
+
+------------>
 <p><br />
 </p>
 </div>
 <div id="part-ii.-build-a-shiny-app" class="section level1">
 <h1>Part II. Build a Shiny App</h1>
-<ul>
-<li><p><a href="" target="_blank" rel="noopener">Slides</a></p></li>
-<li><p>app.R</p></li>
-</ul>
+<p>May 10, 2024</p>
+<!-------------
+
+-   [Slides](){target="_blank" rel="noopener"}
+
+-   app.R
+
+-------------->
 <p><br />
 </p>
 <hr/>
