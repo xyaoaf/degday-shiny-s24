@@ -12,6 +12,7 @@ index*.Rmd
 my_synoptic_token.txt
 
 # Temporary ignores below:
-# /data
+exercises/
+
 # /slides/agclim*
 # *_nb*
