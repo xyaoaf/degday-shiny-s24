@@ -9,8 +9,7 @@ index*.Rmd
 *_ans.R
 *_ans.Rmd
 *gtag.js
-rmd_assets/*
-
+my_synoptic_token.txt
 
 # Temporary ignores below:
 # /data
