@@ -9,17 +9,18 @@ format:
 editor: source
 ---
 
-::: {.callout-note}
+::: callout-note
 ## Summary
+
 This Notebook will demonstrate how to:
 
-1) import weather data from 2023 from a CSV file on disk  
+1)  import weather data from 2023 from a CSV file on disk
 
-2) compute degree days for a specific model
+2)  compute degree days for a specific model
 
-3) generate predictions
+3)  generate predictions
 
-4) visualize the predictions as a table and line plot
+4)  visualize the predictions as a table and line plot
 
 Most of this code will become the pieces of the online decision support tool.
 :::
@@ -28,7 +29,7 @@ Most of this code will become the pieces of the online decision support tool.
 
 # Import Some Weather Data
 
-To compute degree days, the first thing we need is __daily temperature data__. 
+To compute degree days, the first thing we need is **daily temperature data**.
 
 For this exercise, we will import some historic data from CIMIS that has already been downloaded, cleaned-up, and saved as CSV ([download script](https://github.com/UCANR-IGIS/degday-shiny-s24/blob/main/scripts/download-cimis-data.R)). Specifically, we will import temperature data from the Oakville CIMIS station ( Napa County, CA) from 2023.
 
@@ -38,6 +39,7 @@ First, define the data directory:
 data_dir <- here::here("exercises/data")
 dir.exists(data_dir)
 ```
+
 \
 
 Next, define the path to a CSV file containing data from 2023 which has already been imported cleaned:
@@ -61,7 +63,7 @@ head(oakville_tbl)
 
 # Select Your Degree Day Model
 
-Before you can compute degree days you have to select a degree day model you are computing degree days for. This is because degree days algorithm have specific parameters that must match the prediction model. In other words, there is no "one size fits all" degree day. 
+Before you can compute degree days you have to select a degree day model you are computing degree days for. This is because degree days algorithm have specific parameters that must match the prediction model. In other words, there is no "one size fits all" degree day.
 
 There are many degree models for pests on the [UC IPM website](https://ipm.ucanr.edu/MODELS/index.html). For this exercise, we are using a degree day model developed to inform vineyard managers when to till the soil to disrupt the life cycle of the three-cornered alfalfa hopper (which transmits a disease) ([Bick, Kron and Zalom, 2020](https://doi.org/10.1093/jee/toaa165)).
 
@@ -71,7 +73,7 @@ There are many degree models for pests on the [UC IPM website](https://ipm.ucanr
 
 \
 
-__Figure 1__. From [Kron, 2022](https://youtu.be/VDB0XU2PTbU)
+**Figure 1**. From [Kron, 2022](https://youtu.be/VDB0XU2PTbU)
 
 ![](./images/threecornered-alfalfa-hopper-model_1000x450x256.png)
 
@@ -79,18 +81,19 @@ __Figure 1__. From [Kron, 2022](https://youtu.be/VDB0XU2PTbU)
 
 The model provides us seven important parameters:
 
-__1. What is being predicted__: The recommended window for tilling the soil  
-__2. When to start counting__: January 1  
-__3. Method__: single sine  
-__4. Lower threshold__: 32 degrees F  
-__5. Upper limit__: none  
-__6. Cutoff__: horizontal  
-__7. Event occurs when__: 2358-2817 accumulated degree days (Fahrenheit)
+**1. What is being predicted**: The recommended window for tilling the soil\
+**2. When to start counting**: January 1\
+**3. Method**: single sine\
+**4. Lower threshold**: 32 degrees F\
+**5. Upper limit**: none\
+**6. Cutoff**: horizontal\
+**7. Event occurs when**: 2358-2817 accumulated degree days (Fahrenheit)
 
 \
 
-::: {.callout-important}
+::: callout-important
 ## Units
+
 Make sure the temperature units for the lower threshold and the phenology events match the units from the weather data. If you need to convert them, you can use `units::set_units()`.
 :::
 
@@ -138,7 +141,7 @@ oakville_dd_tbl
 
 # Identify the dates that have the desired number of accumulated degree days
 
-At this point, you can simply scroll down the accumulated degree day table, and "look up" the dates that fall within our accumulated degree day range (2358-2817). 
+At this point, you can simply scroll down the accumulated degree day table, and "look up" the dates that fall within our accumulated degree day range (2358-2817).
 
 \
 
@@ -165,7 +168,6 @@ head(oakville_till_tbl)
 \
 
 View just the days where `oakville_till_tbl$till == TRUE`:
-
 
 ```{r chunk09}
 oakville_till_tbl |> filter(till)
@@ -267,7 +269,7 @@ ggplot(oakville_till_tbl, mapping = aes(x = dt, y = acc_dd_f)) +
   geom_line()
 ```
 
-\ 
+ 
 
 Add a shaded region for the recommended tilling window:
 
@@ -301,7 +303,4 @@ ggplot(oakville_till_tbl, mapping = aes(x = dt, y = acc_dd_f)) +
 
 # Homework
 
-
 Identify the best time to till in 2023 using data from the Santa Rosa CIMIS Station (see [santarosa-cimis-2023.csv](https://github.com/UCANR-IGIS/degday-shiny-s24/blob/main/exercises/data/santarosa-cimis-2023.csv))
-
-
