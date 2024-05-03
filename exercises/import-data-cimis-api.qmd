@@ -1,0 +1,190 @@
+---
+title: "Importing Data from the CIMIS API"
+format: 
+  html:
+    theme: cosmo
+    df-print: paged
+    code-link: true
+    number-sections: true
+editor: source
+---
+
+::: {.callout-note}
+## Summary
+
+This Notebook shows how to import data thru the CIMIS API. 
+
+The code in this notebook does work, however the CIMIS API is frequently offline. This is expected to improve in 2024.
+
+:::
+
+\
+
+# Load packages
+
+```{r}
+library(dplyr)
+library(tidyr)
+library(lubridate)
+
+# Set preferences for functions with common names 
+library(conflicted)
+conflict_prefer("filter", "dplyr")
+conflict_prefer("count", "dplyr")
+conflict_prefer("select", "dplyr")
+conflict_prefer("arrange", "dplyr")
+```
+
+
+# Import Daily CIMS Data for the Current Season
+
+In this section, we will try to import daily weather data from a CIMIS station for the current season, up thru yesterday.
+
+### Load your CIMIS Key
+
+::: {.callout-note title="CIMIS Key"}
+If you don't have a CIMIS key, you can ignore the following few sections.
+:::
+
+Enter it by un-commenting one of the following three options.
+
+```{r}
+## OPTION 1: Just type it in (but be careful where you save this file!)
+## my_cimis_key <- "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" 
+
+## OPTION 2: Store it in the first line of a text file
+my_cimis_key <- readLines("~/My Tokens/cimis_token.txt", n = 1)
+
+## OPTION 3: Enter it as a System Environment variable
+##  1) Open .Renviron by running 
+##       usethis::edit_r_environ()
+
+##  2) Enter a line like this:
+##     MY_CIMIS_KEY = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+
+##  3) Restart R
+
+##  4) Use a line like this to load the Environment variable
+##      my_cimis_key <- Sys.getenv("MY_CIMIS_KEY")
+```
+
+\
+
+Load the `cimir` package and set your key:
+
+```{r}
+library(cimir)
+cimir::set_key(my_cimis_key)
+```
+
+\
+
+Select the CIMIS station from the station map.
+
+We will continue to work with data from the Oakville CIMIS Station (#77):
+
+```{r}
+cimis_stn_id <- 77
+```
+
+\
+
+Define the start and end dates. 
+
+```{r}
+library(lubridate)
+(start_dt <- make_date(2024, 1, 1))
+(end_dt <- Sys.Date() - 1)
+```
+
+\
+
+View the CIMIS variables available:
+
+```{r}
+cimir::cimis_items()
+```
+
+\
+
+To compute degree days, all we need is daily minimum (`day-air-tmp-min`) and maximum temperature (`day-air-tmp-max`). We'll create a variable with this, in format expected by `cimir::cimis_data()`.
+
+```{r}
+cimis_items_chr <- "day-air-tmp-max,day-air-tmp-min"
+```
+
+
+We have everything we need to fetch data from the API. Following best practices, we will make a cache of the results for this R session only.
+
+```{r}
+cimis_data_rds <- file.path(tempdir(), paste("cimis", start_dt, end_dt, cimis_items_chr, "Rds", sep = "."))
+cimis_data_rds
+```
+
+\
+
+Check to see if you have already called the API today. If not, call it now:
+
+```{r}
+if (file.exists(cimis_data_rds)) {
+  oakville_temp_long_tbl <- readRDS(cimis_data_rds)
+  
+} else {
+  
+  ## The following command *does* work. It should take <5 seconds.
+  
+  ## If you get an error message, or it hangs, the most likely reason is that the CIMIS 
+  ## API is down (even if the error message suggests your API key is invalid)
+  
+  oakville_temp_long_tbl <- cimis_data(targets = cimis_stn_id, 
+                                  start.date = start_dt, 
+                                  end.date = end_dt,
+                                  items = cimis_items_chr)  
+  
+  saveRDS(oakville_temp_long_tbl, file = cimis_data_rds)
+  
+  ## Automatically delete the temp file when this R session ends
+  on.exit(unlink(cimis_data_rds), add = TRUE)
+}
+
+```
+
+\
+
+View the results:
+
+```{r}
+oakville_temp_long_tbl
+```
+
+\
+
+## Do a little cleaning
+
+```{r}
+oakville_temp_wide_tbl <- oakville_temp_long_tbl |>
+  mutate(date = ymd(Date)) |> 
+  select(station_id = Station, date, Item, Value) |>  
+  pivot_wider(id_cols = c(station_id, date), 
+              names_from = Item, 
+              values_from = Value) |> 
+  rename(tasmax = DayAirTmpMax, tasmin = DayAirTmpMin) |>
+  mutate(loc_id = "CI077", period = "rp") |> 
+  select(loc_id, period, date, tasmin, tasmax)
+
+# |> 
+#   relocate(tasmin_f, .before = tasmax_f)
+
+oakville_temp_wide_tbl
+```
+
+\
+
+Save a copy to disk for use in other notebooks:
+
+```{r}
+saveRDS(oakville_temp_wide_tbl,
+        file = here::here("exercises/data/stn_rctpast_cimis_dlytas_tbl.Rds"))
+```
+
+\

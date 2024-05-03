@@ -1,0 +1,237 @@
+---
+title: "Exercise 4: Compute Degree Days for the Entire Season"
+format: 
+  html:
+    theme: cosmo
+    df-print: paged
+    code-link: true
+    link-external-icon: true
+    link-external-newwindow: true
+    number-sections: true
+editor: source
+---
+
+::: {.callout-note}
+## Summary
+
+In this Notebook, we import the weather data tables we imported in Exercise 2 & 3 for three time periods:
+
+1. Recent past (Exercise 2)  
+
+2. Short-term forecast (Exercise 3)  
+
+3. Seasonal forecast (Exercise 3):  
+Open-Meteo's Seasonal Forecast service  
+Long-term daily averages from gridMet
+
+We will then:
+ 
+1. append the tables together to get a time series for the entire season  
+2. compute degrees for the entire season  
+3. make predictions about the best time to till to disrupt the life cycle of the  three-cornered alfalfa hopper (exercise 1)  
+4. compare the predictions for the two proxies for the seasonal forecast  
+
+:::
+
+# Import the individual weather data files
+
+Begin by importing the weather data tables we created in exercises 2 and 3:
+
+## Recent past:
+
+```{r chunk01, results = 'hold'}
+data_dir <- here::here("exercises/data")
+dir.exists(data_dir)
+
+## For the recent past data for CIMIS Station 077, we will use a saved copy of the station
+## data download using the CIMIS API (see import-data-cimis-api.qmd), 
+## rather than the copy we imported thru Syntopic,
+## We do this because there is ~6 week gap in the Synoptic data during Jan & Feb 2024 
+## when CIMIS data were not ingested into Synoptic.
+
+stn_rctpast_dlytas_tbl <- readRDS(file.path(data_dir, "stn_rctpast_cimis_dlytas_tbl.Rds"))
+stn_rctpast_dlytas_tbl |> head()
+stn_rctpast_dlytas_tbl$date |> range()
+```
+
+\
+
+## Short-term forecast
+
+```{r chunk02, results = 'hold'}
+stn_shrtfrcst_dlytas_tbl <- readRDS(file.path(data_dir, "stn_shrtfrcst_dlytas_tbl.Rds"))
+stn_shrtfrcst_dlytas_tbl |> head()
+stn_shrtfrcst_dlytas_tbl$date |> range()
+```
+
+\
+
+## Seasonal Forecast
+
+```{r chunk03, results = 'hold'}
+stn_ssnfcast_dlytas_tbl <- readRDS(file.path(data_dir, "stn_ssnfcast_dlytas_tbl.Rds"))
+stn_ssnfcast_dlytas_tbl |> head()
+stn_ssnfcast_dlytas_tbl$date |> range()
+```
+
+\
+
+## Long-term daily averages
+
+```{r chunk04, results = 'hold'}
+stn_histavg_dlytas_tbl <- readRDS(file.path(data_dir, "stn_histavg_dlytas_tbl.Rds"))
+stn_histavg_dlytas_tbl |> head()
+stn_histavg_dlytas_tbl$date |> range()
+```
+
+\
+
+## Append the tables
+
+First, load packages:
+
+
+```{r chunk06}
+library(dplyr) |> suppressPackageStartupMessages()
+
+# Set preferences for functions with common names 
+library(conflicted)
+conflict_prefer("filter", "dplyr", quiet = TRUE)
+conflict_prefer("count", "dplyr", quiet = TRUE)
+conflict_prefer("select", "dplyr", quiet = TRUE)
+conflict_prefer("arrange", "dplyr", quiet = TRUE)
+```
+
+\
+
+Append the tables:
+
+Note: after combining the tables we convert the period column to a factor with manually specified levels. This is how we control the order of the three periods in the legend in ggplot.
+
+```{r chunk07}
+stn_all_dlytas_ssnfcast_tbl <- stn_rctpast_dlytas_tbl |> 
+  bind_rows(stn_shrtfrcst_dlytas_tbl) |> 
+  bind_rows(stn_ssnfcast_dlytas_tbl) |> 
+  arrange(date) |> 
+  mutate(period = factor(period, levels = c("rp", "stf", "seasn")))
+```
+
+\
+
+## Plot time series
+
+First, we plot the Open-Meteo Seasonal Forecast as our best guess for the rest of the season:
+
+```{r chunk08}
+library(ggplot2)
+
+ggplot(stn_all_dlytas_ssnfcast_tbl, mapping = aes(x = date, y = tasmax, col = period)) +
+  geom_line() +
+  geom_line(mapping = aes(y = tasmin)) +
+  ylab("air temperature") +
+  xlab(NULL) +
+  labs(title = "Minimum and Maximum Daily Temperature",
+       subtitle = "CIMIS Station #077, Oakville. 2024",
+       caption = "Sources:\nRecent past: CIMIS API\nShort-term forecast: Open-Meteo Weather Forecast\nSeasonal forecast: Open-Meteo Seasonal Forecast") +
+  theme(plot.caption = element_text(hjust = 0)) 
+```
+
+\
+
+Next, do the same using the __historic daily average__ as the proxy for the seasonal forecast:
+
+```{r chunk09}
+stn_all_dlytas_histavg_tbl <- stn_rctpast_dlytas_tbl |> 
+  bind_rows(stn_shrtfrcst_dlytas_tbl) |> 
+  bind_rows(stn_histavg_dlytas_tbl) |> 
+  arrange(date) |> 
+  mutate(period = factor(period, levels = c("rp", "stf", "histavg")))
+
+ggplot(stn_all_dlytas_histavg_tbl, mapping = aes(x = date, y = tasmax, col = period)) +
+  geom_line() +
+  geom_line(mapping = aes(y = tasmin)) +
+  ylab("air temperature") +
+  xlab(NULL) +
+  labs(title = "Minimum and Maximum Daily Temperature",
+       subtitle = "CIMIS Station #077, Oakville. 2024",
+       caption = "Sources:\nRecent past: CIMIS API\nShort-term forecast: Open-Meteo Weather Forecast\nSeasonal forecast: Long-term daily average, gridMet 1990-2020") +
+  theme(plot.caption = element_text(hjust = 0)) 
+```
+
+\
+
+# Compute Degree Days
+
+```{r chunk10}
+library(degday)
+
+oakville_dd_ssnfast_tbl <- stn_all_dlytas_ssnfcast_tbl |> 
+  mutate(dd_f = dd_sng_sine(daily_min = tasmin, 
+                          daily_max = tasmax, 
+                          thresh_low = 32,
+                          thresh_up = 999),
+         acc_dd_f = cumsum(dd_f))
+
+
+oakville_dd_histavg_tbl <- stn_all_dlytas_histavg_tbl |> 
+  mutate(dd_f = dd_sng_sine(daily_min = tasmin, 
+                          daily_max = tasmax, 
+                          thresh_low = 32,
+                          thresh_up = 999),
+         acc_dd_f = cumsum(dd_f))
+
+oakville_dd_histavg_tbl
+```
+
+\
+
+Let's visualize the difference between accumulated degree days the seasonal forecast vs historic daily averages make in the accumulation of degree days?
+
+```{r chunk11}
+oakville_dd_comb_tbl <- oakville_dd_ssnfast_tbl |> 
+  bind_rows(oakville_dd_histavg_tbl |> filter(period == "histavg"))
+
+ggplot(oakville_dd_comb_tbl, mapping = aes(x = date, y = acc_dd_f, colour = period)) +
+  geom_line() +
+  ylab("degree days (F)") +
+  xlab(NULL) +
+  labs(title = "Accumulated Degree Days",
+       subtitle = "CIMIS Station #077, Oakville. 2024",
+       caption = "Sources:\nRecent past: CIMIS API\nShort-term forecast: Open-Meteo Weather Forecast\nSeasonal forecast: Long-term daily average, gridMet 1990-2020; Open-Meteo Seasonal Forecast") +
+  theme(plot.caption = element_text(hjust = 0)) 
+
+```
+
+## Compare the predictions
+
+Let's compare the predictions regarding the best window to till the soil:
+
+```{r chunk12}
+till_yn <- function(x) {x >= 2358 & x <= 2817}
+
+## OM Seasonal Forecast:
+oakville_dd_ssnfast_tbl |> filter(till_yn(acc_dd_f)) |> pull(date) |> range()
+
+## Long-term historic daily averages
+oakville_dd_histavg_tbl |> filter(till_yn(acc_dd_f)) |> pull(date) |> range()
+```
+
+\
+
+Not surprisingly - they're the same!
+
+# CHALLENGE 
+
+Compare the predictions by the seasonal forecast and long-term daily averages regarding when adults are expected (3137-3447 accumulated degree days Fahrenheit). [[Solution](https://bit.ly/3UlM5pj)]
+
+```{r chunk13}
+## Your answer here
+
+```
+
+# END!
+
+We now have all the code we need to make a Shiny app!
+
+
+

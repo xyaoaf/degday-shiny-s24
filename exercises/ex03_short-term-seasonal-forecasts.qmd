@@ -1,0 +1,480 @@
+---
+title: "Exercise 3: Download the Short-Term and Seasonal Forecasts"
+format: 
+  html:
+    theme: cosmo
+    df-print: paged
+    code-link: true
+    link-external-icon: true
+    link-external-newwindow: true
+    number-sections: true
+editor: source
+---
+
+::: {.callout-note}
+## Summary
+
+This Notebook demonstrates how to get for one location: 
+
+i) 7-day the short-term forecast (Open-Meteo)  
+ii) 90-day seasonal forecast (Open-Meteo)  
+iii) 30-year historic daily averages (gridMet, Cal-Adapt)  
+
+Our desired output are tables with the following columns:
+
+- `loc_id`: location id  
+- `period`: "recnt" (recent past) | "stf" (short term forecast) | "hist_avg" (historic average) | "ssnfcast" (seasonal forecast)
+- `date`: date  
+- `tasmin`: minimum daily temperature  
+- `tasmax`: maximum daily temperature  
+
+:::
+
+\
+
+# Short-Term Forecast
+
+For the first part of this Notebook, we'll be using an API service from [Open-Meteo](https://open-meteo.com/). The first thing you should always do is read about the data.
+
+Highlights:
+
+- Open-Meteo's brings together numerous weather forecast models from national weather services.
+
+- API queries are sampled from modeled rasters with resolutions ranging from 1 - 11km , not stations (i.e., you query locations based on coordinates).
+
+- In addition to the 7-day forecast, they have APIs for historic weather, seasonal forecast, ensemble models, air quality, etc.
+
+- Data are available at both hourly and daily temporal resolution
+
+- They have both paid and free plans (for non-commercial use)
+
+\
+
+# Gather all the information needed to query the API
+
+## 1. Generate an API token
+
+An API token is not needed for Open-Meteo. 
+
+\
+
+## 2. Define the location of interest
+
+The Open-Meteo API requires locations to be expressed by longitude and latitude coordinates.
+
+The longitude and latitude for `CIMIS Station 077` (Oakville) is:
+
+```{r chunk01}
+stn_coords <- c(-122.410, 38.434)
+```
+
+\
+
+## 3. Determine which Weather Forecast / model end point to use
+
+[https://open-meteo.com/en/docs](https://open-meteo.com/en/docs)
+
+We will use the **US NOAA GFS** weather model. More info at:
+
+[https://open-meteo.com/en/docs/gfs-api](https://open-meteo.com/en/docs/gfs-api)
+    
+\
+
+## 4. Load the `openmeteo` R package
+
+Fortunately, Tom Pisel has already written a R package for the Open-Meteo API, [`openmeteo`](https://cran.r-project.org/package=openmeteo):
+
+```{r chunk02}
+library(openmeteo)
+```
+
+`openmeteo` has functions to call Open-Meteo's **weather forecast** and **historical weather** APIs.
+
+Read about the arguments for `weather_forecast()`.  
+
+```{r chunk03}
+# help(weather_forecast)
+```
+
+
+\
+
+## 5. Define the daily weather variables we want
+
+`weather_variables()` provides a list of the most common weather variables:
+
+```{r chunk04}
+om_vars_lst <- weather_variables()
+
+om_vars_lst$daily_forecast_vars
+```
+
+We will use the following:
+
+```{r chunk05}
+om_weather_vars <- c("temperature_2m_min", "temperature_2m_max")
+```
+
+\
+
+## 6. Define the start and end dates:
+
+```{r chunk06}
+start_date <- Sys.Date()
+end_date <- Sys.Date() + 7
+
+start_date; end_date
+```
+
+\
+
+## 7. Call the API
+
+We now have everything we need to call the API using `weather_forecast()`:
+
+```{r chunk07}
+# Load a cached copy
+om_forecast_dly_tbl <- readRDS(here::here("exercises/cached_api_responses/ex03_om_forecast_dly_tbl.Rds"))
+
+# If you really want to send the request, uncomment the following:
+# om_forecast_dly_tbl <- weather_forecast(
+#   location = stn_coords[c(2,1)],
+#   start = start_date,
+#   end = end_date,
+#   daily = om_weather_vars,
+#   response_units = list(temperature_unit = "fahrenheit"),
+#   timezone = "America/Los_Angeles"
+# )
+# saveRDS(om_forecast_dly_tbl, here::here("exercises/cached_api_responses/ex03_om_forecast_dly_tbl.Rds"))
+
+om_forecast_dly_tbl
+```
+
+\
+
+## 8. Prepare the final tibble:
+
+Load `dplyr` and set conflict preferences:
+
+```{r chunk08}
+library(dplyr) |> suppressPackageStartupMessages()
+
+# Set preferences for functions with common names 
+library(conflicted)
+conflict_prefer("filter", "dplyr", quiet = TRUE)
+conflict_prefer("count", "dplyr", quiet = TRUE)
+conflict_prefer("select", "dplyr", quiet = TRUE)
+conflict_prefer("arrange", "dplyr", quiet = TRUE)
+```
+
+\
+
+Add required columns: 
+
+```{r chunk09}
+stn_shrtfrcst_dlytas_tbl <- om_forecast_dly_tbl |> 
+  mutate(loc_id = "CI077", period = "stf") |> 
+  select(loc_id, period, date, tasmin = daily_temperature_2m_min, tasmax = daily_temperature_2m_max)
+
+stn_shrtfrcst_dlytas_tbl
+```
+
+\
+
+Save the table to disk for use in the next exercise:
+
+```{r chunk10}
+saveRDS(stn_shrtfrcst_dlytas_tbl,
+        file = here::here("exercises/data/stn_shrtfrcst_dlytas_tbl.Rds"))
+```
+
+\
+
+# Seasonal Forecast
+
+Sometimes degree day model predictions may be several weeks out. If you want to provide estimated degree days for the rest of the season (which are admittedly less accurate), you can use a seasonal forecast or historic daily averages as the best guess for the rest of the season.
+
+The `openmeteo` package does not have a function to call the [Seasonal Forecast](https://open-meteo.com/en/docs/seasonal-forecast-api) end point, so we will have to call it and process the response using [httr2](https://httr2.r-lib.org/).
+
+## Define the base URL
+
+```{r chunk11}
+om_ssnfcast_base <- "https://seasonal-api.open-meteo.com/v1/seasonal"
+```
+
+\
+
+## Define the start and end dates
+
+```{r chunk12}
+ssnfcast_start_date <- Sys.Date() + 8
+ssnfcast_start_date
+
+ssnfcast_end_date <- ssnfcast_start_date + 90
+ssnfcast_end_date
+```
+
+\
+
+## Define the daily weather variables we need
+
+We want the following:
+
+```{r chunk13}
+om_weather_vars <- c("temperature_2m_min", "temperature_2m_max")
+```
+
+\
+
+## Create the API Request Object
+
+```{r chunk14}
+library(httr2)
+
+om_ssnfcast_req <- request(om_ssnfcast_base) |> 
+  req_headers("Accept" = "application/json") |> 
+  req_url_query(latitude = stn_coords[2], 
+                longitude = stn_coords[1],
+                start_date = format(ssnfcast_start_date, "%Y-%m-%d"),
+                end_date = format(ssnfcast_end_date, "%Y-%m-%d"),
+                daily = om_weather_vars,
+                temperature_unit = "fahrenheit",
+                timezone = "America/Los_Angeles",
+                .multi = "comma") 
+
+om_ssnfcast_req
+```
+
+\
+
+## Send the request
+
+```{r chunk15}
+# Load a cached copy
+om_ssnfcast_resp <- readRDS(here::here("exercises/cached_api_responses/ex03_om_ssnfcast_resp.Rds"))
+
+# If you really want to send the request, uncomment the following:
+# om_ssnfcast_resp <- om_ssnfcast_req |> req_perform()
+# saveRDS(om_ssnfcast_resp, here::here("exercises/cached_api_responses/ex03_om_ssnfcast_resp.Rds"))
+
+om_ssnfcast_resp
+```
+
+\
+
+## Convert the response body to a list
+
+```{r chunk16}
+om_ssnfcast_lst <- om_ssnfcast_resp |> resp_body_json()
+
+# View(om_ssnfcast_lst)
+```
+
+\
+
+## Extract the values
+
+```{r chunk17}
+library(lubridate)
+
+## In case there are NULL values
+null2na <- function(x) ifelse(is.null(x), NA, x)
+
+om_ssnfcast_tbl <- tibble(
+  date = om_ssnfcast_lst$daily$time |> unlist() |> ymd(),
+  tasmin = om_ssnfcast_lst$daily$temperature_2m_min_member01 |> sapply(null2na),
+  tasmax = om_ssnfcast_lst$daily$temperature_2m_max_member01 |> sapply(null2na)
+)
+
+head(om_ssnfcast_tbl)
+# om_ssnfcast_tbl |> View()
+```
+
+\
+
+## Create the final table
+
+```{r chunk18}
+stn_ssnfcast_dlytas_tbl <- om_ssnfcast_tbl |> 
+  mutate(loc_id = "CI077", period = "seasn") |> 
+  select(loc_id, period, date, tasmin, tasmax)
+
+stn_ssnfcast_dlytas_tbl
+```
+
+\
+
+Save the final table to disk:
+
+```{r chunk19}
+saveRDS(stn_ssnfcast_dlytas_tbl,
+        file = here::here("exercises/data/stn_ssnfcast_dlytas_tbl.Rds"))
+```
+
+\
+
+# Computing the Daily Historic Averages as Proxy for the Seasonal Forecast
+
+Another commonly used proxy for the seasonal forecast are the historic daily averages.
+
+Some good practices:
+
+- compute daily averages from at least 30 years of data  
+- using modeled data is preferable to simply averaging measurements (which are prone to noise and extreme events)  
+
+\
+
+In this section, we'll use 30-years of [gridMet](https://www.drought.gov/data-maps-tools/gridded-surface-meteorological-gridmet-dataset) data imported from Cal-Adapt using [caladaptR](). 
+
+```{r chunk20}
+library(caladaptr)
+```
+
+## Find the gridMet datasets
+
+The first step is to identify the 'slug' of the gridMet datasets for daily minimum and maximum temperatures:
+
+```{r chunk21}
+## View the entire catalog in a View window
+## ca_catalog_rs() |> View()
+```
+
+\
+
+Next, we can preview the metadata for the gridMet daily temperatures:
+
+```{r chunk22}
+ca_catalog_search("tmmn_day_gridmet")
+ca_catalog_search("tmmx_day_gridmet")
+```
+
+\
+
+## Create the request object
+
+```{r chunk23}
+stn_coords <- c(-122.410, 38.434)
+
+stn_hist_tas_cap <- ca_loc_pt(coords = stn_coords) |> 
+  ca_years(start = 1990, end = 2020) |> 
+  ca_slug(c("tmmn_day_gridmet", "tmmx_day_gridmet"))
+
+stn_hist_tas_cap
+```
+
+\
+
+## Query the API
+
+First we can do a pre-flight check:
+
+```{r chunk24}
+stn_hist_tas_cap |> ca_preflight()
+```
+
+\
+
+Next, fetch the data:
+
+```{r chunk25}
+## Load a cached copy
+stn_hist_tas_tbl <- readRDS(here::here("exercises/cached_api_responses/ex03_stn_hist_tas_tbl.Rds"))
+
+# If you really want to send the request, uncomment the following:
+# stn_hist_tas_tbl <- stn_hist_tas_cap |> ca_getvals_tbl()
+# saveRDS(stn_hist_tas_tbl, here::here("exercises/cached_api_responses/ex03_stn_hist_tas_tbl.Rds"))
+```
+
+\
+
+Inspect the results:
+
+```{r chunk26}
+dim(stn_hist_tas_tbl)
+head(stn_hist_tas_tbl)
+stn_hist_tas_tbl$dt |> range()
+```
+
+
+\
+
+## Wrangle the data
+
+We now have to transform 30-years of daily data into estimates of daily temperature values for the rest of the current season. This will involve:
+
+1. Computing the Julian days for the historic data  
+2. Using the Julian days to filter the days-of-the-year we want  
+3. Grouping the data by Julian day  
+4. Taking the average minimum and maximum daily temperatures  
+5. Converting the units from Kelvin to Fahrenheit   
+6. Reshaping the data from long to wide  
+7. Converting the Julian numbers to future dates for the current season
+8. Renaming the columns to match the desired template
+
+\
+
+First, we define the start and end dates, and get their Julian day numbers.
+
+```{r chunk27}
+library(lubridate)
+
+ssnfcast_start_date <- Sys.Date() + 8
+ssnfcast_end_date <- ssnfcast_start_date + 90
+
+ssnfcast_start_date
+ssnfcast_end_date
+```
+
+\
+
+Next, get their Julian date numbers:
+
+```{r chunk28}
+ssnfcast_start_yday <- yday(ssnfcast_start_date)
+ssnfcast_end_yday <- yday(ssnfcast_end_date) 
+
+ssnfcast_start_yday
+ssnfcast_end_yday
+```
+
+\
+
+We now have everything we need to wrangle the data. We need to load a couple more packages:
+
+```{r chunk29}
+library(tidyr)
+library(units)
+```
+
+\
+
+Putting the tidyverse to work:
+
+```{r chunk30}
+stn_histavg_dlytas_tbl <- stn_hist_tas_tbl |> 
+  mutate(dt_yday = yday(dt)) |> 
+  filter(dt_yday >= ssnfcast_start_yday, dt_yday <= ssnfcast_end_yday) |> 
+  group_by(dt_yday, slug) |> 
+  summarize(avg_tempK = mean(val), .groups = "drop") |> 
+  mutate(avg_tempF = set_units(avg_tempK, degF)) |> 
+  pivot_wider(id_cols= dt_yday, names_from = slug, values_from = avg_tempF) |> 
+  mutate(loc_id = "CI077",
+         period = "histavg",
+         date = make_date(year = 2024, month = 1, day = 1) + dt_yday - 1,
+         tasmin = as.numeric(tmmn_day_gridmet),
+         tasmax = as.numeric(tmmx_day_gridmet)) |> 
+  select(loc_id, period, date, tasmin, tasmax)
+  
+stn_histavg_dlytas_tbl
+```
+
+\
+
+Save the final table to disk:
+
+```{r chunk31}
+saveRDS(stn_histavg_dlytas_tbl,
+        file = here::here("exercises/data/stn_histavg_dlytas_tbl.Rds"))
+```
+
+

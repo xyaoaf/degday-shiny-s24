@@ -1,0 +1,10 @@
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+THE TOKEN ABOVE IS PLACEHOLDER TEXT
+REPLACE WITH YOUR OWN
+
+To get a token, start here: https://customer.synopticdata.com/free-trial/
+
+After you've created your account, go to your Profile > Data Credentials > Public Tokens > Create token
+
+

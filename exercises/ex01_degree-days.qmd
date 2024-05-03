@@ -1,0 +1,307 @@
+---
+title: "Exercise 1: Compute Degree Days with Historic Data"
+format: 
+  html:
+    theme: cosmo
+    df-print: paged
+    code-link: true
+    number-sections: true
+editor: source
+---
+
+::: {.callout-note}
+## Summary
+This Notebook will demonstrate how to:
+
+1) import weather data from 2023 from a CSV file on disk  
+
+2) compute degree days for a specific model
+
+3) generate predictions
+
+4) visualize the predictions as a table and line plot
+
+Most of this code will become the pieces of the online decision support tool.
+:::
+
+\
+
+# Import Some Weather Data
+
+To compute degree days, the first thing we need is __daily temperature data__. 
+
+For this exercise, we will import some historic data from CIMIS that has already been downloaded, cleaned-up, and saved as CSV ([download script](https://github.com/UCANR-IGIS/degday-shiny-s24/blob/main/scripts/download-cimis-data.R)). Specifically, we will import temperature data from the Oakville CIMIS station ( Napa County, CA) from 2023.
+
+First, define the data directory:
+
+```{r chunk01}
+data_dir <- here::here("exercises/data")
+dir.exists(data_dir)
+```
+\
+
+Next, define the path to a CSV file containing data from 2023 which has already been imported cleaned:
+
+```{r chunk02}
+oakville_fn <- file.path(data_dir, "oakville-cimis-2023.csv")
+file.exists(oakville_fn)
+```
+
+\
+
+Import with `readr`:
+
+```{r chunk03}
+library(readr)
+oakville_tbl <- read_csv(oakville_fn)
+head(oakville_tbl)
+```
+
+\
+
+# Select Your Degree Day Model
+
+Before you can compute degree days you have to select a degree day model you are computing degree days for. This is because degree days algorithm have specific parameters that must match the prediction model. In other words, there is no "one size fits all" degree day. 
+
+There are many degree models for pests on the [UC IPM website](https://ipm.ucanr.edu/MODELS/index.html). For this exercise, we are using a degree day model developed to inform vineyard managers when to till the soil to disrupt the life cycle of the three-cornered alfalfa hopper (which transmits a disease) ([Bick, Kron and Zalom, 2020](https://doi.org/10.1093/jee/toaa165)).
+
+\
+
+<center>![](./images/threecornered-alfalfa-hopper_548x160.jpg)<br/>Three-cornered alfalfa hopper, UC IPM</center>
+
+\
+
+__Figure 1__. From [Kron, 2022](https://youtu.be/VDB0XU2PTbU)
+
+![](./images/threecornered-alfalfa-hopper-model_1000x450x256.png)
+
+\
+
+The model provides us seven important parameters:
+
+__1. What is being predicted__: The recommended window for tilling the soil  
+__2. When to start counting__: January 1  
+__3. Method__: single sine  
+__4. Lower threshold__: 32 degrees F  
+__5. Upper limit__: none  
+__6. Cutoff__: horizontal  
+__7. Event occurs when__: 2358-2817 accumulated degree days (Fahrenheit)
+
+\
+
+::: {.callout-important}
+## Units
+Make sure the temperature units for the lower threshold and the phenology events match the units from the weather data. If you need to convert them, you can use `units::set_units()`.
+:::
+
+\
+
+# Compute Degree Days
+
+First, load the `dplyr` package that we'll be using to add new columns:
+
+```{r chunk04, message=FALSE}
+library(dplyr)
+
+# Set preferences for functions with common names 
+library(conflicted)
+conflict_prefer("filter", "dplyr")
+conflict_prefer("count", "dplyr")
+conflict_prefer("select", "dplyr")
+conflict_prefer("arrange", "dplyr")
+```
+
+\
+
+The [degday](https://ucanr-igis.github.io/degday/) package has functions for most of the degree day methods. To see what functions it provides, view the documentation.
+
+```{r chunk05}
+library(degday)
+```
+
+\
+
+We can use `dd_sng_sine()` to compute the daily degree days, and then `cumsum()` to add them up:
+
+```{r chunk06}
+oakville_dd_tbl <- oakville_tbl |> 
+  mutate(dd_f = dd_sng_sine(daily_min = tasmin_f, 
+                          daily_max = tasmax_f, 
+                          thresh_low = 32,
+                          thresh_up = 999),
+         acc_dd_f = cumsum(dd_f))
+
+oakville_dd_tbl
+```
+
+\
+
+# Identify the dates that have the desired number of accumulated degree days
+
+At this point, you can simply scroll down the accumulated degree day table, and "look up" the dates that fall within our accumulated degree day range (2358-2817). 
+
+\
+
+To find the dates programmatically, we can write a test function that checks to see if the condition has been met:
+
+```{r chunk07}
+till_yn <- function(x) {x >= 2358 & x <= 2817}
+
+## Test it:
+till_yn(c(2300, 2400, 2500, 2600, 2700, 2800, 2900, 3000))
+```
+
+\
+
+Now we use our test function to populate a new column:
+
+```{r chunk08}
+oakville_till_tbl <- oakville_dd_tbl |> 
+  mutate(till = till_yn(acc_dd_f))
+
+head(oakville_till_tbl)
+```
+
+\
+
+View just the days where `oakville_till_tbl$till == TRUE`:
+
+
+```{r chunk09}
+oakville_till_tbl |> filter(till)
+```
+
+\
+
+To extract just the first and last days:
+
+```{r chunk10}
+oakville_till_tbl |> filter(till) |> pull(dt) |> range() -> till_dates
+till_dates
+```
+
+# CHALLENGE #1
+
+The same degree day model by [Bick et al, 2020](https://doi.org/10.1093/jee/toaa165) predicts that you can expect to find adults from the first in-field generation between 3137-3447 accumulated degree days (F). Using this model, when would we expect to find adults in 2023? [Solution](https://bit.ly/3JPAgm9)
+
+```{r chunk11}
+## Your answer here
+
+
+```
+
+\
+
+# Visualizing the Model Predictions
+
+## Present a Degree Day Table
+
+A common way to visualize degree day predictions is thru a simple table.
+
+```{r}
+oakville_till_tbl |> 
+  select(Date = dt, `Min temp (F)` = tasmin_f, `Max temp (F)` = tasmax_f, `Degree Days` = dd_f, `Accumulated DD` = acc_dd_f) |> 
+  knitr::kable()
+```
+
+\
+
+## Make a better table with conditional formatting
+
+The [`DT`](https://rstudio.github.io/DT/) (DataTables) package provides R functions to create interactive HTML tables, which may be more suitable for an online decision support tool.
+
+Basic usage:
+
+```{r chunk12}
+library(DT)
+
+oakville_till4dt_tbl <- oakville_till_tbl |> 
+  # filter(month(dt) == 5) |> 
+  select(dt, tasmin_f, tasmax_f, dd_f, acc_dd_f, till)
+  
+DT::datatable(oakville_till4dt_tbl |> select(-till), 
+              colnames = c("Date", "Min temp", "Max temp", "Deg Day", "Accum DD"),
+              caption = "Recommended Days to Till, Oakville",
+              rownames = FALSE,
+              autoHideNavigation = FALSE,
+              escape =FALSE,
+              options = list(pageLength = 8,
+                             searching = FALSE,
+                             info = FALSE))
+```
+
+\
+
+You can add `formatStyle()` to apply conditional formatting to specific rows:
+
+```{r chunk13}
+till_rows_idx <- which(oakville_till4dt_tbl$till)
+
+DT::datatable(oakville_till4dt_tbl |> select(-till), 
+              colnames = c("Date", "Min temp", "Max temp", "Deg Day", "Accum DD"),
+              caption = "Recommended Days to Till, Oakville",
+              rownames = FALSE,
+              autoHideNavigation = FALSE,
+              escape =FALSE,
+              options = list(pageLength = 15,
+                             searching = FALSE,
+                             info = FALSE)) |> 
+  formatStyle(columns = 0, 
+              target = "row", 
+              color = styleRow(till_rows_idx, "red"),
+              backgroundColor = styleRow(till_rows_idx, "#eee"),
+              fontWeight = styleRow(till_rows_idx, "bold"))
+
+```
+
+\
+
+## Visualize with ggplot
+
+Plots are often a better way to visualize time series data. We start by creating a simple ggplot of the accumulated degree days:
+
+```{r chunk14}
+library(ggplot2)
+
+ggplot(oakville_till_tbl, mapping = aes(x = dt, y = acc_dd_f)) +
+  geom_line()
+```
+
+\ 
+
+Add a shaded region for the recommended tilling window:
+
+```{r chunk15}
+oakville_till_tbl |> filter(till) |> pull(dt) |> range() -> till_dates
+
+ggplot(oakville_till_tbl, mapping = aes(x = dt, y = acc_dd_f)) +
+  geom_rect(aes(xmin = till_dates[1], xmax = till_dates[2],
+                ymin = 0, ymax =Inf), 
+            fill = 'darkgreen', alpha = 0.01) +
+  geom_line()
+```
+
+\
+
+Finally, add some labels:
+
+```{r chunk16}
+ggplot(oakville_till_tbl, mapping = aes(x = dt, y = acc_dd_f)) +
+  geom_rect(aes(xmin = till_dates[1], xmax = till_dates[2],
+                ymin = 0, ymax =Inf), 
+            fill = 'darkgreen', alpha = 0.01) +
+  geom_line() +
+  labs(title = "When to Till to Disrupt the Three-cornered Alfalfa Hopper", 
+       subtitle = "Oakville CIMIS Station #77, 2023") +
+  xlab("") +
+  ylab("Accumulated degree days (F)")
+```
+
+\
+
+# Homework
+
+
+Identify the best time to till in 2023 using data from the Santa Rosa CIMIS Station (see [santarosa-cimis-2023.csv](https://github.com/UCANR-IGIS/degday-shiny-s24/blob/main/exercises/data/santarosa-cimis-2023.csv))
+
+

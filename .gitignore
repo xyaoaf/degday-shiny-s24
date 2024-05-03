@@ -9,10 +9,10 @@ index*.Rmd
 *_ans.R
 *_ans.Rmd
 *gtag.js
-my_synoptic_token.txt
+
 
 # Temporary ignores below:
-exercises/
-
+# exercises/
+# my_synoptic_token.txt
 # /slides/agclim*
 # *_nb*

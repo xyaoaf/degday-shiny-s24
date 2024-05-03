@@ -13,7 +13,7 @@
 ## Required packages from CRAN
 
 cran_pkgs <- c("sf", "tidyverse", "conflicted", "here", "units", "zoo", "degday", "cimir", "httr2", "jsonlite", "usethis", 
-              "shiny", "leaflet", "glue", "DT", "plotly", "openmeteo")
+              "shiny", "leaflet", "glue", "knitr", "DT", "plotly", "openmeteo")
 
 install.packages(cran_pkgs)
 
@@ -29,5 +29,8 @@ if (length(missing_pkgs)==0) {
 
 ## Restart R (Session > Restart R), then install caladaptr from R-Universe
 
-install.packages("caladaptr", repos = "https://ajlyons.r-universe.dev")
+install.packages("caladaptr", dependencies = TRUE,
+                 repos = c(getOption("repos"), "https://ajlyons.r-universe.dev"))
+
+
 

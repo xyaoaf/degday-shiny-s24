@@ -19,25 +19,25 @@ cimis_stn_id <- 77
 cimis_stn_name <- "oakville"
 
 ## Define the start and end dates
-start_dt <- make_date(2023, 1, 1)
-end_dt <- make_date(2023, 6, 30)
+# start_dt <- make_date(2023, 1, 1)
+# end_dt <- make_date(2023, 6, 30)
 
-# start_dt <- make_date(2024, 1, 1)
-# end_dt <- Sys.Date() - 1
+start_date <- make_date(2023, 1, 1)
+end_date <- Sys.Date() - 1
 
 ## Define the data directory
 data_dir <- here::here("exercises/data")
 dir.exists(data_dir)
 
 ## Define the CSV file name
-(dailytemps_csv <- file.path(data_dir, paste0(cimis_stn_name, "-cimis-2024.csv")))
+(dailytemps_csv <- file.path(data_dir, paste0(cimis_stn_name, "-cimis-2023.csv")))
 file.exists(dailytemps_csv)
 
 ## Get the data
 ## Note 1. This should take <10 seconds. If it takes longer, the API may be down. Try in a few minutes.
 ## Note 2. CIMIS is updating their API in 2024, so this code may not work forever.
 
-dailytemps_long_tbl <- cimis_data(targets = cimis_stn_id, start.date = start_dt, end.date = end_dt,
+dailytemps_long_tbl <- cimis_data(targets = cimis_stn_id, start.date = start_date, end.date = end_date,
                               items = "day-air-tmp-max,day-air-tmp-min")
 
 ## View the data
