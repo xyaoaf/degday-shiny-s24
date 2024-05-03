@@ -188,6 +188,14 @@ The same degree day model by [Bick et al, 2020](https://doi.org/10.1093/jee/toaa
 
 ```{r chunk11}
 ## Your answer here
+till_yn <- function(x) {x >= 3137 & x <= 3437}
+oakville_till_tbl <- oakville_dd_tbl |> 
+  mutate(till = till_yn(acc_dd_f))
+
+head(oakville_till_tbl)
+oakville_till_tbl |> filter(till)
+oakville_till_tbl |> filter(till) |> pull(dt) |> range() -> till_dates
+till_dates
 
 
 ```
