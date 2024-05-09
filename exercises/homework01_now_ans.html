@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.4.553">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>Homework 1: Predicting Navel Orangeworm Generations</title>
+<title>Homework 1: Predicting Navel Orangeworm Generations - SOLUTIONS</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -53,24 +53,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }
 </style>
 
-<script src="homework01_now_files/libs/clipboard/clipboard.min.js"></script>
-<script src="homework01_now_files/libs/quarto-html/quarto.js"></script>
-<script src="homework01_now_files/libs/quarto-html/popper.min.js"></script>
-<script src="homework01_now_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="homework01_now_files/libs/quarto-html/anchor.min.js"></script>
-<link href="homework01_now_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="homework01_now_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="homework01_now_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="homework01_now_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="homework01_now_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><link href="homework01_now_files/libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
-<script src="homework01_now_files/libs/pagedtable-1.1/js/pagedtable.js"></script>
+<script src="homework01_now_ans_files/libs/clipboard/clipboard.min.js"></script>
+<script src="homework01_now_ans_files/libs/quarto-html/quarto.js"></script>
+<script src="homework01_now_ans_files/libs/quarto-html/popper.min.js"></script>
+<script src="homework01_now_ans_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="homework01_now_ans_files/libs/quarto-html/anchor.min.js"></script>
+<link href="homework01_now_ans_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="homework01_now_ans_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="homework01_now_ans_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="homework01_now_ans_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="homework01_now_ans_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><link href="homework01_now_ans_files/libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="homework01_now_ans_files/libs/pagedtable-1.1/js/pagedtable.js"></script>
 </head>
 <body class="fullcontent">
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
 
 <main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
-<h1 class="title">Homework 1: Predicting Navel Orangeworm Generations</h1>
+<h1 class="title">Homework 1: Predicting Navel Orangeworm Generations - SOLUTIONS</h1>
 </div>
 
 
@@ -86,7 +86,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header><section id="summary" class="level1" data-number="1"><h1 data-number="1">
 <span class="header-section-number">1</span> Summary</h1>
-<p>In this assignment, you will find the date when a degree model predicts the emergence of adult Navel Orangeworm moths in Arbuckle, CA, during the 2023 growing season.</p>
+<p>In this exercise, you will find the date when a degree model predicts the emergence of adult Navel Orangeworm moths in Arbuckle, CA, during the 2023 growing season.</p>
 </section><section id="background" class="level1" data-number="2"><h1 data-number="2">
 <span class="header-section-number">2</span> Background</h1>
 <p>Navel Orangeworm (NOW) is a persistent pest for many California tree crops, including almond and pistachio. According to the UC IPM <a href="https://ipm.ucanr.edu/calludt.cgi/DDMODEL?MODEL=NOW">Degree Day model for NOW</a>, we can use degree days to predict when the “first flight” of adult NOWs will occur. Knowing this date helps growers plan IPM strategies such as mating disruption that are timed for specific phases of the NOW lifecycle.</p>
@@ -119,13 +119,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>To help you get started, we’ve already downloaded daily weather data for the closest CIMIS station in Williams (station #250) for January - September 2023. These data are saved in a <a href="https://github.com/UCANR-IGIS/degday-shiny-s24/blob/main/exercises/data/williams-cimis-2023.csv">CSV file</a> and can be imported into R as follows.</p>
 <p>First load some packages:</p>
 <div class="cell">
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="op">{</span></span>
-<span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span></span>
-<span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://lubridate.tidyverse.org">lubridate</a></span><span class="op">)</span></span>
-<span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span></span>
-<span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://conflicted.r-lib.org/">conflicted</a></span><span class="op">)</span></span>
-<span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://readr.tidyverse.org">readr</a></span><span class="op">)</span></span>
-<span><span class="op">}</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://lubridate.tidyverse.org">lubridate</a></span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://readr.tidyverse.org">readr</a></span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://conflicted.r-lib.org/">conflicted</a></span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://conflicted.r-lib.org/reference/conflict_prefer.html">conflict_prefer</a></span><span class="op">(</span><span class="st">"filter"</span>, <span class="st">"dplyr"</span>, quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://conflicted.r-lib.org/reference/conflict_prefer.html">conflict_prefer</a></span><span class="op">(</span><span class="st">"count"</span>, <span class="st">"dplyr"</span>, quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://conflicted.r-lib.org/reference/conflict_prefer.html">conflict_prefer</a></span><span class="op">(</span><span class="st">"select"</span>, <span class="st">"dplyr"</span>, quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -162,7 +161,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="st">""</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><img src="homework01_now_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+<figure class="figure"><p><img src="homework01_now_ans_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -172,21 +171,69 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="header-section-number">4</span> Questions</h1>
 <section id="date-of-the-first-flight" class="level2" data-number="4.1"><h2 data-number="4.1" class="anchored" data-anchor-id="date-of-the-first-flight">
 <span class="header-section-number">4.1</span> Date of the First Flight</h2>
-<p>Write code to find the date when the degree model predicts the first flight. You can assume that you should start counting degree days the day after the biofix event.</p>
+<p>Write code to find the date when the degree model predicts the first flight. You can make the assumption that you should start counting degree days starting with the day <em>after</em> the biofix event.</p>
 <details style="margin:0 2em;; border:none; padding:0.5em;"><summary style="color: green;">
 Hint
 </summary><p>See the Exercise we did in Part 1.</p>
 <p>If you’re not sure how to filter a data frame in R by a date column, you could ask Google or ChatGPT a question like, <em>“How do I filter a data frame in R by a date column?”</em></p>
 </details><div class="cell">
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## Your answer here</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ucanr-igis/degday/">degday</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">williams_now_dd_tbl</span> <span class="op">&lt;-</span> <span class="va">williams_tbl</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">date</span> <span class="op">&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span><span class="op">(</span><span class="st">"2023-04-22"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>dd_f <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/degday/man/dd_calc.html">dd_sng_sine</a></span><span class="op">(</span>daily_min <span class="op">=</span> <span class="va">daily_min</span>, </span>
+<span>                            daily_max <span class="op">=</span> <span class="va">daily_max</span>, </span>
+<span>                            thresh_low <span class="op">=</span> <span class="fl">55</span>,</span>
+<span>                            thresh_up <span class="op">=</span> <span class="fl">94</span><span class="op">)</span>,</span>
+<span>         acc_dd_f <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cumsum.html">cumsum</a></span><span class="op">(</span><span class="va">dd_f</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code> - using single sine method</code></pre>
 </div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">williams_now_dd_tbl</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["cimis_station"],"name":[1],"type":["int"],"align":["right"]},{"label":["date"],"name":[2],"type":["date"],"align":["right"]},{"label":["daily_min"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["daily_max"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["temp_units"],"name":[5],"type":["chr"],"align":["left"]},{"label":["dd_f"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["acc_dd_f"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"250","2":"2023-04-23","3":"49.2","4":"83.8","5":"F","6":"12.53","7":"12.53"},{"1":"250","2":"2023-04-24","3":"49.1","4":"85.7","5":"F","6":"13.42","7":"25.95"},{"1":"250","2":"2023-04-25","3":"47.2","4":"84.4","5":"F","6":"12.35","7":"38.30"},{"1":"250","2":"2023-04-26","3":"45.6","4":"94.8","5":"F","6":"16.94","7":"55.24"},{"1":"250","2":"2023-04-27","3":"50.4","4":"99.4","5":"F","6":"19.73","7":"74.97"},{"1":"250","2":"2023-04-28","3":"54.2","4":"90.5","5":"F","6":"17.40","7":"92.37"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p><br></p>
+<p>First date with enough accumulated degree days for the first flight</p>
+<div class="cell">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">williams_now_dd_tbl</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">acc_dd_f</span> <span class="op">&gt;=</span> <span class="fl">1056</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_min</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["cimis_station"],"name":[1],"type":["int"],"align":["right"]},{"label":["date"],"name":[2],"type":["date"],"align":["right"]},{"label":["daily_min"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["daily_max"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["temp_units"],"name":[5],"type":["chr"],"align":["left"]},{"label":["dd_f"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["acc_dd_f"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"250","2":"2023-07-02","3":"68.3","4":"101.4","5":"F","6":"28.33","7":"1082.47"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p><br></p>
+<p>Answer: <strong>July 2, 2023</strong></p>
 <p><br></p>
 </section><section id="second-flight" class="level2" data-number="4.2"><h2 data-number="4.2" class="anchored" data-anchor-id="second-flight">
 <span class="header-section-number">4.2</span> Second Flight</h2>
 <p>When does the model predict the 2nd generation of NOW emerged, assuming the generation time for the 2nd generation was 750 degree days after the first? (in general, the number degree days needed for eggs to reach maturity decrease after the first generation because there are more food resources for the moths)</p>
+<p><br></p>
+<p>First date with enough accumulated degree days for the second flight:</p>
 <div class="cell">
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## Your answer here</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">williams_now_dd_tbl</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">acc_dd_f</span> <span class="op">&gt;=</span> <span class="op">(</span><span class="fl">1056</span> <span class="op">+</span> <span class="fl">750</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_min</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["cimis_station"],"name":[1],"type":["int"],"align":["right"]},{"label":["date"],"name":[2],"type":["date"],"align":["right"]},{"label":["daily_min"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["daily_max"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["temp_units"],"name":[5],"type":["chr"],"align":["left"]},{"label":["dd_f"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["acc_dd_f"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"250","2":"2023-08-06","3":"64.5","4":"104.9","5":"F","6":"27.23","7":"1811.28"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
 </div>
+</div>
+</div>
+<p><br></p>
+<p>Answer: <strong>Aug.&nbsp;6, 2023</strong></p>
 </section></section></main><!-- /main column --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
