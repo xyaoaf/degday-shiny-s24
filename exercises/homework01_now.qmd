@@ -1,0 +1,37 @@
+---
+title: "Homework 1: First Flight of Navel Orangeworm"
+format: html
+editor: visual
+---
+
+# Background
+
+Navel Orangeworm is a persistent pest for many California tree crops, including almond and pistachio. According to the UC IPM [NOW model](https://ipm.ucanr.edu/calludt.cgi/DDMODEL?MODEL=NOW), we can use degree days to predict when the "first flight" of adult NOWs will occur. Knowing this date helps growers plan IPM strategies such as mating disruption that are timed for specif phases of the NOW lifecycle.
+
+The biofix (start date) for the degree day model for NOW in Almonds is the date when you start to see a consistent increase of the presence of eggs on egg traps. More specifically, *"when at least 75% of the egg traps in a given location show increases in the number of eggs on two consecutive monitoring dates, the biofix is the first of those two dates"*. ([UC IPM](https://ipm.ucanr.edu/calludt.cgi/DDMODEL?MODEL=NOW&CROP=almonds))
+
+Other information you need to know to use the model:
+
+- **Degree Day Method**: single sine  
+- **Cutoff method**: horizontal  
+- **Lower threshold**: 55°F
+- **Upper threshold**: 94°F
+- **Time from biofix to the first generation of adults**: 1056 degree-days
+
+\
+
+# When Did the Model Predict NOW Adulsts in 2023? 
+
+The biofox for Navel Orangeworm in Arbuckle CA (Colusa County) in 2023 [was reported](https://www.sacvalleyorchards.com/almonds/insects-mites/navel-orangeworm-biofix-in-a-wet-spring/) to be April 22, 2023. 
+
+**Your job is to use the degree day model described above to find the predicted date for the first generation of NOW moths in 2023.**
+
+## Getting Started: The Weather Data
+
+To help you get started, we've already downloaded daily weather data for the closest CIMIS (Willams, #250) for January - July 2023. These data are saved in a CSV file and can be imported into R with the following command:
+
+```{r}
+
+```
+
+
