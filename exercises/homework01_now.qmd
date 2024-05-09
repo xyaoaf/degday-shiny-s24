@@ -1,5 +1,5 @@
 ---
-title: "Homework 1: First Flight of Navel Orangeworm"
+title: "Homework 1: Predicting Navel Orangeworm Generations"
 format: 
   html:
     theme: cosmo
@@ -11,11 +11,11 @@ editor: visual
 
 # Summary
 
-In this homework, you will find the date when a degree model predicts the emergence of adult Navel Orangeworm moths in Arbuckle, CA, during the 2023 growing season.
+In this assignment, you will find the date when a degree model predicts the emergence of adult Navel Orangeworm moths in Arbuckle, CA, during the 2023 growing season.
 
 # Background
 
-Navel Orangeworm (NOW) is a persistent pest for many California tree crops, including almond and pistachio. According to the UC IPM [Degree Day model for NOW](https://ipm.ucanr.edu/calludt.cgi/DDMODEL?MODEL=NOW), we can use degree days to predict when the "first flight" of adult NOWs will occur. Knowing this date helps growers plan IPM strategies such as mating disruption that are timed for specif phases of the NOW lifecycle.
+Navel Orangeworm (NOW) is a persistent pest for many California tree crops, including almond and pistachio. According to the UC IPM [Degree Day model for NOW](https://ipm.ucanr.edu/calludt.cgi/DDMODEL?MODEL=NOW), we can use degree days to predict when the "first flight" of adult NOWs will occur. Knowing this date helps growers plan IPM strategies such as mating disruption that are timed for specific phases of the NOW lifecycle.
 
 The biofix (start date) for the degree day model for NOW in Almonds is the date when you start to see a consistent increase of the presence of eggs on egg traps. More specifically:
 
@@ -39,9 +39,9 @@ In 2023, the biofix for Navel Orangeworm in Arbuckle CA (Colusa County) was repo
 
 **Your job is to use the degree day model described above to find the predicted date for the first generation of NOW moths in 2023.**
 
-## Getting Started: The Weather Data
+## Getting Started: Import Weather Data
 
-To help you get started, we've already downloaded daily weather data for the closest CIMIS station (in Williams, Station #250) for January - September 2023. These data are saved in a [CSV file](https://github.com/UCANR-IGIS/degday-shiny-s24/blob/main/exercises/data/williams-cimis-2023.csv) and can be imported into R as follows.
+To help you get started, we've already downloaded daily weather data for the closest CIMIS station in Williams (station #250) for January - September 2023. These data are saved in a [CSV file](https://github.com/UCANR-IGIS/degday-shiny-s24/blob/main/exercises/data/williams-cimis-2023.csv) and can be imported into R as follows.
 
 First load some packages:
 
@@ -90,9 +90,25 @@ ggplot(williams_tbl, aes(x = date, y = daily_min)) +
 
 \
 
-Date when the degree model predicts the first flight - the rest is up to you!!
+# Questions
+
+## Date of the First Flight
+
+Write code to find the date when the degree model predicts the first flight.
 
 ```{r}
 ## Your answer here
 
 ```
+
+\
+
+## Second Flight
+
+When does the model predict the 2nd generation of NOW emerged, assuming the generation time for the 2nd generation was 750 degree days after the first? (in general, the number degree days needed for eggs to reach maturity decrease after the first generation because there are more food resources for the moths)
+
+```{r}
+## Your answer here
+
+```
+

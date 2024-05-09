@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.4.553">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>Homework 1: First Flight of Navel Orangeworm</title>
+<title>Homework 1: Predicting Navel Orangeworm Generations</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -70,7 +70,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
 
 <main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
-<h1 class="title">Homework 1: First Flight of Navel Orangeworm</h1>
+<h1 class="title">Homework 1: Predicting Navel Orangeworm Generations</h1>
 </div>
 
 
@@ -86,10 +86,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header><section id="summary" class="level1" data-number="1"><h1 data-number="1">
 <span class="header-section-number">1</span> Summary</h1>
-<p>In this homework, you will find the date when a degree model predicts the emergence of adult Navel Orangeworm moths in Arbuckle, CA, during the 2023 growing season.</p>
+<p>In this assignment, you will find the date when a degree model predicts the emergence of adult Navel Orangeworm moths in Arbuckle, CA, during the 2023 growing season.</p>
 </section><section id="background" class="level1" data-number="2"><h1 data-number="2">
 <span class="header-section-number">2</span> Background</h1>
-<p>Navel Orangeworm (NOW) is a persistent pest for many California tree crops, including almond and pistachio. According to the UC IPM <a href="https://ipm.ucanr.edu/calludt.cgi/DDMODEL?MODEL=NOW">Degree Day model for NOW</a>, we can use degree days to predict when the “first flight” of adult NOWs will occur. Knowing this date helps growers plan IPM strategies such as mating disruption that are timed for specif phases of the NOW lifecycle.</p>
+<p>Navel Orangeworm (NOW) is a persistent pest for many California tree crops, including almond and pistachio. According to the UC IPM <a href="https://ipm.ucanr.edu/calludt.cgi/DDMODEL?MODEL=NOW">Degree Day model for NOW</a>, we can use degree days to predict when the “first flight” of adult NOWs will occur. Knowing this date helps growers plan IPM strategies such as mating disruption that are timed for specific phases of the NOW lifecycle.</p>
 <p>The biofix (start date) for the degree day model for NOW in Almonds is the date when you start to see a consistent increase of the presence of eggs on egg traps. More specifically:</p>
 <div class="blockquote">
 <p><em>“when at least 75% of the egg traps in a given location show increases in the number of eggs on two consecutive monitoring dates, the biofix is the first of those two dates”</em>. (<a href="https://ipm.ucanr.edu/calludt.cgi/DDMODEL?MODEL=NOW&amp;CROP=almonds">UC IPM</a>)</p>
@@ -114,9 +114,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="header-section-number">3</span> When Did the Model Predict NOW Adults in 2023?</h1>
 <p>In 2023, the biofix for Navel Orangeworm in Arbuckle CA (Colusa County) was reported to be <a href="https://www.sacvalleyorchards.com/almonds/insects-mites/navel-orangeworm-biofix-in-a-wet-spring/"><strong>April 22, 2023</strong></a>.</p>
 <p><strong>Your job is to use the degree day model described above to find the predicted date for the first generation of NOW moths in 2023.</strong></p>
-<section id="getting-started-the-weather-data" class="level2" data-number="3.1"><h2 data-number="3.1" class="anchored" data-anchor-id="getting-started-the-weather-data">
-<span class="header-section-number">3.1</span> Getting Started: The Weather Data</h2>
-<p>To help you get started, we’ve already downloaded daily weather data for the closest CIMIS station (in Williams, Station #250) for January - September 2023. These data are saved in a <a href="https://github.com/UCANR-IGIS/degday-shiny-s24/blob/main/exercises/data/williams-cimis-2023.csv">CSV file</a> and can be imported into R as follows.</p>
+<section id="getting-started-import-weather-data" class="level2" data-number="3.1"><h2 data-number="3.1" class="anchored" data-anchor-id="getting-started-import-weather-data">
+<span class="header-section-number">3.1</span> Getting Started: Import Weather Data</h2>
+<p>To help you get started, we’ve already downloaded daily weather data for the closest CIMIS station in Williams (station #250) for January - September 2023. These data are saved in a <a href="https://github.com/UCANR-IGIS/degday-shiny-s24/blob/main/exercises/data/williams-cimis-2023.csv">CSV file</a> and can be imported into R as follows.</p>
 <p>First load some packages:</p>
 <div class="cell">
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="op">{</span></span>
@@ -168,9 +168,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p><br></p>
-<p>Date when the degree model predicts the first flight - the rest is up to you!!</p>
+</section></section><section id="questions" class="level1" data-number="4"><h1 data-number="4">
+<span class="header-section-number">4</span> Questions</h1>
+<section id="date-of-the-first-flight" class="level2" data-number="4.1"><h2 data-number="4.1" class="anchored" data-anchor-id="date-of-the-first-flight">
+<span class="header-section-number">4.1</span> Date of the First Flight</h2>
+<p>Write code to find the date when the degree model predicts the first flight.</p>
 <div class="cell">
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## Your answer here</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><br></p>
+</section><section id="second-flight" class="level2" data-number="4.2"><h2 data-number="4.2" class="anchored" data-anchor-id="second-flight">
+<span class="header-section-number">4.2</span> Second Flight</h2>
+<p>When does the model predict the 2nd generation of NOW emerged, assuming the generation time for the 2nd generation was 750 degree days after the first? (in general, the number degree days needed for eggs to reach maturity decrease after the first generation because there are more food resources for the moths)</p>
+<div class="cell">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## Your answer here</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section></section></main><!-- /main column --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
