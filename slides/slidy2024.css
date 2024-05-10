@@ -162,8 +162,8 @@ div.rmethod > h1::before {
   margin-top:0.3em;
 }
 
-div.weatherapi > h1::before {
-  content: "Weather APIs:";
+div.weatherapi-stn > h1::before {
+  content: "Weather APIs: Station Data";
   color: #0080ff;
   display: block;
   font-weight: bold;
@@ -172,5 +172,14 @@ div.weatherapi > h1::before {
   margin-top:0.3em;
 }
 
+div.weatherapi-mod > h1::before {
+  content: "Weather APIs: Modelled Data";
+  color: #0080ff;
+  display: block;
+  font-weight: bold;
+  font-style:italic;
+  font-size:80%;
+  margin-top:0.3em;
+}
 
 

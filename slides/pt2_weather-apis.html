@@ -6,7 +6,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta http-equiv="Content-Style-Type" content="text/css" />
   <meta name="generator" content="pandoc" />
-  <meta name="author" content=" May 3, 2024 https://ucanr-igis.github.io/degday-shiny-s24/ " />
+  <meta name="author" content=" May 10, 2024 https://ucanr-igis.github.io/degday-shiny-s24/ " />
   <meta name="copyright" content="<a href='https://ucanr-igis.github.io/degday-shiny-s24/' style='color:#444;'>https://ucanr-igis.github.io/degday-shiny-s24/</a>"/>
   <title>Pt2 Weather APIs</title>
   <style type="text/css">
@@ -173,7 +173,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <h1 class="subtitle">Part 2. Weather APIs</h1>
   <p class="author">
 <img src='images/part1-cover-slide_740x300.png' style='width:740px; height:300px; margin-top:0.5em; margin-bottom:1em;'/><br/>May
-3,
+10,
 2024<br/><a href='https://ucanr-igis.github.io/degday-shiny-s24/' style='color:darkgreen; font-size:105%; font-family:monospace;'>https://ucanr-igis.github.io/degday-shiny-s24/
 </a>
   </p>
@@ -211,43 +211,150 @@ div.space_images {
 <p><br />
 </p>
 </div>
-<div id="weather-data" class="slide section level1">
-<h1>Weather Data</h1>
-<!------------------
-## In search of the perfect weather data source:
-
-unicorn graphic
-
------------------>
-<p>Desirable characteristics</p>
-<p>Location, location, location</p>
-<p>Close to the location of interest</p>
-<p>In a similar setting (e.g., in an orchard)</p>
-<p>Data Quality</p>
-<p>Station is maintained</p>
-<p>Has the right sensors</p>
-<p>Data quality</p>
-<p>Data access</p>
-<p>Preferred: Supported by an API</p>
-<p>always available</p>
-<p>fast</p>
-<p>someone has written an R package for it</p>
-<p>Secnd best: Files available for download</p>
-<p>Affordable</p>
+<div id="part-1-review" class="slide section level1">
+<h1>Part 1 Review</h1>
+<h2 id="key-concepts">Key concepts</h2>
+<div class="indented1">
+<p>Accumulated degree day models:</p>
 </div>
-<div id="fact-or-fiction" class="slide section level1 incremental">
-<h1 class="incremental">Fact or Fiction?</h1>
-<h2 id="all-weather-data-are-created-equal.">All weather data are
-created equal. <br/><br/></h2>
-<h2 id="hourly-data-is-better-than-daily-data.">Hourly data is better
-than daily data. <br/><br/></h2>
-<h2 id="closer-is-better.">Closer is better. <br/><br/></h2>
+<div class="indented2">
+<ul>
+<li>predict the development of plants and animals</li>
+<li>are widely used in crop management and research</li>
+<li>every model should specify:</li>
+</ul>
+<div class="compact">
+<ul>
+<li>what is being predicted</li>
+<li>when to start computing degree days (i.e., biofix)<br />
+</li>
+<li>what version of the degree day equation to use</li>
+<li>when the predicted event will occur</li>
+</ul>
+</div>
+</div>
+<p><br />
+</p>
+<h2 id="computing-degree-days-in-r">Computing degree days in R</h2>
+<div class="indented2">
+<ul>
+<li>involves a lot of data wrangling</li>
+<li>is a lot easier with <a
+href="https://ucanr-igis.github.io/degday/"><code>degday</code></a></li>
+</ul>
+</div>
+<p><br />
+</p>
 <h2
+id="options-for-presenting-the-results-of-a-degree-day-model-in-a-dst">Options
+for presenting the results of a degree day model in a DST</h2>
+<div class="indented2">
+<ul>
+<li>summary text<br />
+</li>
+<li>tables with conditional formatting<br />
+</li>
+<li>plots<br />
+</li>
+</ul>
+</div>
+<p><br />
+</p>
+</div>
+<div id="finding-the-perfect-weather-data" class="slide section level1">
+<h1>Finding the Perfect Weather Data</h1>
+<div class="centerme">
+<p><img src="images/unicorn_300x219x256.png" /></p>
+</div>
+<p><br />
+</p>
+<h2 id="location-location-location">Location, location, location</h2>
+<div class="compact">
+<ul>
+<li>closer is good<br />
+</li>
+<li>similar is good<br />
+</li>
+</ul>
+</div>
+<p><br />
+</p>
+<h2 id="quality-starts-with-hardware">Quality starts with hardware</h2>
+<div class="compact">
+<ul>
+<li>has the right sensors</li>
+<li>station is maintained</li>
+</ul>
+</div>
+<p><br />
+</p>
+<h2 id="data-access">Data access</h2>
+<div class="compact">
+<ul>
+<li>data available in near real time<br />
+</li>
+<li>reliable<br />
+</li>
+<li>files available</li>
+<li>supported by an API<br />
+</li>
+<li>R package available<br />
+</li>
+<li>QA/QC metrics</li>
+</ul>
+</div>
+<p><br />
+</p>
+<h2 id="sustainable">Sustainable</h2>
+<div class="compact">
+<ul>
+<li>affordable<br />
+</li>
+<li>tech support available</li>
+</ul>
+</div>
+<p><br />
+</p>
+</div>
+<div id="fact-or-fiction" class="slide section level1">
+<h1>Fact or Fiction?</h1>
+<h2 class="incremental" id="all-weather-data-are-created-equal.">All
+weather data are created equal.</h2>
+<p><br />
+</p>
+<h2 class="incremental"
+id="hourly-data-is-better-than-daily-data.">Hourly data is better than
+daily data.</h2>
+<p><br />
+</p>
+<h2 class="incremental" id="closer-is-better.">Closer is better.</h2>
+<p><br />
+</p>
+<h2 class="incremental"
 id="an-interpolated-value-at-the-farm-is-going-to-be-better-than-a-measured-value-if-the-station-is-far-away.">An
 interpolated value at the farm is going to be better than a measured
-value if the station is far away. <br/><br/></h2>
-<h2 id="free-weather-data-is-better.">Free weather data is better.
-<br/><br/></h2>
+value if the station is far away.</h2>
+<p><br />
+</p>
+<h2 class="incremental" id="free-weather-data-is-better.">Free weather
+data is better.</h2>
+<p><br />
+</p>
+</div>
+<div id="weather-data-for-degree-day-dsts" class="slide section level1">
+<h1>Weather Data for Degree Day DSTs</h1>
+<p>Typically degree day models requires <strong>daily temperature
+data</strong> for as many as <strong>3 time periods</strong>:</p>
+<div class="indented2">
+<ul>
+<li>recent past (i.e., since the biofix)<br />
+</li>
+<li>7-day forecast<br />
+</li>
+<li>rest of the season<br />
+</li>
+</ul>
+</div>
 </div>
 <div id="weather-data-sources" class="slide section level1">
 <h1>Weather Data Sources</h1>
@@ -261,8 +368,8 @@ Data Sources</a></p>
 <p><br />
 </p>
 </div>
-<div id="cimis" class="slide section level1 weatherapi">
-<h1 class="weatherapi">CIMIS</h1>
+<div id="cimis" class="slide section level1 weatherapi-stn">
+<h1 class="weatherapi-stn">CIMIS</h1>
 <p><a href="https://cimis.water.ca.gov/"
 class="uri">https://cimis.water.ca.gov/</a></p>
 <div class="compact">
@@ -306,8 +413,8 @@ style="border:1px solid grey;" /></a><br/> Active CIMIS Stations</p>
 <p><br />
 </p>
 </div>
-<div id="synoptic" class="slide section level1 weatherapi">
-<h1 class="weatherapi">Synoptic</h1>
+<div id="synoptic" class="slide section level1 weatherapi-stn">
+<h1 class="weatherapi-stn">Synoptic</h1>
 <p><a href="https://synopticdata.com/"
 class="uri">https://synopticdata.com/</a></p>
 <p>Public Benefit Corporation</p>
@@ -318,80 +425,6 @@ class="uri">https://synopticdata.com/</a></p>
 <p><a href="https://synopticdata.com/" target="_blank"
 rel="noopener"><img src="images/synoptic_logo_520x100.png" /></a></p>
 </div>
-<p><br />
-</p>
-</div>
-<div id="openmeteo" class="slide section level1 weatherapi">
-<h1 class="weatherapi">OpenMeteo</h1>
-<p><a href="https://open-meteo.com/"
-class="uri">https://open-meteo.com/</a></p>
-<h2 id="rest-endpoints">Rest EndPoints</h2>
-<div class="indented1">
-<h3 id="weather-forecast-api"><a
-href="https://open-meteo.com/en/docs">Weather Forecast API</a></h3>
-<div class="compact">
-<ul>
-<li>Forecasts for up to 16 days (default = 7)</li>
-<li>Hourly and daily data available</li>
-<li>Auto-select weather model for your region (default for USA is the
-NOAA GFS + HRRR)</li>
-</ul>
-</div>
-<h3 id="historic-weather-api"><a
-href="https://open-meteo.com/en/docs/historical-weather-api">Historic
-Weather API</a></h3>
-<div class="compact">
-<ul>
-<li>data back to 1940<br />
-</li>
-<li>~5-day delay in the data<br />
-</li>
-</ul>
-</div>
-<h3 id="other-apis">Other APIs</h3>
-<div class="compact">
-<ul>
-<li>Air Quality</li>
-<li>Marine Forecast</li>
-<li>Climate Change Forecast</li>
-<li>Geocode</li>
-<li>River Discharge</li>
-</ul>
-</div>
-</div>
-<p><br />
-</p>
-<h2 id="access">Access</h2>
-<div class="indented1">
-<p>No API key is required:</p>
-<div class="compact">
-<ul>
-<li>for non-commercial use<br />
-</li>
-<li>less than 10,000 daily API calls</li>
-</ul>
-</div>
-<p>R package: <code>openmeteo</code></p>
-</div>
-<p><!----- class = indented1 ----></p>
-<p><br />
-</p>
-</div>
-<div id="cal-adapt" class="slide section level1 weatherapi">
-<h1 class="weatherapi">Cal-Adapt</h1>
-<p><a href="https://cal-adapt.org/"
-class="uri">https://cal-adapt.org/</a></p>
-<p>Downscaled modeled climate data for western USA (1950 - 2099)</p>
-<p>Gridded observed data: Livneh and gridMet</p>
-<div class="centerme">
-<p><a href="https://ucanr-igis.github.io/caladaptr/" target="_blank"
-rel="noopener"><img
-src="./images/caladaptr-hexlogo_173x200.gif" /></a><br/><a
-href="https://ucanr-igis.github.io/caladaptr/"
-class="uri">https://ucanr-igis.github.io/caladaptr/</a></p>
-</div>
-<p><br />
-</p>
 </div>
 <div id="api-etiquette" class="slide section level1">
 <h1>API Etiquette</h1>
@@ -939,6 +972,25 @@ opposed to merely assigning it a different time zone) with
 <p><br />
 </p>
 </div>
+<div id="date-parts" class="slide section level1 rmethod">
+<h1 class="rmethod">Date Parts</h1>
+<h2 id="extracting-date-parts">Extracting Date Parts</h2>
+<div class="indented2 indented2r">
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a>st_patricks_noon_pdt_dt <span class="sc">|&gt;</span> lubridate<span class="sc">::</span><span class="fu">month</span>()</span>
+<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a>st_patricks_noon_pdt_dt <span class="sc">|&gt;</span> lubridate<span class="sc">::</span><span class="fu">day</span>()</span>
+<span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" tabindex="-1"></a>st_patricks_noon_pdt_dt <span class="sc">|&gt;</span> lubridate<span class="sc">::</span><span class="fu">year</span>()</span>
+<span id="cb19-6"><a href="#cb19-6" tabindex="-1"></a></span>
+<span id="cb19-7"><a href="#cb19-7" tabindex="-1"></a>st_patricks_noon_pdt_dt <span class="sc">|&gt;</span> lubridate<span class="sc">::</span><span class="fu">yday</span>()</span></code></pre></div>
+<pre><code>## [1] 3
+## [1] 17
+## [1] 2024
+## [1] 77</code></pre>
+</div>
+<p><br />
+</p>
+</div>
 <div id="api-requests" class="slide section level1">
 <h1>API Requests</h1>
 <div class="centerme">
@@ -947,6 +999,11 @@ opposed to merely assigning it a different time zone) with
 <p><br />
 </p>
 <h2 id="anatomy-of-an-api-request">Anatomy of an API Request</h2>
+<p>The information in an API request is added in different places.</p>
+<p><strong>You can’t do any of this with out reading the API
+documentation!</strong></p>
+<p><br />
+</p>
 <div
 style="display:flex; justify-content:flex-start; align-items:start;">
 <div>
@@ -954,6 +1011,30 @@ style="display:flex; justify-content:flex-start; align-items:start;">
 <div class="indented2">
 <p>ex.: <code>https://api.synopticdata.com/v2</code></p>
 </div>
+<p><br />
+</p>
+<h3 id="url-path">URL Path</h3>
+<div class="indented2">
+<ul>
+<li>often used to select the specific rest endpoint</li>
+<li>example:<br/><span style="font-family:monospace;"><a
+href="https://api.synopticdata.com/v2"
+class="uri">https://api.synopticdata.com/v2</a><span
+style="color:green; font-weight:bold;">/stations/timeseries</span></span></li>
+</ul>
+</div>
+<p><br />
+</p>
+<h3 id="query-parameters">Query Parameters</h3>
+<div class="compact">
+<ul>
+<li>main search parameters</li>
+<li>get appended to the base URL</li>
+<li>limited by the maximum length of a URL</li>
+</ul>
+</div>
+<p><br />
+</p>
 <h3 id="headers">Headers</h3>
 <div class="indented1">
 <p>Examples of header content:</p>
@@ -965,14 +1046,8 @@ style="display:flex; justify-content:flex-start; align-items:start;">
 </ul>
 </div>
 </div>
-<h3 id="query-parameters">Query Parameters</h3>
-<div class="compact">
-<ul>
-<li>main search parameters</li>
-<li>get appended to the base URL</li>
-<li>limited by the maximum length of a URL</li>
-</ul>
-</div>
+<p><br />
+</p>
 <h3 id="body">Body</h3>
 <div class="compact">
 <ul>
@@ -991,7 +1066,7 @@ it)</li>
 <!----- flex container ---->
 <p><br />
 </p>
-<p>Example of a URL with query parameters:</p>
+<p>Example of an API URL with query parameters:</p>
 <textarea rows="2" style="white-space: nowrap; overflow-y: hidden; padding:0.2em; width:90%; margin-left:2em;">
 https://api.synopticdata.com/v2/stations/timeseries?token=a2cxxxe862c14xxxx4xxxx5xxxxcxxxx&stid=CI152&vars=air_temp,evapotranspiration,precip_accum_one_hour,soil_temp&varsoperator=and&units=english&start=202312010800&end=202401010800&obtimezone=local
 </textarea>
@@ -1024,6 +1099,157 @@ rel="noopener"><strong><code>tibblify</code></strong></a></p>
 </div>
 </div>
 <!--- flex grid container --->
+</div>
+<div id="httr2" class="slide section level1 rmethod">
+<h1 class="rmethod"><code>httr2</code></h1>
+<p><code>httr2</code> provides functions for creating and sending API
+requests.</p>
+<p>Numerous other helper functions for authentication, feedback, network
+options, error handling, rate limiting, etc.</p>
+<h2 id="creating-a-request-object">Creating a request object</h2>
+<p>All the following functions accept a request object, add a piece to
+it, and return a request object.</p>
+<p>This means you can pipe them together to build your API request:</p>
+<div class="compact">
+<ul>
+<li><code>request()</code><br />
+</li>
+<li><code>req_url_path_append()</code></li>
+<li><code>req_url_query()</code><br />
+</li>
+<li><code>req_headers()</code><br />
+</li>
+<li><code>req_user_agent()</code></li>
+</ul>
+</div>
+<p><br />
+</p>
+<p>Example:</p>
+<div class="indented2 indented2r">
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="fu">library</span>(httr2)</span>
+<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a>sac_midcentury_req <span class="ot">&lt;-</span> <span class="fu">request</span>(<span class="st">&quot;https://api.cal-adapt.org/api/series&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb21-4"><a href="#cb21-4" tabindex="-1"></a>  <span class="fu">req_user_agent</span>(<span class="st">&quot;oski@berkeley.edu&quot;</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb21-5"><a href="#cb21-5" tabindex="-1"></a>  <span class="fu">req_url_path_append</span>(<span class="st">&quot;tasmax_year_MIROC5_rcp45/events&quot;</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb21-6"><a href="#cb21-6" tabindex="-1"></a>  <span class="fu">req_url_query</span>(<span class="at">g =</span> <span class="st">&quot;POINT (-121.4687 38.5938)&quot;</span>,</span>
+<span id="cb21-7"><a href="#cb21-7" tabindex="-1"></a>                <span class="at">start =</span> <span class="st">&quot;2040-01-01&quot;</span>, </span>
+<span id="cb21-8"><a href="#cb21-8" tabindex="-1"></a>                <span class="at">end =</span> <span class="st">&quot;2070-12-31&quot;</span>)</span>
+<span id="cb21-9"><a href="#cb21-9" tabindex="-1"></a></span>
+<span id="cb21-10"><a href="#cb21-10" tabindex="-1"></a>sac_midcentury_req</span></code></pre></div>
+<pre><code>## &lt;httr2_request&gt;</code></pre>
+<pre><code>## GET
+## https://api.cal-adapt.org/api/series/tasmax_year_MIROC5_rcp45/events?g=POINT%20%28-121.4687%2038.5938%29&amp;start=2040-01-01&amp;end=2070-12-31</code></pre>
+<pre><code>## Body: empty</code></pre>
+<pre><code>## Options:</code></pre>
+<pre><code>## • useragent: &#39;oski@berkeley.edu&#39;</code></pre>
+</div>
+<p><br />
+</p>
+<h2 id="sending-the-request">Sending the request</h2>
+<p>Before you send a request, it’s a good idea to do a dry run:</p>
+<div class="indented2 indented2r">
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a>sac_midcentury_req <span class="sc">|&gt;</span> <span class="fu">req_dry_run</span>()</span></code></pre></div>
+<pre><code>## GET /api/series/tasmax_year_MIROC5_rcp45/events?g=POINT%20%28-121.4687%2038.5938%29&amp;start=2040-01-01&amp;end=2070-12-31 HTTP/1.1
+## Host: api.cal-adapt.org
+## User-Agent: oski@berkeley.edu
+## Accept: */*
+## Accept-Encoding: deflate, gzip</code></pre>
+</div>
+<p><br />
+</p>
+<p>If everything looks good, send it:</p>
+<div class="indented2 indented2r">
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" tabindex="-1"></a>sac_midcentury_resp <span class="ot">&lt;-</span> sac_midcentury_req <span class="sc">|&gt;</span> </span>
+<span id="cb29-2"><a href="#cb29-2" tabindex="-1"></a>  <span class="fu">req_perform</span>()</span></code></pre></div>
+</div>
+<p><br />
+</p>
+<p><strong>Note:</strong> At this point you may need to tell your
+Firewall to let RStudio / R access the internet</p>
+<p><br />
+</p>
+<h2 id="inspect-the-response">Inspect the response</h2>
+<div class="indented2 indented2r">
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a>sac_midcentury_resp</span></code></pre></div>
+<pre><code>## &lt;httr2_response&gt;</code></pre>
+<pre><code>## GET
+## https://api.cal-adapt.org/api/series/tasmax_year_MIROC5_rcp45/events/?g=POINT%20%28-121.4687%2038.5938%29&amp;start=2040-01-01&amp;end=2070-12-31</code></pre>
+<pre><code>## Status: 200 OK</code></pre>
+<pre><code>## Content-Type: application/json</code></pre>
+<pre><code>## Body: In memory (1223 bytes)</code></pre>
+</div>
+<p><br />
+</p>
+</div>
+<div id="parsing-the-response" class="slide section level1 rmethod">
+<h1 class="rmethod">Parsing the Response</h1>
+<p>Check the status:</p>
+<div class="indented2 indented2r">
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" tabindex="-1"></a>sac_midcentury_resp <span class="sc">|&gt;</span> <span class="fu">resp_status</span>()</span>
+<span id="cb36-2"><a href="#cb36-2" tabindex="-1"></a>sac_midcentury_resp <span class="sc">|&gt;</span> <span class="fu">resp_status_desc</span>()</span></code></pre></div>
+<pre><code>## [1] 200
+## [1] &quot;OK&quot;</code></pre>
+</div>
+<p><br />
+</p>
+<p>View all headers:</p>
+<div class="indented2 indented2r">
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" tabindex="-1"></a>sac_midcentury_resp <span class="sc">|&gt;</span> <span class="fu">resp_headers</span>()</span></code></pre></div>
+<pre><code>## &lt;httr2_headers&gt;</code></pre>
+<pre><code>## Server: nginx
+## Date: Fri, 10 May 2024 15:52:18 GMT
+## Content-Type: application/json; charset=utf-8
+## Transfer-Encoding: chunked
+## Connection: keep-alive
+## Vary: Accept-Encoding
+## Vary: Accept
+## Allow: GET, POST, HEAD, OPTIONS
+## X-Frame-Options: SAMEORIGIN
+## Expires: Sun, 09 Jun 2024 13:41:19 GMT
+## Cache-Control: max-age=2592000
+## Access-Control-Allow-Origin: *
+## Access-Control-Allow-Methods: GET, POST, OPTIONS
+## Access-Control-Allow-Headers: DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Location,X-Request-URL
+## Access-Control-Expose-Headers: Cache-Control,Content-Type,Content-Language,Expires,Last-Modified,Pragma,Location,X-Request-URL
+## Content-Encoding: gzip</code></pre>
+</div>
+<p><br />
+</p>
+<p>Extract the body as a list:</p>
+<div class="indented2 indented2r">
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" tabindex="-1"></a>sac_midcentury_lst <span class="ot">&lt;-</span> sac_midcentury_resp <span class="sc">|&gt;</span> <span class="fu">resp_body_json</span>()</span>
+<span id="cb41-2"><a href="#cb41-2" tabindex="-1"></a></span>
+<span id="cb41-3"><a href="#cb41-3" tabindex="-1"></a><span class="fu">str</span>(sac_midcentury_lst, <span class="dv">1</span>)</span>
+<span id="cb41-4"><a href="#cb41-4" tabindex="-1"></a><span class="do">## View(sac_midcentury_lst)</span></span></code></pre></div>
+<pre><code>## List of 3
+##  $ name : chr &quot;tasmax_year_MIROC5_rcp45&quot;
+##  $ index:List of 31
+##  $ data :List of 31</code></pre>
+</div>
+<p><br />
+</p>
+<p>Convert the list to a data frame:</p>
+<div class="indented2 indented2r">
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" tabindex="-1"></a>sac_midcentury_tbl <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb43-2"><a href="#cb43-2" tabindex="-1"></a>  <span class="at">slug =</span> <span class="st">&quot;tasmax_year_MIROC5_rcp45&quot;</span>,</span>
+<span id="cb43-3"><a href="#cb43-3" tabindex="-1"></a>  <span class="at">var =</span> <span class="st">&quot;tasmax&quot;</span>,</span>
+<span id="cb43-4"><a href="#cb43-4" tabindex="-1"></a>  <span class="at">gcm =</span> <span class="st">&quot;MIROC5&quot;</span>,</span>
+<span id="cb43-5"><a href="#cb43-5" tabindex="-1"></a>  <span class="at">scenario =</span> <span class="st">&quot;rcp45&quot;</span>,</span>
+<span id="cb43-6"><a href="#cb43-6" tabindex="-1"></a>  <span class="at">year =</span> sac_midcentury_lst<span class="sc">$</span>index <span class="sc">|&gt;</span> <span class="fu">unlist</span>() <span class="sc">|&gt;</span> <span class="fu">ymd_hms</span>() <span class="sc">|&gt;</span> <span class="fu">year</span>(),</span>
+<span id="cb43-7"><a href="#cb43-7" tabindex="-1"></a>  <span class="at">tasmax_c =</span> (sac_midcentury_lst<span class="sc">$</span>data <span class="sc">|&gt;</span> <span class="fu">unlist</span>()) <span class="sc">-</span> <span class="fl">273.15</span></span>
+<span id="cb43-8"><a href="#cb43-8" tabindex="-1"></a>)</span>
+<span id="cb43-9"><a href="#cb43-9" tabindex="-1"></a></span>
+<span id="cb43-10"><a href="#cb43-10" tabindex="-1"></a><span class="fu">head</span>(sac_midcentury_tbl)</span></code></pre></div>
+<pre><code>## # A tibble: 6 × 6
+##   slug                     var    gcm    scenario  year tasmax_c
+##   &lt;chr&gt;                    &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt;    &lt;dbl&gt;    &lt;dbl&gt;
+## 1 tasmax_year_MIROC5_rcp45 tasmax MIROC5 rcp45     2040     25.3
+## 2 tasmax_year_MIROC5_rcp45 tasmax MIROC5 rcp45     2041     26.3
+## 3 tasmax_year_MIROC5_rcp45 tasmax MIROC5 rcp45     2042     26.4
+## 4 tasmax_year_MIROC5_rcp45 tasmax MIROC5 rcp45     2043     24.4
+## 5 tasmax_year_MIROC5_rcp45 tasmax MIROC5 rcp45     2044     24.7
+## 6 tasmax_year_MIROC5_rcp45 tasmax MIROC5 rcp45     2045     26.4</code></pre>
+</div>
 <!--------------------------
 ## httr2
 
@@ -1036,43 +1262,98 @@ Makes it easy to
 
 ## Anatomy of an API Response
 
-order of the parameters usually doesn't matter
+
 
 --------------------->
 </div>
 <div id="notebook-time" class="slide section level1">
-<h1>Notebook Time</h1>
+<h1>Notebook Time!</h1>
+<p><br />
+</p>
 </div>
-<div id="date-parts" class="slide section level1 rmethod">
-<h1 class="rmethod">Date Parts</h1>
-<h2 id="extracting-date-parts">Extracting Date Parts</h2>
-<div class="indented2 indented2r">
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a>st_patricks_noon_pdt_dt <span class="sc">|&gt;</span> lubridate<span class="sc">::</span><span class="fu">month</span>()</span>
-<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a></span>
-<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a>st_patricks_noon_pdt_dt <span class="sc">|&gt;</span> lubridate<span class="sc">::</span><span class="fu">day</span>()</span>
-<span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a></span>
-<span id="cb19-5"><a href="#cb19-5" tabindex="-1"></a>st_patricks_noon_pdt_dt <span class="sc">|&gt;</span> lubridate<span class="sc">::</span><span class="fu">year</span>()</span>
-<span id="cb19-6"><a href="#cb19-6" tabindex="-1"></a></span>
-<span id="cb19-7"><a href="#cb19-7" tabindex="-1"></a>st_patricks_noon_pdt_dt <span class="sc">|&gt;</span> lubridate<span class="sc">::</span><span class="fu">yday</span>()</span></code></pre></div>
-<pre><code>## [1] 3
-## [1] 17
-## [1] 2024
-## [1] 77</code></pre>
+<div id="openmeteo" class="slide section level1 weatherapi-mod">
+<h1 class="weatherapi-mod">OpenMeteo</h1>
+<p><a href="https://open-meteo.com/"
+class="uri">https://open-meteo.com/</a></p>
+<h2 id="rest-endpoints">Rest EndPoints</h2>
+<div class="indented1">
+<h3 id="weather-forecast-api"><a
+href="https://open-meteo.com/en/docs">Weather Forecast API</a></h3>
+<div class="compact">
+<ul>
+<li>Forecasts for up to 16 days (default = 7)</li>
+<li>Hourly and daily data available</li>
+<li>Auto-select weather model for your region (default for USA is the
+NOAA GFS + HRRR)</li>
+</ul>
+</div>
+<h3 id="historic-weather-api"><a
+href="https://open-meteo.com/en/docs/historical-weather-api">Historic
+Weather API</a></h3>
+<div class="compact">
+<ul>
+<li>data back to 1940<br />
+</li>
+<li>~5-day delay in the data<br />
+</li>
+</ul>
+</div>
+<h3 id="other-apis">Other APIs</h3>
+<div class="compact">
+<ul>
+<li>Air Quality</li>
+<li>Marine Forecast</li>
+<li>Climate Change Forecast</li>
+<li>Geocode</li>
+<li>River Discharge</li>
+</ul>
+</div>
+</div>
+<p><br />
+</p>
+<h2 id="access">Access</h2>
+<div class="indented1">
+<p>No API key is required:</p>
+<div class="compact">
+<ul>
+<li>for non-commercial use<br />
+</li>
+<li>less than 10,000 daily API calls</li>
+</ul>
+</div>
+<p>R package: <code>openmeteo</code></p>
+</div>
+<p><!----- class = indented1 ----></p>
+<p><br />
+</p>
+</div>
+<div id="cal-adapt" class="slide section level1 weatherapi-mod">
+<h1 class="weatherapi-mod">Cal-Adapt</h1>
+<p><a href="https://cal-adapt.org/"
+class="uri">https://cal-adapt.org/</a></p>
+<p>Downscaled modeled climate data for western USA (1950 - 2099)</p>
+<p>Gridded observed data: Livneh and gridMet</p>
+<div class="centerme">
+<p><a href="https://ucanr-igis.github.io/caladaptr/" target="_blank"
+rel="noopener"><img
+src="./images/caladaptr-hexlogo_173x200.gif" /></a><br/><a
+href="https://ucanr-igis.github.io/caladaptr/"
+class="uri">https://ucanr-igis.github.io/caladaptr/</a></p>
 </div>
 <p><br />
 </p>
 </div>
-<div id="filtering-dates" class="slide section level1 rmethod">
-<h1 class="rmethod">Filtering Dates</h1>
+<div id="time-filtering" class="slide section level1 rmethod">
+<h1 class="rmethod">Time Filtering</h1>
 <h2 id="filter-based-on-a-date">Filter based on a date</h2>
 <p>First, make sure the date column is actually contains Date objects
 (or <code>POSIXct</code> for date-time values), as opposed to text:</p>
 <div class="indented2 indented2r">
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a>espartoa_tbl <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;extdata/espartoa-weather-2020.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;degday&quot;</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a>  <span class="fu">read.csv</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">as.Date</span>(date)) </span>
-<span id="cb21-4"><a href="#cb21-4" tabindex="-1"></a></span>
-<span id="cb21-5"><a href="#cb21-5" tabindex="-1"></a>espartoa_tbl <span class="sc">|&gt;</span> <span class="fu">head</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" tabindex="-1"></a>espartoa_tbl <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;extdata/espartoa-weather-2020.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;degday&quot;</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb45-2"><a href="#cb45-2" tabindex="-1"></a>  <span class="fu">read.csv</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb45-3"><a href="#cb45-3" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">as.Date</span>(date)) </span>
+<span id="cb45-4"><a href="#cb45-4" tabindex="-1"></a></span>
+<span id="cb45-5"><a href="#cb45-5" tabindex="-1"></a>espartoa_tbl <span class="sc">|&gt;</span> <span class="fu">head</span>()</span></code></pre></div>
 <pre><code>##     station       date tmin tmax
 ## 1 Esparto.A 2020-01-01   38   55
 ## 2 Esparto.A 2020-01-02   36   67
@@ -1080,7 +1361,7 @@ order of the parameters usually doesn't matter
 ## 4 Esparto.A 2020-01-04   37   59
 ## 5 Esparto.A 2020-01-05   38   63
 ## 6 Esparto.A 2020-01-06   36   58</code></pre>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="fu">class</span>(espartoa_tbl<span class="sc">$</span>date)</span></code></pre></div>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" tabindex="-1"></a><span class="fu">class</span>(espartoa_tbl<span class="sc">$</span>date)</span></code></pre></div>
 <pre><code>## [1] &quot;Date&quot;</code></pre>
 </div>
 <p><br />
@@ -1091,7 +1372,7 @@ also dates.</p>
 <p>For example, we can extract the values between St Patrick’s Day and
 Tax Day (April 15) in 2020:</p>
 <div class="indented2 indented2r">
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a>espartoa_tbl <span class="sc">|&gt;</span> <span class="fu">filter</span>(date <span class="sc">&gt;=</span> <span class="fu">as.Date</span>(<span class="st">&quot;2020-03-17&quot;</span>), date <span class="sc">&lt;=</span> <span class="fu">as.Date</span>(<span class="st">&quot;2020-04-15&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" tabindex="-1"></a>espartoa_tbl <span class="sc">|&gt;</span> <span class="fu">filter</span>(date <span class="sc">&gt;=</span> <span class="fu">as.Date</span>(<span class="st">&quot;2020-03-17&quot;</span>), date <span class="sc">&lt;=</span> <span class="fu">as.Date</span>(<span class="st">&quot;2020-04-15&quot;</span>))</span></code></pre></div>
 <pre><code>##      station       date tmin tmax
 ## 1  Esparto.A 2020-03-17   41   55
 ## 2  Esparto.A 2020-03-18   43   53
@@ -1129,8 +1410,8 @@ Tax Day (April 15) in 2020:</p>
 <h2 id="filtering-with-date-parts">Filtering with Date Parts</h2>
 <p>Extract the in June, July, and August:</p>
 <div class="indented2 indented2r">
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a>espartoa_tbl <span class="sc">|&gt;</span> </span>
-<span id="cb27-2"><a href="#cb27-2" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">month</span>(date) <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">6</span>,<span class="dv">7</span>,<span class="dv">8</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" tabindex="-1"></a>espartoa_tbl <span class="sc">|&gt;</span> </span>
+<span id="cb51-2"><a href="#cb51-2" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">month</span>(date) <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">6</span>,<span class="dv">7</span>,<span class="dv">8</span>))</span></code></pre></div>
 <pre><code>##      station       date tmin tmax
 ## 1  Esparto.A 2020-06-01   60   86
 ## 2  Esparto.A 2020-06-02   60   95
@@ -1236,10 +1517,10 @@ parts</h1>
 followed by <code>summarise()</code>.</p>
 <p>FOr example to resample by month:</p>
 <div class="indented2 indented2r">
-<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" tabindex="-1"></a>espartoa_tbl <span class="sc">|&gt;</span> </span>
-<span id="cb29-2"><a href="#cb29-2" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">month =</span> <span class="fu">month</span>(date)) <span class="sc">|&gt;</span> </span>
-<span id="cb29-3"><a href="#cb29-3" tabindex="-1"></a>  <span class="fu">group_by</span>(month) <span class="sc">|&gt;</span> </span>
-<span id="cb29-4"><a href="#cb29-4" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">tmin_mean =</span> <span class="fu">mean</span>(tmin), <span class="at">tmax_mean =</span> <span class="fu">mean</span>(tmax), <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" tabindex="-1"></a>espartoa_tbl <span class="sc">|&gt;</span> </span>
+<span id="cb53-2"><a href="#cb53-2" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">month =</span> <span class="fu">month</span>(date)) <span class="sc">|&gt;</span> </span>
+<span id="cb53-3"><a href="#cb53-3" tabindex="-1"></a>  <span class="fu">group_by</span>(month) <span class="sc">|&gt;</span> </span>
+<span id="cb53-4"><a href="#cb53-4" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">tmin_mean =</span> <span class="fu">mean</span>(tmin), <span class="at">tmax_mean =</span> <span class="fu">mean</span>(tmax), <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span>)</span></code></pre></div>
 <pre><code>## # A tibble: 12 × 3
 ##    month tmin_mean tmax_mean
 ##    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
@@ -1328,7 +1609,7 @@ Creating tibbles with code
 ------>
 </div>
 <div id="notebook-time-1" class="slide section level1">
-<h1>Notebook Time</h1>
+<h1>Notebook Time!</h1>
 </div>
 <div id="end" class="slide section level1">
 <h1>End!</h1>
