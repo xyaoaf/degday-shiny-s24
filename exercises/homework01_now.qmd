@@ -93,7 +93,7 @@ ggplot(williams_tbl, aes(x = date, y = daily_min)) +
 
 ## Date of the First Flight
 
-Write code to find the date when the degree model predicts the first flight. You can assume that you should start counting degree days the day after the biofix event.
+Write code to find the date when the degree model predicts the first flight. You can assume that you should start counting degree days the day *after* the biofix event.
 
 <details style="margin:0 2em;; border:none; padding:0.5em;">
 
@@ -105,7 +105,7 @@ Hint
 
 See the Exercise we did in Part 1.
 
-If you're not sure how to filter a data frame in R by a date column, you could ask Google or ChatGPT a question like, *"How do I filter a data frame in R by a date column?"*
+If you're not sure how to filter a data frame in R by a date column, you could ask Google or [ChatGPT](https://chatgpt.com/) a question like, *"How do I filter a data frame in R by a date column?"*
 
 </details>
 

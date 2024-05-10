@@ -1,0 +1,1348 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="author" content=" May 3, 2024 https://ucanr-igis.github.io/degday-shiny-s24/ " />
+  <meta name="copyright" content="<a href='https://ucanr-igis.github.io/degday-shiny-s24/' style='color:#444;'>https://ucanr-igis.github.io/degday-shiny-s24/</a>"/>
+  <title>Pt2 Weather APIs</title>
+  <style type="text/css">
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+            pre > code.sourceCode { white-space: pre; position: relative; }
+            pre > code.sourceCode > span { line-height: 1.25; }
+            pre > code.sourceCode > span:empty { height: 1.2em; }
+            .sourceCode { overflow: visible; }
+            code.sourceCode > span { color: inherit; text-decoration: inherit; }
+            div.sourceCode { margin: 1em 0; }
+            pre.sourceCode { margin: 0; }
+            @media screen {
+            div.sourceCode { overflow: auto; }
+            }
+            @media print {
+            pre > code.sourceCode { white-space: pre-wrap; }
+            pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+            }
+            pre.numberSource code
+              { counter-reset: source-line 0; }
+            pre.numberSource code > span
+              { position: relative; left: -4em; counter-increment: source-line; }
+            pre.numberSource code > span > a:first-child::before
+              { content: counter(source-line);
+                position: relative; left: -1em; text-align: right; vertical-align: baseline;
+                border: none; display: inline-block;
+                -webkit-touch-callout: none; -webkit-user-select: none;
+                -khtml-user-select: none; -moz-user-select: none;
+                -ms-user-select: none; user-select: none;
+                padding: 0 4px; width: 4em;
+                color: #aaaaaa;
+              }
+            pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+            div.sourceCode
+              {   }
+            @media screen {
+            pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+            }
+            code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+            code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+            code span.at { color: #7d9029; } /* Attribute */
+            code span.bn { color: #40a070; } /* BaseN */
+            code span.bu { color: #008000; } /* BuiltIn */
+            code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+            code span.ch { color: #4070a0; } /* Char */
+            code span.cn { color: #880000; } /* Constant */
+            code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+            code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+            code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+            code span.dt { color: #902000; } /* DataType */
+            code span.dv { color: #40a070; } /* DecVal */
+            code span.er { color: #ff0000; font-weight: bold; } /* Error */
+            code span.ex { } /* Extension */
+            code span.fl { color: #40a070; } /* Float */
+            code span.fu { color: #06287e; } /* Function */
+            code span.im { color: #008000; font-weight: bold; } /* Import */
+            code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+            code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+            code span.op { color: #666666; } /* Operator */
+            code span.ot { color: #007020; } /* Other */
+            code span.pp { color: #bc7a00; } /* Preprocessor */
+            code span.sc { color: #4070a0; } /* SpecialChar */
+            code span.ss { color: #bb6688; } /* SpecialString */
+            code span.st { color: #4070a0; } /* String */
+            code span.va { color: #19177c; } /* Variable */
+            code span.vs { color: #4070a0; } /* VerbatimString */
+            code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+          </style>
+  <style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="./images/favicon-16x16.png">
+  <meta name="msapplication-TileColor" content="#da532c">
+  <meta name="theme-color" content="#ffffff">
+
+  <script language="javascript" type="text/javascript">w3c_slidy.mouse_click_enabled = false;</script>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-41HMZ3JJJ6"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-41HMZ3JJJ6');
+  </script>
+  <script src="lib/header-attrs-2.26/header-attrs.js"></script>
+  <link href="lib/slidy-2/styles/slidy.css" rel="stylesheet" />
+  <script src="lib/slidy-2/scripts/slidy.js"></script>
+  <script src="lib/slidy_shiny-1/slidy_shiny.js"></script>
+  <link rel="stylesheet" type="text/css" media="screen, projection, print"
+   href="slidy2024.css" />
+</head>
+<body>
+<div class="slide titlepage">
+  <h1 class="title">Build a Degree Day Decision Support Tool in R</h1>
+  <h1 class="subtitle">Part 2. Weather APIs</h1>
+  <p class="author">
+<img src='images/part1-cover-slide_740x300.png' style='width:740px; height:300px; margin-top:0.5em; margin-bottom:1em;'/><br/>May
+3,
+2024<br/><a href='https://ucanr-igis.github.io/degday-shiny-s24/' style='color:darkgreen; font-size:105%; font-family:monospace;'>https://ucanr-igis.github.io/degday-shiny-s24/
+</a>
+  </p>
+  <p class="date"><a ref='https://igis.ucanr.edu/'><img src='images/igis-logo_550x58x256.png' style='margin-top:1.5em;'/></a></p>
+</div>
+<div id="start-recording" class="slide section level1 hideme">
+<h1 class="hideme">Start Recording</h1>
+<script>
+w3c_slidy.mouse_click_enabled = false;
+</script>
+<p><br />
+</p>
+<p><br />
+</p>
+<p><img src="images/postit_bg-trans_with-note_320x320.png"
+style="display:block; margin:1em auto; border:none;" /></p>
+<style type="text/css">
+p.date {
+  text-align:left;
+}
+.grayme {
+  color:#888;
+}
+div.hideme > h1 {
+  display: none;
+}
+h3 {
+  font-weight: normal;
+  font-style: italic;
+}
+div.space_images {
+  max-width:900px;
+}
+</style>
+<p><br />
+</p>
+</div>
+<div id="weather-data" class="slide section level1">
+<h1>Weather Data</h1>
+<!------------------
+## In search of the perfect weather data source:
+
+unicorn graphic
+
+----------------->
+<p>Desirable characteristics</p>
+<p>Location, location, location</p>
+<p>Close to the location of interest</p>
+<p>In a similar setting (e.g., in an orchard)</p>
+<p>Data Quality</p>
+<p>Station is maintained</p>
+<p>Has the right sensors</p>
+<p>Data quality</p>
+<p>Data access</p>
+<p>Preferred: Supported by an API</p>
+<p>always available</p>
+<p>fast</p>
+<p>someone has written an R package for it</p>
+<p>Secnd best: Files available for download</p>
+<p>Affordable</p>
+</div>
+<div id="fact-or-fiction" class="slide section level1 incremental">
+<h1 class="incremental">Fact or Fiction?</h1>
+<h2 id="all-weather-data-are-created-equal.">All weather data are
+created equal. <br/><br/></h2>
+<h2 id="hourly-data-is-better-than-daily-data.">Hourly data is better
+than daily data. <br/><br/></h2>
+<h2 id="closer-is-better.">Closer is better. <br/><br/></h2>
+<h2
+id="an-interpolated-value-at-the-farm-is-going-to-be-better-than-a-measured-value-if-the-station-is-far-away.">An
+interpolated value at the farm is going to be better than a measured
+value if the station is far away. <br/><br/></h2>
+<h2 id="free-weather-data-is-better.">Free weather data is better.
+<br/><br/></h2>
+</div>
+<div id="weather-data-sources" class="slide section level1">
+<h1>Weather Data Sources</h1>
+<center>
+<p>Google Sheet: <a
+href="https://docs.google.com/spreadsheets/d/1VOFa5CRDFhJsrHGsIc79ZXMXIpVbiqqDYldGUJBFbeM/edit?usp=sharing">Weather
+Data Sources</a></p>
+<iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTXQUCVTe3-5jaATQEjjDjyMfAxipIzyNq2DcxUVwsWrEIrKeBpxB-C-xDtqyxT-6z--Cz_ReANZqfv/pubhtml?widget=true&amp;headers=false" width="1200" height="600">
+</iframe>
+</center>
+<p><br />
+</p>
+</div>
+<div id="cimis" class="slide section level1 weatherapi">
+<h1 class="weatherapi">CIMIS</h1>
+<p><a href="https://cimis.water.ca.gov/"
+class="uri">https://cimis.water.ca.gov/</a></p>
+<div class="compact">
+<ul>
+<li>network of agricultural weather stations in California<br />
+</li>
+<li>~150 active stations in agricultural areas<br />
+</li>
+<li>managed by CA Dept of Water Resources<br />
+</li>
+<li>stations are placed on ‘well watered grass’<br />
+</li>
+<li>modeled reference evapotranspiration<br />
+</li>
+<li>data access:</li>
+</ul>
+<div style="margin-left:3em;">
+<ul>
+<li>web interface<br />
+</li>
+<li>CSV files<br />
+</li>
+<li>API (getting a make over in 2024)<br />
+</li>
+<li>FTP server<br />
+</li>
+<li>R package: cimir</li>
+</ul>
+</div>
+<ul>
+<li>Interpolated product: Spatial CIMIS (files available via FTP)</li>
+</ul>
+</div>
+<p><br />
+</p>
+<div class="centerme">
+<p><a href="https://cimis.water.ca.gov/stations.aspx" target="_blank"
+rel="noopener"><img src="images/cimis-stations_395x360.png"
+style="border:1px solid grey;" /></a><br/> Active CIMIS Stations</p>
+</div>
+<p><br />
+</p>
+</div>
+<div id="synoptic" class="slide section level1 weatherapi">
+<h1 class="weatherapi">Synoptic</h1>
+<p><a href="https://synopticdata.com/"
+class="uri">https://synopticdata.com/</a></p>
+<p>Public Benefit Corporation</p>
+<p>Aggregator of weather station data</p>
+<p>&gt; 120,000 stations globally</p>
+<p>modern API (token required)</p>
+<div class="centerme">
+<p><a href="https://synopticdata.com/" target="_blank"
+rel="noopener"><img src="images/synoptic_logo_520x100.png" /></a></p>
+</div>
+<p><br />
+</p>
+</div>
+<div id="openmeteo" class="slide section level1 weatherapi">
+<h1 class="weatherapi">OpenMeteo</h1>
+<p><a href="https://open-meteo.com/"
+class="uri">https://open-meteo.com/</a></p>
+<h2 id="rest-endpoints">Rest EndPoints</h2>
+<div class="indented1">
+<h3 id="weather-forecast-api"><a
+href="https://open-meteo.com/en/docs">Weather Forecast API</a></h3>
+<div class="compact">
+<ul>
+<li>Forecasts for up to 16 days (default = 7)</li>
+<li>Hourly and daily data available</li>
+<li>Auto-select weather model for your region (default for USA is the
+NOAA GFS + HRRR)</li>
+</ul>
+</div>
+<h3 id="historic-weather-api"><a
+href="https://open-meteo.com/en/docs/historical-weather-api">Historic
+Weather API</a></h3>
+<div class="compact">
+<ul>
+<li>data back to 1940<br />
+</li>
+<li>~5-day delay in the data<br />
+</li>
+</ul>
+</div>
+<h3 id="other-apis">Other APIs</h3>
+<div class="compact">
+<ul>
+<li>Air Quality</li>
+<li>Marine Forecast</li>
+<li>Climate Change Forecast</li>
+<li>Geocode</li>
+<li>River Discharge</li>
+</ul>
+</div>
+</div>
+<p><br />
+</p>
+<h2 id="access">Access</h2>
+<div class="indented1">
+<p>No API key is required:</p>
+<div class="compact">
+<ul>
+<li>for non-commercial use<br />
+</li>
+<li>less than 10,000 daily API calls</li>
+</ul>
+</div>
+<p>R package: <code>openmeteo</code></p>
+</div>
+<p><!----- class = indented1 ----></p>
+<p><br />
+</p>
+</div>
+<div id="cal-adapt" class="slide section level1 weatherapi">
+<h1 class="weatherapi">Cal-Adapt</h1>
+<p><a href="https://cal-adapt.org/"
+class="uri">https://cal-adapt.org/</a></p>
+<p>Downscaled modeled climate data for western USA (1950 - 2099)</p>
+<p>Gridded observed data: Livneh and gridMet</p>
+<div class="centerme">
+<p><a href="https://ucanr-igis.github.io/caladaptr/" target="_blank"
+rel="noopener"><img
+src="./images/caladaptr-hexlogo_173x200.gif" /></a><br/><a
+href="https://ucanr-igis.github.io/caladaptr/"
+class="uri">https://ucanr-igis.github.io/caladaptr/</a></p>
+</div>
+<p><br />
+</p>
+</div>
+<div id="api-etiquette" class="slide section level1">
+<h1>API Etiquette</h1>
+<p>APIs are <strong>common pool resources!</strong> Everybody benefits
+when we all follow a few best practices.</p>
+<p><br />
+</p>
+<div class="centerme">
+<p><img src="images/hopland-sheep_650x332_q10.jpg" /></p>
+</div>
+<style type="text/css">
+ol.dramatic > li {
+  font-weight:bold;
+  color:#666;
+  font-family: 'Arial Black', 'Arial Bold', Gadget, sans-serif;
+  font-size:110%;
+  margin-bottom:1.5em;
+}
+
+</style>
+<p><br />
+</p>
+<h2 id="top-ten-best-practices-when-calling-apis">Top Ten Best Practices
+When Calling APIs</h2>
+<ol reversed class="incremental dramatic" style="margin-left:3em;">
+<li>
+Don’t request variables you don’t need.
+</li>
+<li>
+Don’t request dates you don’t need.
+</li>
+<li>
+Use the spatial and temporal aggregation functions provided by the API
+if available.
+</li>
+<li>
+Break large requests into smaller pieces.
+</li>
+<li>
+Put your email address or URL of your app as the <code>user-agent</code>
+in the header of your request.
+</li>
+<li>
+Don’t request the same data multiple times (i.e. <strong>cache</strong>
+the responses to your requests).
+</li>
+<li>
+Throttle yourself with large requests (e.g., insert a 10-second pause
+between calls).
+</li>
+<li>
+Schedule large requests off-hours.
+</li>
+<li>
+If you need a massive amount of data, there are almost always better
+ways. Just ask!
+</li>
+<li>
+Read the docs!
+</li>
+</ol>
+<p><br />
+</p>
+</div>
+<div id="managing-your-api-key" class="slide section level1 rmethod">
+<h1 class="rmethod">Managing your API Key</h1>
+<h2 id="protect-your-token-from-escape">Protect Your Token from
+Escape</h2>
+<div class="compact">
+<ul>
+<li>do not enter your token in your code</li>
+</ul>
+<div style="margin:0 4em;">
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="do">## Bad idea:</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>my_token <span class="ot">&lt;-</span> <span class="st">&quot;414c045492a32hhd9994xxxxd8a64df&quot;</span></span></code></pre></div>
+</div>
+<ul>
+<li>do not check-in files with your token into version control (i.e,
+GitHub)</li>
+</ul>
+</div>
+<p><br />
+</p>
+<h2 id="better-options-for-reading-your-token">Better options for
+reading your token</h2>
+<h3 id="environment-variable-recommended">Environment variable
+(<em>recommended</em>)</h3>
+<div class="indented2">
+<p>1. Include a line for your token in your <code>.Renviron</code>
+file:</p>
+<p><code>MY_CENSUS_KEY = '05xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx93'</code></p>
+<p><br />
+</p>
+<p>2. Read it into R:</p>
+<div class="indented2 indented2r">
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>my_census_token <span class="ot">&lt;-</span> <span class="fu">Sys.getenv</span>(<span class="st">&quot;MY_CENSUS_KEY&quot;</span>)</span></code></pre></div>
+</div>
+</div>
+<p><br />
+</p>
+<h3 id="store-it-in-an-external-file">Store it in an external file</h3>
+<div class="indented2">
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>my_token <span class="ot">&lt;-</span> <span class="fu">readLines</span>(<span class="st">&quot;~/My Tokens/cimis_token.txt&quot;</span>, <span class="at">n =</span> <span class="dv">1</span>)</span></code></pre></div>
+</div>
+<p><br />
+</p>
+<h3 id="save-it-in-your-os-credential-store">Save it in your OS
+credential store</h3>
+<div class="indented2">
+<p>see <a href="https://keyring.r-lib.org/"><code>keyring</code></a></p>
+</div>
+<p><br />
+</p>
+<h2 id="api-configuration-settings">API Configuration Settings</h2>
+<div class="indented2">
+<p>Depending on the API service, you may also be able to configure one
+or more of the following:</p>
+<div class="compact">
+<ul>
+<li><p>Create an app token or service account for each project (i.e.,
+instead of your main account)</p></li>
+<li><p>Provision your token / key with the minimum number of permissions
+required</p></li>
+<li><p>IP filtering</p></li>
+<li><p>expiration date</p></li>
+<li><p>usage limits</p></li>
+</ul>
+</div>
+</div>
+<p><br />
+</p>
+</div>
+<div id="date-time-manipulations" class="slide section level1 rmethod">
+<h1 class="rmethod">Date-time manipulations</h1>
+<p>R is well-equipped to handle dates and date-times.</p>
+<p><code>lubridate</code> provides a number of convenience
+functions.</p>
+<div class="indented2 indented2r">
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span></code></pre></div>
+</div>
+<p><br />
+</p>
+<div class="centerme">
+<p><a href="https://rstudio.github.io/cheatsheets/lubridate.pdf"
+target="_blank" rel="noopener"><img
+src="./images/lubridate-cheatsheet_600x464x256.png"
+style="border:1px solid grey;" /></a></p>
+</div>
+<p><br />
+</p>
+</div>
+<div id="creating-date-time-objects"
+class="slide section level1 rmethod">
+<h1 class="rmethod">Creating Date-Time Objects</h1>
+<h2 id="convert-a-string-to-a-date-time-object">Convert a string to a
+date-time object</h2>
+<div class="indented2">
+<p><strong>Challenge:</strong> Dates and times often come as text in a
+variety of formats:</p>
+<div class="compact">
+<ul>
+<li>October 5, 2023<br />
+</li>
+<li>5 Oct., 2023<br />
+</li>
+<li>10/05/2023<br />
+</li>
+<li>2023-10-05<br />
+</li>
+<li>10-05-2023<br />
+</li>
+<li>05-10-2023</li>
+</ul>
+</div>
+<p><br />
+</p>
+<p><code>lubridate</code> has functions that can handle most cases:</p>
+<div class="indented2" style="font-family:monospace;">
+<p>ymd_hms(), ymd_hm(), ymd_h()<br />
+ydm_hms(), ydm_hm(), ydm_h()<br />
+mdy_hms(), mdy_hm(), mdy_h()<br />
+dmy_hms(), dmy_hm(), dmy_h()</p>
+</div>
+<p>Examples:</p>
+<div class="indented2 indented2r">
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="st">&quot;2024-03-17&quot;</span> <span class="sc">|&gt;</span> <span class="fu">ymd</span>()</span></code></pre></div>
+<pre><code>## [1] &quot;2024-03-17&quot;</code></pre>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="st">&quot;2017-11-28T14:02:00&quot;</span> <span class="sc">|&gt;</span> <span class="fu">ymd_hms</span>()</span></code></pre></div>
+<pre><code>## [1] &quot;2017-11-28 14:02:00 UTC&quot;</code></pre>
+</div>
+<p><br />
+</p>
+<p>All of these function have an optional argument <code>tz</code> to
+specify the time zone:</p>
+<div class="indented2 indented2r">
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="st">&quot;2017-11-28T14:02:00&quot;</span> <span class="sc">|&gt;</span> <span class="fu">ymd_hms</span>(<span class="at">tz =</span> <span class="st">&quot;America/Los_Angeles&quot;</span>)</span></code></pre></div>
+<pre><code>## [1] &quot;2017-11-28 14:02:00 PST&quot;</code></pre>
+</div>
+</div>
+<p><!----- indented2 ----></p>
+<p><br />
+</p>
+<h2 id="create-a-date-time-object-from-scratch">Create a date-time
+object from scratch</h2>
+<p><code>make_date()</code> and <code>make_datetime()</code> can make
+date and date-time objects from scratch:</p>
+<div class="indented2 indented2r">
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>st_patricks_noon_pdt_dt <span class="ot">&lt;-</span> <span class="fu">make_datetime</span>(<span class="at">year =</span> <span class="dv">2024</span>, <span class="at">month =</span> <span class="dv">3</span>, <span class="at">day =</span> <span class="dv">17</span>, </span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>                                      <span class="at">hour =</span> <span class="dv">12</span>, <span class="at">min =</span> <span class="dv">0</span>, <span class="at">sec =</span> <span class="dv">0</span>,</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>                                      <span class="at">tz =</span> <span class="st">&quot;America/Los_Angeles&quot;</span>)</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>st_patricks_noon_pdt_dt</span></code></pre></div>
+<pre><code>## [1] &quot;2024-03-17 12:00:00 PDT&quot;</code></pre>
+</div>
+<p><br />
+</p>
+</div>
+<div id="time-zones" class="slide section level1 rmethod">
+<h1 class="rmethod">Time Zones</h1>
+<h2 id="how-to-specify-a-time-zone">How to specify a time zone</h2>
+<p>Time zones have <strong>standardized names</strong>. Example:</p>
+<div class="indented2 indented2r">
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">Sys.timezone</span>()</span></code></pre></div>
+<pre><code>## [1] &quot;America/Los_Angeles&quot;</code></pre>
+</div>
+<p><br />
+</p>
+<p>All time zone names:</p>
+<div class="indented2 indented2r">
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="fu">OlsonNames</span>()</span></code></pre></div>
+<pre><code>##   [1] &quot;Africa/Abidjan&quot;                   &quot;Africa/Accra&quot;                    
+##   [3] &quot;Africa/Addis_Ababa&quot;               &quot;Africa/Algiers&quot;                  
+##   [5] &quot;Africa/Asmara&quot;                    &quot;Africa/Asmera&quot;                   
+##   [7] &quot;Africa/Bamako&quot;                    &quot;Africa/Bangui&quot;                   
+##   [9] &quot;Africa/Banjul&quot;                    &quot;Africa/Bissau&quot;                   
+##  [11] &quot;Africa/Blantyre&quot;                  &quot;Africa/Brazzaville&quot;              
+##  [13] &quot;Africa/Bujumbura&quot;                 &quot;Africa/Cairo&quot;                    
+##  [15] &quot;Africa/Casablanca&quot;                &quot;Africa/Ceuta&quot;                    
+##  [17] &quot;Africa/Conakry&quot;                   &quot;Africa/Dakar&quot;                    
+##  [19] &quot;Africa/Dar_es_Salaam&quot;             &quot;Africa/Djibouti&quot;                 
+##  [21] &quot;Africa/Douala&quot;                    &quot;Africa/El_Aaiun&quot;                 
+##  [23] &quot;Africa/Freetown&quot;                  &quot;Africa/Gaborone&quot;                 
+##  [25] &quot;Africa/Harare&quot;                    &quot;Africa/Johannesburg&quot;             
+##  [27] &quot;Africa/Juba&quot;                      &quot;Africa/Kampala&quot;                  
+##  [29] &quot;Africa/Khartoum&quot;                  &quot;Africa/Kigali&quot;                   
+##  [31] &quot;Africa/Kinshasa&quot;                  &quot;Africa/Lagos&quot;                    
+##  [33] &quot;Africa/Libreville&quot;                &quot;Africa/Lome&quot;                     
+##  [35] &quot;Africa/Luanda&quot;                    &quot;Africa/Lubumbashi&quot;               
+##  [37] &quot;Africa/Lusaka&quot;                    &quot;Africa/Malabo&quot;                   
+##  [39] &quot;Africa/Maputo&quot;                    &quot;Africa/Maseru&quot;                   
+##  [41] &quot;Africa/Mbabane&quot;                   &quot;Africa/Mogadishu&quot;                
+##  [43] &quot;Africa/Monrovia&quot;                  &quot;Africa/Nairobi&quot;                  
+##  [45] &quot;Africa/Ndjamena&quot;                  &quot;Africa/Niamey&quot;                   
+##  [47] &quot;Africa/Nouakchott&quot;                &quot;Africa/Ouagadougou&quot;              
+##  [49] &quot;Africa/Porto-Novo&quot;                &quot;Africa/Sao_Tome&quot;                 
+##  [51] &quot;Africa/Timbuktu&quot;                  &quot;Africa/Tripoli&quot;                  
+##  [53] &quot;Africa/Tunis&quot;                     &quot;Africa/Windhoek&quot;                 
+##  [55] &quot;America/Adak&quot;                     &quot;America/Anchorage&quot;               
+##  [57] &quot;America/Anguilla&quot;                 &quot;America/Antigua&quot;                 
+##  [59] &quot;America/Araguaina&quot;                &quot;America/Argentina/Buenos_Aires&quot;  
+##  [61] &quot;America/Argentina/Catamarca&quot;      &quot;America/Argentina/ComodRivadavia&quot;
+##  [63] &quot;America/Argentina/Cordoba&quot;        &quot;America/Argentina/Jujuy&quot;         
+##  [65] &quot;America/Argentina/La_Rioja&quot;       &quot;America/Argentina/Mendoza&quot;       
+##  [67] &quot;America/Argentina/Rio_Gallegos&quot;   &quot;America/Argentina/Salta&quot;         
+##  [69] &quot;America/Argentina/San_Juan&quot;       &quot;America/Argentina/San_Luis&quot;      
+##  [71] &quot;America/Argentina/Tucuman&quot;        &quot;America/Argentina/Ushuaia&quot;       
+##  [73] &quot;America/Aruba&quot;                    &quot;America/Asuncion&quot;                
+##  [75] &quot;America/Atikokan&quot;                 &quot;America/Atka&quot;                    
+##  [77] &quot;America/Bahia&quot;                    &quot;America/Bahia_Banderas&quot;          
+##  [79] &quot;America/Barbados&quot;                 &quot;America/Belem&quot;                   
+##  [81] &quot;America/Belize&quot;                   &quot;America/Blanc-Sablon&quot;            
+##  [83] &quot;America/Boa_Vista&quot;                &quot;America/Bogota&quot;                  
+##  [85] &quot;America/Boise&quot;                    &quot;America/Buenos_Aires&quot;            
+##  [87] &quot;America/Cambridge_Bay&quot;            &quot;America/Campo_Grande&quot;            
+##  [89] &quot;America/Cancun&quot;                   &quot;America/Caracas&quot;                 
+##  [91] &quot;America/Catamarca&quot;                &quot;America/Cayenne&quot;                 
+##  [93] &quot;America/Cayman&quot;                   &quot;America/Chicago&quot;                 
+##  [95] &quot;America/Chihuahua&quot;                &quot;America/Ciudad_Juarez&quot;           
+##  [97] &quot;America/Coral_Harbour&quot;            &quot;America/Cordoba&quot;                 
+##  [99] &quot;America/Costa_Rica&quot;               &quot;America/Creston&quot;                 
+## [101] &quot;America/Cuiaba&quot;                   &quot;America/Curacao&quot;                 
+## [103] &quot;America/Danmarkshavn&quot;             &quot;America/Dawson&quot;                  
+## [105] &quot;America/Dawson_Creek&quot;             &quot;America/Denver&quot;                  
+## [107] &quot;America/Detroit&quot;                  &quot;America/Dominica&quot;                
+## [109] &quot;America/Edmonton&quot;                 &quot;America/Eirunepe&quot;                
+## [111] &quot;America/El_Salvador&quot;              &quot;America/Ensenada&quot;                
+## [113] &quot;America/Fort_Nelson&quot;              &quot;America/Fort_Wayne&quot;              
+## [115] &quot;America/Fortaleza&quot;                &quot;America/Glace_Bay&quot;               
+## [117] &quot;America/Godthab&quot;                  &quot;America/Goose_Bay&quot;               
+## [119] &quot;America/Grand_Turk&quot;               &quot;America/Grenada&quot;                 
+## [121] &quot;America/Guadeloupe&quot;               &quot;America/Guatemala&quot;               
+## [123] &quot;America/Guayaquil&quot;                &quot;America/Guyana&quot;                  
+## [125] &quot;America/Halifax&quot;                  &quot;America/Havana&quot;                  
+## [127] &quot;America/Hermosillo&quot;               &quot;America/Indiana/Indianapolis&quot;    
+## [129] &quot;America/Indiana/Knox&quot;             &quot;America/Indiana/Marengo&quot;         
+## [131] &quot;America/Indiana/Petersburg&quot;       &quot;America/Indiana/Tell_City&quot;       
+## [133] &quot;America/Indiana/Vevay&quot;            &quot;America/Indiana/Vincennes&quot;       
+## [135] &quot;America/Indiana/Winamac&quot;          &quot;America/Indianapolis&quot;            
+## [137] &quot;America/Inuvik&quot;                   &quot;America/Iqaluit&quot;                 
+## [139] &quot;America/Jamaica&quot;                  &quot;America/Jujuy&quot;                   
+## [141] &quot;America/Juneau&quot;                   &quot;America/Kentucky/Louisville&quot;     
+## [143] &quot;America/Kentucky/Monticello&quot;      &quot;America/Knox_IN&quot;                 
+## [145] &quot;America/Kralendijk&quot;               &quot;America/La_Paz&quot;                  
+## [147] &quot;America/Lima&quot;                     &quot;America/Los_Angeles&quot;             
+## [149] &quot;America/Louisville&quot;               &quot;America/Lower_Princes&quot;           
+## [151] &quot;America/Maceio&quot;                   &quot;America/Managua&quot;                 
+## [153] &quot;America/Manaus&quot;                   &quot;America/Marigot&quot;                 
+## [155] &quot;America/Martinique&quot;               &quot;America/Matamoros&quot;               
+## [157] &quot;America/Mazatlan&quot;                 &quot;America/Mendoza&quot;                 
+## [159] &quot;America/Menominee&quot;                &quot;America/Merida&quot;                  
+## [161] &quot;America/Metlakatla&quot;               &quot;America/Mexico_City&quot;             
+## [163] &quot;America/Miquelon&quot;                 &quot;America/Moncton&quot;                 
+## [165] &quot;America/Monterrey&quot;                &quot;America/Montevideo&quot;              
+## [167] &quot;America/Montreal&quot;                 &quot;America/Montserrat&quot;              
+## [169] &quot;America/Nassau&quot;                   &quot;America/New_York&quot;                
+## [171] &quot;America/Nipigon&quot;                  &quot;America/Nome&quot;                    
+## [173] &quot;America/Noronha&quot;                  &quot;America/North_Dakota/Beulah&quot;     
+## [175] &quot;America/North_Dakota/Center&quot;      &quot;America/North_Dakota/New_Salem&quot;  
+## [177] &quot;America/Nuuk&quot;                     &quot;America/Ojinaga&quot;                 
+## [179] &quot;America/Panama&quot;                   &quot;America/Pangnirtung&quot;             
+## [181] &quot;America/Paramaribo&quot;               &quot;America/Phoenix&quot;                 
+## [183] &quot;America/Port-au-Prince&quot;           &quot;America/Port_of_Spain&quot;           
+## [185] &quot;America/Porto_Acre&quot;               &quot;America/Porto_Velho&quot;             
+## [187] &quot;America/Puerto_Rico&quot;              &quot;America/Punta_Arenas&quot;            
+## [189] &quot;America/Rainy_River&quot;              &quot;America/Rankin_Inlet&quot;            
+## [191] &quot;America/Recife&quot;                   &quot;America/Regina&quot;                  
+## [193] &quot;America/Resolute&quot;                 &quot;America/Rio_Branco&quot;              
+## [195] &quot;America/Rosario&quot;                  &quot;America/Santa_Isabel&quot;            
+## [197] &quot;America/Santarem&quot;                 &quot;America/Santiago&quot;                
+## [199] &quot;America/Santo_Domingo&quot;            &quot;America/Sao_Paulo&quot;               
+## [201] &quot;America/Scoresbysund&quot;             &quot;America/Shiprock&quot;                
+## [203] &quot;America/Sitka&quot;                    &quot;America/St_Barthelemy&quot;           
+## [205] &quot;America/St_Johns&quot;                 &quot;America/St_Kitts&quot;                
+## [207] &quot;America/St_Lucia&quot;                 &quot;America/St_Thomas&quot;               
+## [209] &quot;America/St_Vincent&quot;               &quot;America/Swift_Current&quot;           
+## [211] &quot;America/Tegucigalpa&quot;              &quot;America/Thule&quot;                   
+## [213] &quot;America/Thunder_Bay&quot;              &quot;America/Tijuana&quot;                 
+## [215] &quot;America/Toronto&quot;                  &quot;America/Tortola&quot;                 
+## [217] &quot;America/Vancouver&quot;                &quot;America/Virgin&quot;                  
+## [219] &quot;America/Whitehorse&quot;               &quot;America/Winnipeg&quot;                
+## [221] &quot;America/Yakutat&quot;                  &quot;America/Yellowknife&quot;             
+## [223] &quot;Antarctica/Casey&quot;                 &quot;Antarctica/Davis&quot;                
+## [225] &quot;Antarctica/DumontDUrville&quot;        &quot;Antarctica/Macquarie&quot;            
+## [227] &quot;Antarctica/Mawson&quot;                &quot;Antarctica/McMurdo&quot;              
+## [229] &quot;Antarctica/Palmer&quot;                &quot;Antarctica/Rothera&quot;              
+## [231] &quot;Antarctica/South_Pole&quot;            &quot;Antarctica/Syowa&quot;                
+## [233] &quot;Antarctica/Troll&quot;                 &quot;Antarctica/Vostok&quot;               
+## [235] &quot;Arctic/Longyearbyen&quot;              &quot;Asia/Aden&quot;                       
+## [237] &quot;Asia/Almaty&quot;                      &quot;Asia/Amman&quot;                      
+## [239] &quot;Asia/Anadyr&quot;                      &quot;Asia/Aqtau&quot;                      
+## [241] &quot;Asia/Aqtobe&quot;                      &quot;Asia/Ashgabat&quot;                   
+## [243] &quot;Asia/Ashkhabad&quot;                   &quot;Asia/Atyrau&quot;                     
+## [245] &quot;Asia/Baghdad&quot;                     &quot;Asia/Bahrain&quot;                    
+## [247] &quot;Asia/Baku&quot;                        &quot;Asia/Bangkok&quot;                    
+## [249] &quot;Asia/Barnaul&quot;                     &quot;Asia/Beirut&quot;                     
+## [251] &quot;Asia/Bishkek&quot;                     &quot;Asia/Brunei&quot;                     
+## [253] &quot;Asia/Calcutta&quot;                    &quot;Asia/Chita&quot;                      
+## [255] &quot;Asia/Choibalsan&quot;                  &quot;Asia/Chongqing&quot;                  
+## [257] &quot;Asia/Chungking&quot;                   &quot;Asia/Colombo&quot;                    
+## [259] &quot;Asia/Dacca&quot;                       &quot;Asia/Damascus&quot;                   
+## [261] &quot;Asia/Dhaka&quot;                       &quot;Asia/Dili&quot;                       
+## [263] &quot;Asia/Dubai&quot;                       &quot;Asia/Dushanbe&quot;                   
+## [265] &quot;Asia/Famagusta&quot;                   &quot;Asia/Gaza&quot;                       
+## [267] &quot;Asia/Harbin&quot;                      &quot;Asia/Hebron&quot;                     
+## [269] &quot;Asia/Ho_Chi_Minh&quot;                 &quot;Asia/Hong_Kong&quot;                  
+## [271] &quot;Asia/Hovd&quot;                        &quot;Asia/Irkutsk&quot;                    
+## [273] &quot;Asia/Istanbul&quot;                    &quot;Asia/Jakarta&quot;                    
+## [275] &quot;Asia/Jayapura&quot;                    &quot;Asia/Jerusalem&quot;                  
+## [277] &quot;Asia/Kabul&quot;                       &quot;Asia/Kamchatka&quot;                  
+## [279] &quot;Asia/Karachi&quot;                     &quot;Asia/Kashgar&quot;                    
+## [281] &quot;Asia/Kathmandu&quot;                   &quot;Asia/Katmandu&quot;                   
+## [283] &quot;Asia/Khandyga&quot;                    &quot;Asia/Kolkata&quot;                    
+## [285] &quot;Asia/Krasnoyarsk&quot;                 &quot;Asia/Kuala_Lumpur&quot;               
+## [287] &quot;Asia/Kuching&quot;                     &quot;Asia/Kuwait&quot;                     
+## [289] &quot;Asia/Macao&quot;                       &quot;Asia/Macau&quot;                      
+## [291] &quot;Asia/Magadan&quot;                     &quot;Asia/Makassar&quot;                   
+## [293] &quot;Asia/Manila&quot;                      &quot;Asia/Muscat&quot;                     
+## [295] &quot;Asia/Nicosia&quot;                     &quot;Asia/Novokuznetsk&quot;               
+## [297] &quot;Asia/Novosibirsk&quot;                 &quot;Asia/Omsk&quot;                       
+## [299] &quot;Asia/Oral&quot;                        &quot;Asia/Phnom_Penh&quot;                 
+## [301] &quot;Asia/Pontianak&quot;                   &quot;Asia/Pyongyang&quot;                  
+## [303] &quot;Asia/Qatar&quot;                       &quot;Asia/Qostanay&quot;                   
+## [305] &quot;Asia/Qyzylorda&quot;                   &quot;Asia/Rangoon&quot;                    
+## [307] &quot;Asia/Riyadh&quot;                      &quot;Asia/Saigon&quot;                     
+## [309] &quot;Asia/Sakhalin&quot;                    &quot;Asia/Samarkand&quot;                  
+## [311] &quot;Asia/Seoul&quot;                       &quot;Asia/Shanghai&quot;                   
+## [313] &quot;Asia/Singapore&quot;                   &quot;Asia/Srednekolymsk&quot;              
+## [315] &quot;Asia/Taipei&quot;                      &quot;Asia/Tashkent&quot;                   
+## [317] &quot;Asia/Tbilisi&quot;                     &quot;Asia/Tehran&quot;                     
+## [319] &quot;Asia/Tel_Aviv&quot;                    &quot;Asia/Thimbu&quot;                     
+## [321] &quot;Asia/Thimphu&quot;                     &quot;Asia/Tokyo&quot;                      
+## [323] &quot;Asia/Tomsk&quot;                       &quot;Asia/Ujung_Pandang&quot;              
+## [325] &quot;Asia/Ulaanbaatar&quot;                 &quot;Asia/Ulan_Bator&quot;                 
+## [327] &quot;Asia/Urumqi&quot;                      &quot;Asia/Ust-Nera&quot;                   
+## [329] &quot;Asia/Vientiane&quot;                   &quot;Asia/Vladivostok&quot;                
+## [331] &quot;Asia/Yakutsk&quot;                     &quot;Asia/Yangon&quot;                     
+## [333] &quot;Asia/Yekaterinburg&quot;               &quot;Asia/Yerevan&quot;                    
+## [335] &quot;Atlantic/Azores&quot;                  &quot;Atlantic/Bermuda&quot;                
+## [337] &quot;Atlantic/Canary&quot;                  &quot;Atlantic/Cape_Verde&quot;             
+## [339] &quot;Atlantic/Faeroe&quot;                  &quot;Atlantic/Faroe&quot;                  
+## [341] &quot;Atlantic/Jan_Mayen&quot;               &quot;Atlantic/Madeira&quot;                
+## [343] &quot;Atlantic/Reykjavik&quot;               &quot;Atlantic/South_Georgia&quot;          
+## [345] &quot;Atlantic/St_Helena&quot;               &quot;Atlantic/Stanley&quot;                
+## [347] &quot;Australia/ACT&quot;                    &quot;Australia/Adelaide&quot;              
+## [349] &quot;Australia/Brisbane&quot;               &quot;Australia/Broken_Hill&quot;           
+## [351] &quot;Australia/Canberra&quot;               &quot;Australia/Currie&quot;                
+## [353] &quot;Australia/Darwin&quot;                 &quot;Australia/Eucla&quot;                 
+## [355] &quot;Australia/Hobart&quot;                 &quot;Australia/LHI&quot;                   
+## [357] &quot;Australia/Lindeman&quot;               &quot;Australia/Lord_Howe&quot;             
+## [359] &quot;Australia/Melbourne&quot;              &quot;Australia/North&quot;                 
+## [361] &quot;Australia/NSW&quot;                    &quot;Australia/Perth&quot;                 
+## [363] &quot;Australia/Queensland&quot;             &quot;Australia/South&quot;                 
+## [365] &quot;Australia/Sydney&quot;                 &quot;Australia/Tasmania&quot;              
+## [367] &quot;Australia/Victoria&quot;               &quot;Australia/West&quot;                  
+## [369] &quot;Australia/Yancowinna&quot;             &quot;Brazil/Acre&quot;                     
+## [371] &quot;Brazil/DeNoronha&quot;                 &quot;Brazil/East&quot;                     
+## [373] &quot;Brazil/West&quot;                      &quot;Canada/Atlantic&quot;                 
+## [375] &quot;Canada/Central&quot;                   &quot;Canada/Eastern&quot;                  
+## [377] &quot;Canada/Mountain&quot;                  &quot;Canada/Newfoundland&quot;             
+## [379] &quot;Canada/Pacific&quot;                   &quot;Canada/Saskatchewan&quot;             
+## [381] &quot;Canada/Yukon&quot;                     &quot;CET&quot;                             
+## [383] &quot;Chile/Continental&quot;                &quot;Chile/EasterIsland&quot;              
+## [385] &quot;CST6CDT&quot;                          &quot;Cuba&quot;                            
+## [387] &quot;EET&quot;                              &quot;Egypt&quot;                           
+## [389] &quot;Eire&quot;                             &quot;EST&quot;                             
+## [391] &quot;EST5EDT&quot;                          &quot;Etc/GMT&quot;                         
+## [393] &quot;Etc/GMT-0&quot;                        &quot;Etc/GMT-1&quot;                       
+## [395] &quot;Etc/GMT-10&quot;                       &quot;Etc/GMT-11&quot;                      
+## [397] &quot;Etc/GMT-12&quot;                       &quot;Etc/GMT-13&quot;                      
+## [399] &quot;Etc/GMT-14&quot;                       &quot;Etc/GMT-2&quot;                       
+## [401] &quot;Etc/GMT-3&quot;                        &quot;Etc/GMT-4&quot;                       
+## [403] &quot;Etc/GMT-5&quot;                        &quot;Etc/GMT-6&quot;                       
+## [405] &quot;Etc/GMT-7&quot;                        &quot;Etc/GMT-8&quot;                       
+## [407] &quot;Etc/GMT-9&quot;                        &quot;Etc/GMT+0&quot;                       
+## [409] &quot;Etc/GMT+1&quot;                        &quot;Etc/GMT+10&quot;                      
+## [411] &quot;Etc/GMT+11&quot;                       &quot;Etc/GMT+12&quot;                      
+## [413] &quot;Etc/GMT+2&quot;                        &quot;Etc/GMT+3&quot;                       
+## [415] &quot;Etc/GMT+4&quot;                        &quot;Etc/GMT+5&quot;                       
+## [417] &quot;Etc/GMT+6&quot;                        &quot;Etc/GMT+7&quot;                       
+## [419] &quot;Etc/GMT+8&quot;                        &quot;Etc/GMT+9&quot;                       
+## [421] &quot;Etc/GMT0&quot;                         &quot;Etc/Greenwich&quot;                   
+## [423] &quot;Etc/UCT&quot;                          &quot;Etc/Universal&quot;                   
+## [425] &quot;Etc/UTC&quot;                          &quot;Etc/Zulu&quot;                        
+## [427] &quot;Europe/Amsterdam&quot;                 &quot;Europe/Andorra&quot;                  
+## [429] &quot;Europe/Astrakhan&quot;                 &quot;Europe/Athens&quot;                   
+## [431] &quot;Europe/Belfast&quot;                   &quot;Europe/Belgrade&quot;                 
+## [433] &quot;Europe/Berlin&quot;                    &quot;Europe/Bratislava&quot;               
+## [435] &quot;Europe/Brussels&quot;                  &quot;Europe/Bucharest&quot;                
+## [437] &quot;Europe/Budapest&quot;                  &quot;Europe/Busingen&quot;                 
+## [439] &quot;Europe/Chisinau&quot;                  &quot;Europe/Copenhagen&quot;               
+## [441] &quot;Europe/Dublin&quot;                    &quot;Europe/Gibraltar&quot;                
+## [443] &quot;Europe/Guernsey&quot;                  &quot;Europe/Helsinki&quot;                 
+## [445] &quot;Europe/Isle_of_Man&quot;               &quot;Europe/Istanbul&quot;                 
+## [447] &quot;Europe/Jersey&quot;                    &quot;Europe/Kaliningrad&quot;              
+## [449] &quot;Europe/Kiev&quot;                      &quot;Europe/Kirov&quot;                    
+## [451] &quot;Europe/Kyiv&quot;                      &quot;Europe/Lisbon&quot;                   
+## [453] &quot;Europe/Ljubljana&quot;                 &quot;Europe/London&quot;                   
+## [455] &quot;Europe/Luxembourg&quot;                &quot;Europe/Madrid&quot;                   
+## [457] &quot;Europe/Malta&quot;                     &quot;Europe/Mariehamn&quot;                
+## [459] &quot;Europe/Minsk&quot;                     &quot;Europe/Monaco&quot;                   
+## [461] &quot;Europe/Moscow&quot;                    &quot;Europe/Nicosia&quot;                  
+## [463] &quot;Europe/Oslo&quot;                      &quot;Europe/Paris&quot;                    
+## [465] &quot;Europe/Podgorica&quot;                 &quot;Europe/Prague&quot;                   
+## [467] &quot;Europe/Riga&quot;                      &quot;Europe/Rome&quot;                     
+## [469] &quot;Europe/Samara&quot;                    &quot;Europe/San_Marino&quot;               
+## [471] &quot;Europe/Sarajevo&quot;                  &quot;Europe/Saratov&quot;                  
+## [473] &quot;Europe/Simferopol&quot;                &quot;Europe/Skopje&quot;                   
+## [475] &quot;Europe/Sofia&quot;                     &quot;Europe/Stockholm&quot;                
+## [477] &quot;Europe/Tallinn&quot;                   &quot;Europe/Tirane&quot;                   
+## [479] &quot;Europe/Tiraspol&quot;                  &quot;Europe/Ulyanovsk&quot;                
+## [481] &quot;Europe/Uzhgorod&quot;                  &quot;Europe/Vaduz&quot;                    
+## [483] &quot;Europe/Vatican&quot;                   &quot;Europe/Vienna&quot;                   
+## [485] &quot;Europe/Vilnius&quot;                   &quot;Europe/Volgograd&quot;                
+## [487] &quot;Europe/Warsaw&quot;                    &quot;Europe/Zagreb&quot;                   
+## [489] &quot;Europe/Zaporozhye&quot;                &quot;Europe/Zurich&quot;                   
+## [491] &quot;GB&quot;                               &quot;GB-Eire&quot;                         
+## [493] &quot;GMT&quot;                              &quot;GMT-0&quot;                           
+## [495] &quot;GMT+0&quot;                            &quot;GMT0&quot;                            
+## [497] &quot;Greenwich&quot;                        &quot;Hongkong&quot;                        
+## [499] &quot;HST&quot;                              &quot;Iceland&quot;                         
+## [501] &quot;Indian/Antananarivo&quot;              &quot;Indian/Chagos&quot;                   
+## [503] &quot;Indian/Christmas&quot;                 &quot;Indian/Cocos&quot;                    
+## [505] &quot;Indian/Comoro&quot;                    &quot;Indian/Kerguelen&quot;                
+## [507] &quot;Indian/Mahe&quot;                      &quot;Indian/Maldives&quot;                 
+## [509] &quot;Indian/Mauritius&quot;                 &quot;Indian/Mayotte&quot;                  
+## [511] &quot;Indian/Reunion&quot;                   &quot;Iran&quot;                            
+## [513] &quot;Israel&quot;                           &quot;Jamaica&quot;                         
+## [515] &quot;Japan&quot;                            &quot;Kwajalein&quot;                       
+## [517] &quot;Libya&quot;                            &quot;MET&quot;                             
+## [519] &quot;Mexico/BajaNorte&quot;                 &quot;Mexico/BajaSur&quot;                  
+## [521] &quot;Mexico/General&quot;                   &quot;MST&quot;                             
+## [523] &quot;MST7MDT&quot;                          &quot;Navajo&quot;                          
+## [525] &quot;NZ&quot;                               &quot;NZ-CHAT&quot;                         
+## [527] &quot;Pacific/Apia&quot;                     &quot;Pacific/Auckland&quot;                
+## [529] &quot;Pacific/Bougainville&quot;             &quot;Pacific/Chatham&quot;                 
+## [531] &quot;Pacific/Chuuk&quot;                    &quot;Pacific/Easter&quot;                  
+## [533] &quot;Pacific/Efate&quot;                    &quot;Pacific/Enderbury&quot;               
+## [535] &quot;Pacific/Fakaofo&quot;                  &quot;Pacific/Fiji&quot;                    
+## [537] &quot;Pacific/Funafuti&quot;                 &quot;Pacific/Galapagos&quot;               
+## [539] &quot;Pacific/Gambier&quot;                  &quot;Pacific/Guadalcanal&quot;             
+## [541] &quot;Pacific/Guam&quot;                     &quot;Pacific/Honolulu&quot;                
+## [543] &quot;Pacific/Johnston&quot;                 &quot;Pacific/Kanton&quot;                  
+## [545] &quot;Pacific/Kiritimati&quot;               &quot;Pacific/Kosrae&quot;                  
+## [547] &quot;Pacific/Kwajalein&quot;                &quot;Pacific/Majuro&quot;                  
+## [549] &quot;Pacific/Marquesas&quot;                &quot;Pacific/Midway&quot;                  
+## [551] &quot;Pacific/Nauru&quot;                    &quot;Pacific/Niue&quot;                    
+## [553] &quot;Pacific/Norfolk&quot;                  &quot;Pacific/Noumea&quot;                  
+## [555] &quot;Pacific/Pago_Pago&quot;                &quot;Pacific/Palau&quot;                   
+## [557] &quot;Pacific/Pitcairn&quot;                 &quot;Pacific/Pohnpei&quot;                 
+## [559] &quot;Pacific/Ponape&quot;                   &quot;Pacific/Port_Moresby&quot;            
+## [561] &quot;Pacific/Rarotonga&quot;                &quot;Pacific/Saipan&quot;                  
+## [563] &quot;Pacific/Samoa&quot;                    &quot;Pacific/Tahiti&quot;                  
+## [565] &quot;Pacific/Tarawa&quot;                   &quot;Pacific/Tongatapu&quot;               
+## [567] &quot;Pacific/Truk&quot;                     &quot;Pacific/Wake&quot;                    
+## [569] &quot;Pacific/Wallis&quot;                   &quot;Pacific/Yap&quot;                     
+## [571] &quot;Poland&quot;                           &quot;Portugal&quot;                        
+## [573] &quot;PRC&quot;                              &quot;PST8PDT&quot;                         
+## [575] &quot;ROC&quot;                              &quot;ROK&quot;                             
+## [577] &quot;Singapore&quot;                        &quot;Turkey&quot;                          
+## [579] &quot;UCT&quot;                              &quot;Universal&quot;                       
+## [581] &quot;US/Alaska&quot;                        &quot;US/Aleutian&quot;                     
+## [583] &quot;US/Arizona&quot;                       &quot;US/Central&quot;                      
+## [585] &quot;US/East-Indiana&quot;                  &quot;US/Eastern&quot;                      
+## [587] &quot;US/Hawaii&quot;                        &quot;US/Indiana-Starke&quot;               
+## [589] &quot;US/Michigan&quot;                      &quot;US/Mountain&quot;                     
+## [591] &quot;US/Pacific&quot;                       &quot;US/Samoa&quot;                        
+## [593] &quot;UTC&quot;                              &quot;W-SU&quot;                            
+## [595] &quot;WET&quot;                              &quot;Zulu&quot;                            
+## attr(,&quot;Version&quot;)
+## [1] &quot;2024a&quot;</code></pre>
+</div>
+<p><br />
+</p>
+<h2 id="converting-time-values-to-other-time-zones">Converting time
+values to other time zones</h2>
+<p>You can convert the date-time object to a different time zone (as
+opposed to merely assigning it a different time zone) with
+<code>with_tz()</code>:</p>
+<div class="indented2 indented2r">
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>st_patricks_noon_pdt_dt <span class="sc">|&gt;</span>  <span class="fu">with_tz</span>(<span class="st">&quot;UTC&quot;</span>)</span></code></pre></div>
+<pre><code>## [1] &quot;2024-03-17 19:00:00 UTC&quot;</code></pre>
+</div>
+<p><br />
+</p>
+</div>
+<div id="api-requests" class="slide section level1">
+<h1>API Requests</h1>
+<div class="centerme">
+<p><img src="images/api-call-overview_400x620x256.png" /></p>
+</div>
+<p><br />
+</p>
+<h2 id="anatomy-of-an-api-request">Anatomy of an API Request</h2>
+<div
+style="display:flex; justify-content:flex-start; align-items:start;">
+<div>
+<h3 id="base-url">Base URL</h3>
+<div class="indented2">
+<p>ex.: <code>https://api.synopticdata.com/v2</code></p>
+</div>
+<h3 id="headers">Headers</h3>
+<div class="indented1">
+<p>Examples of header content:</p>
+<div class="compact">
+<ul>
+<li>format you’d like the data in (e.g., JSON, csv, XML)</li>
+<li>token / authentication</li>
+<li>user-agent</li>
+</ul>
+</div>
+</div>
+<h3 id="query-parameters">Query Parameters</h3>
+<div class="compact">
+<ul>
+<li>main search parameters</li>
+<li>get appended to the base URL</li>
+<li>limited by the maximum length of a URL</li>
+</ul>
+</div>
+<h3 id="body">Body</h3>
+<div class="compact">
+<ul>
+<li>additional data needed to process the request</li>
+<li>can be almost anything (as long as the server knows how to read
+it)</li>
+<li>request gets sent as a POST request</li>
+</ul>
+</div>
+</div>
+<p><!----- left pane ----></p>
+<div>
+<p><img src="images/order-form_500x640x256.png"/></p>
+</div>
+</div>
+<!----- flex container ---->
+<p><br />
+</p>
+<p>Example of a URL with query parameters:</p>
+<textarea rows="2" style="white-space: nowrap; overflow-y: hidden; padding:0.2em; width:90%; margin-left:2em;">
+https://api.synopticdata.com/v2/stations/timeseries?token=a2cxxxe862c14xxxx4xxxx5xxxxcxxxx&stid=CI152&vars=air_temp,evapotranspiration,precip_accum_one_hour,soil_temp&varsoperator=and&units=english&start=202312010800&end=202401010800&obtimezone=local
+</textarea>
+<p><br />
+</p>
+</div>
+<div id="make-your-own-api-calls" class="slide section level1 rmethod">
+<h1 class="rmethod">Make Your Own API Calls</h1>
+<div style="display:flex; justify-content:center; align-items:start;">
+<div style="text-align:center; width:30%;">
+<p><img src="images/httr2_240x277.png" /></p>
+<p><a href="https://httr2.r-lib.org/" target="_blank"
+rel="noopener"><strong><code>httr2</code></strong></a></p>
+<p>Build, send, and process API requests.</p>
+</div>
+<div style="text-align:center; width:30%;">
+<p><img src="images/tidyr_240x277.png" /></p>
+<p><a href="https://tidyr.tidyverse.org/" target="_blank"
+rel="noopener"><strong><code>tidyr</code></strong></a></p>
+<p>Rectangling functions:</p>
+<p><code>unnest_longer()</code><br />
+<code>unnest_wider()</code><br />
+<code>hoist()</code></p>
+</div>
+<div style="text-align:center; width:30%;">
+<p><img src="images/tibblify-nologo_240x277.png" /></p>
+<p><a href="https://mgirlich.github.io/tibblify/" target="_blank"
+rel="noopener"><strong><code>tibblify</code></strong></a></p>
+<p>Functions to rectangle deeply nested lists into a tibble.</p>
+</div>
+</div>
+<!--- flex grid container --->
+<!--------------------------
+## httr2
+
+(ci152_url <- "https://api.synopticdata.com/v2/stations/timeseries?token=a2c7cce862c14d7d947f0a55c21cf0d8&stid=CI152&vars=air_temp,evapotranspiration,precip_accum_one_hour,soil_temp&varsoperator=and&units=english&start=202312010800&end=202401010800&obtimezone=local")
+
+httr2 highlights
+
+Makes it easy to 
+
+
+## Anatomy of an API Response
+
+order of the parameters usually doesn't matter
+
+--------------------->
+</div>
+<div id="notebook-time" class="slide section level1">
+<h1>Notebook Time</h1>
+</div>
+<div id="date-parts" class="slide section level1 rmethod">
+<h1 class="rmethod">Date Parts</h1>
+<h2 id="extracting-date-parts">Extracting Date Parts</h2>
+<div class="indented2 indented2r">
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a>st_patricks_noon_pdt_dt <span class="sc">|&gt;</span> lubridate<span class="sc">::</span><span class="fu">month</span>()</span>
+<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a>st_patricks_noon_pdt_dt <span class="sc">|&gt;</span> lubridate<span class="sc">::</span><span class="fu">day</span>()</span>
+<span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" tabindex="-1"></a>st_patricks_noon_pdt_dt <span class="sc">|&gt;</span> lubridate<span class="sc">::</span><span class="fu">year</span>()</span>
+<span id="cb19-6"><a href="#cb19-6" tabindex="-1"></a></span>
+<span id="cb19-7"><a href="#cb19-7" tabindex="-1"></a>st_patricks_noon_pdt_dt <span class="sc">|&gt;</span> lubridate<span class="sc">::</span><span class="fu">yday</span>()</span></code></pre></div>
+<pre><code>## [1] 3
+## [1] 17
+## [1] 2024
+## [1] 77</code></pre>
+</div>
+<p><br />
+</p>
+</div>
+<div id="filtering-dates" class="slide section level1 rmethod">
+<h1 class="rmethod">Filtering Dates</h1>
+<h2 id="filter-based-on-a-date">Filter based on a date</h2>
+<p>First, make sure the date column is actually contains Date objects
+(or <code>POSIXct</code> for date-time values), as opposed to text:</p>
+<div class="indented2 indented2r">
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a>espartoa_tbl <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;extdata/espartoa-weather-2020.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;degday&quot;</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a>  <span class="fu">read.csv</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">as.Date</span>(date)) </span>
+<span id="cb21-4"><a href="#cb21-4" tabindex="-1"></a></span>
+<span id="cb21-5"><a href="#cb21-5" tabindex="-1"></a>espartoa_tbl <span class="sc">|&gt;</span> <span class="fu">head</span>()</span></code></pre></div>
+<pre><code>##     station       date tmin tmax
+## 1 Esparto.A 2020-01-01   38   55
+## 2 Esparto.A 2020-01-02   36   67
+## 3 Esparto.A 2020-01-03   33   59
+## 4 Esparto.A 2020-01-04   37   59
+## 5 Esparto.A 2020-01-05   38   63
+## 6 Esparto.A 2020-01-06   36   58</code></pre>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="fu">class</span>(espartoa_tbl<span class="sc">$</span>date)</span></code></pre></div>
+<pre><code>## [1] &quot;Date&quot;</code></pre>
+</div>
+<p><br />
+</p>
+<p>Filtering a data frame based on the date can be with
+<code>dplyr::filter()</code>. Just make sure the comparison values are
+also dates.</p>
+<p>For example, we can extract the values between St Patrick’s Day and
+Tax Day (April 15) in 2020:</p>
+<div class="indented2 indented2r">
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a>espartoa_tbl <span class="sc">|&gt;</span> <span class="fu">filter</span>(date <span class="sc">&gt;=</span> <span class="fu">as.Date</span>(<span class="st">&quot;2020-03-17&quot;</span>), date <span class="sc">&lt;=</span> <span class="fu">as.Date</span>(<span class="st">&quot;2020-04-15&quot;</span>))</span></code></pre></div>
+<pre><code>##      station       date tmin tmax
+## 1  Esparto.A 2020-03-17   41   55
+## 2  Esparto.A 2020-03-18   43   53
+## 3  Esparto.A 2020-03-19   36   61
+## 4  Esparto.A 2020-03-20   35   64
+## 5  Esparto.A 2020-03-21   39   66
+## 6  Esparto.A 2020-03-22   40   69
+## 7  Esparto.A 2020-03-23   45   65
+## 8  Esparto.A 2020-03-24   40   58
+## 9  Esparto.A 2020-03-25   36   57
+## 10 Esparto.A 2020-03-26   34   61
+## 11 Esparto.A 2020-03-27   35   63
+## 12 Esparto.A 2020-03-28   46   58
+## 13 Esparto.A 2020-03-29   46   62
+## 14 Esparto.A 2020-03-30   45   67
+## 15 Esparto.A 2020-03-31   52   72
+## 16 Esparto.A 2020-04-01   46   66
+## 17 Esparto.A 2020-04-02   46   69
+## 18 Esparto.A 2020-04-03   40   67
+## 19 Esparto.A 2020-04-04   42   57
+## 20 Esparto.A 2020-04-05   45   56
+## 21 Esparto.A 2020-04-06   40   59
+## 22 Esparto.A 2020-04-07   42   66
+## 23 Esparto.A 2020-04-08   44   64
+## 24 Esparto.A 2020-04-09   49   64
+## 25 Esparto.A 2020-04-10   51   73
+## 26 Esparto.A 2020-04-11   47   72
+## 27 Esparto.A 2020-04-12   47   75
+## 28 Esparto.A 2020-04-13   48   77
+## 29 Esparto.A 2020-04-14   51   80
+## 30 Esparto.A 2020-04-15   43   81</code></pre>
+</div>
+<p><br />
+</p>
+<h2 id="filtering-with-date-parts">Filtering with Date Parts</h2>
+<p>Extract the in June, July, and August:</p>
+<div class="indented2 indented2r">
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a>espartoa_tbl <span class="sc">|&gt;</span> </span>
+<span id="cb27-2"><a href="#cb27-2" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">month</span>(date) <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">6</span>,<span class="dv">7</span>,<span class="dv">8</span>))</span></code></pre></div>
+<pre><code>##      station       date tmin tmax
+## 1  Esparto.A 2020-06-01   60   86
+## 2  Esparto.A 2020-06-02   60   95
+## 3  Esparto.A 2020-06-03   63  100
+## 4  Esparto.A 2020-06-04   60   98
+## 5  Esparto.A 2020-06-05   58   82
+## 6  Esparto.A 2020-06-06   58   78
+## 7  Esparto.A 2020-06-07   57   88
+## 8  Esparto.A 2020-06-08   58   83
+## 9  Esparto.A 2020-06-09   55   90
+## 10 Esparto.A 2020-06-10   63   96
+## 11 Esparto.A 2020-06-11   59   93
+## 12 Esparto.A 2020-06-12   58   76
+## 13 Esparto.A 2020-06-13   55   77
+## 14 Esparto.A 2020-06-14   59   84
+## 15 Esparto.A 2020-06-15   65   85
+## 16 Esparto.A 2020-06-16   60   81
+## 17 Esparto.A 2020-06-17   64   87
+## 18 Esparto.A 2020-06-18   59   94
+## 19 Esparto.A 2020-06-19   58   96
+## 20 Esparto.A 2020-06-20   56   91
+## 21 Esparto.A 2020-06-21   59   93
+## 22 Esparto.A 2020-06-22   59   99
+## 23 Esparto.A 2020-06-23   64   98
+## 24 Esparto.A 2020-06-24   62   99
+## 25 Esparto.A 2020-06-25   60   95
+## 26 Esparto.A 2020-06-26   59   95
+## 27 Esparto.A 2020-06-27   60   95
+## 28 Esparto.A 2020-06-28   59   87
+## 29 Esparto.A 2020-06-29   65   88
+## 30 Esparto.A 2020-06-30   60   91
+## 31 Esparto.A 2020-07-01   55   92
+## 32 Esparto.A 2020-07-02   55   88
+## 33 Esparto.A 2020-07-03   62   96
+## 34 Esparto.A 2020-07-04   53   93
+## 35 Esparto.A 2020-07-05   58   95
+## 36 Esparto.A 2020-07-06   56   90
+## 37 Esparto.A 2020-07-07   53   89
+## 38 Esparto.A 2020-07-08   65   94
+## 39 Esparto.A 2020-07-09   61   98
+## 40 Esparto.A 2020-07-10   60   98
+## 41 Esparto.A 2020-07-11   59  103
+## 42 Esparto.A 2020-07-12   59  101
+## 43 Esparto.A 2020-07-13   61   92
+## 44 Esparto.A 2020-07-14   58   92
+## 45 Esparto.A 2020-07-15   58   96
+## 46 Esparto.A 2020-07-16   62   94
+## 47 Esparto.A 2020-07-17   61   93
+## 48 Esparto.A 2020-07-18   60   96
+## 49 Esparto.A 2020-07-19   61   97
+## 50 Esparto.A 2020-07-20   60   96
+## 51 Esparto.A 2020-07-21   59   93
+## 52 Esparto.A 2020-07-22   60   96
+## 53 Esparto.A 2020-07-23   56   94
+## 54 Esparto.A 2020-07-24   58   94
+## 55 Esparto.A 2020-07-25   55   95
+## 56 Esparto.A 2020-07-26   60  100
+## 57 Esparto.A 2020-07-27   61  101
+## 58 Esparto.A 2020-07-28   59  100
+## 59 Esparto.A 2020-07-29   60   96
+## 60 Esparto.A 2020-07-30   60   96
+## 61 Esparto.A 2020-07-31   52   97
+## 62 Esparto.A 2020-08-01   53   94
+## 63 Esparto.A 2020-08-02   58   98
+## 64 Esparto.A 2020-08-03   60   99
+## 65 Esparto.A 2020-08-04   58   95
+## 66 Esparto.A 2020-08-05   59   95
+## 67 Esparto.A 2020-08-06   56   90
+## 68 Esparto.A 2020-08-07   61   96
+## 69 Esparto.A 2020-08-08   62   95
+## 70 Esparto.A 2020-08-09   62   98
+## 71 Esparto.A 2020-08-10   64   99
+## 72 Esparto.A 2020-08-11   61   93
+## 73 Esparto.A 2020-08-12   57   97
+## 74 Esparto.A 2020-08-13   60   97
+## 75 Esparto.A 2020-08-14   71  103
+## 76 Esparto.A 2020-08-15   68  107
+## 77 Esparto.A 2020-08-16   60   96
+## 78 Esparto.A 2020-08-17   59   95
+## 79 Esparto.A 2020-08-18   71  102
+## 80 Esparto.A 2020-08-19   71   97
+## 81 Esparto.A 2020-08-20   62   85
+## 82 Esparto.A 2020-08-21   59   91
+## 83 Esparto.A 2020-08-22   67   97
+## 84 Esparto.A 2020-08-23   61   97
+## 85 Esparto.A 2020-08-24   67   96
+## 86 Esparto.A 2020-08-25   58   94
+## 87 Esparto.A 2020-08-26   58   95
+## 88 Esparto.A 2020-08-27   54   92
+## 89 Esparto.A 2020-08-28   59   94
+## 90 Esparto.A 2020-08-29   61   94
+## 91 Esparto.A 2020-08-30   60   91
+## 92 Esparto.A 2020-08-31   60   96</code></pre>
+</div>
+<p><br />
+</p>
+</div>
+<div id="resampling-the-temporal-resolution-with-date-parts"
+class="slide section level1 rmethod">
+<h1 class="rmethod">Resampling the temporal resolution with date
+parts</h1>
+<p>The standard way to resample involves <code>group_by()</code>
+followed by <code>summarise()</code>.</p>
+<p>FOr example to resample by month:</p>
+<div class="indented2 indented2r">
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" tabindex="-1"></a>espartoa_tbl <span class="sc">|&gt;</span> </span>
+<span id="cb29-2"><a href="#cb29-2" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">month =</span> <span class="fu">month</span>(date)) <span class="sc">|&gt;</span> </span>
+<span id="cb29-3"><a href="#cb29-3" tabindex="-1"></a>  <span class="fu">group_by</span>(month) <span class="sc">|&gt;</span> </span>
+<span id="cb29-4"><a href="#cb29-4" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">tmin_mean =</span> <span class="fu">mean</span>(tmin), <span class="at">tmax_mean =</span> <span class="fu">mean</span>(tmax), <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span>)</span></code></pre></div>
+<pre><code>## # A tibble: 12 × 3
+##    month tmin_mean tmax_mean
+##    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+##  1     1      39.3      58.4
+##  2     2      41.1      68.0
+##  3     3      41.9      64.5
+##  4     4      49.3      74.5
+##  5     5      54.1      83.5
+##  6     6      59.7      90  
+##  7     7      58.6      95.3
+##  8     8      61.2      95.7
+##  9     9      58.1      91.0
+## 10    10      50.7      84.6
+## 11    11      39.1      66.9
+## 12    12      37.6      58.9</code></pre>
+</div>
+<p><br />
+</p>
+<!------------ show an example of hourly to daily measurements ----->
+</div>
+<div id="building-up-a-table-within-a-loop"
+class="slide section level1 rmethod">
+<h1 class="rmethod">Building up a table within a loop</h1>
+<pre><code>my_master_weather_tbl &lt;- NULL
+
+for (i in &lt;something or other&gt;) {
+
+  one_bunch_of_data_tbl &lt;- tibble(...)
+  
+  my_master_weather_tbl &lt;- bind_rows(my_master_weather_tbl, one_bunch_of_data)
+}
+
+my_master_weather_tbl    ## Contains everything!!</code></pre>
+<p><br />
+</p>
+</div>
+<div id="reshaping-data-frames" class="slide section level1 rmethod">
+<h1 class="rmethod">Reshaping Data Frames</h1>
+<p><em>Reshaping</em> data includes:</p>
+<div class="compact">
+<ul>
+<li>turning rows into columns (aka pivot tables, cross tab query)<br />
+</li>
+<li>turning columns into rows</li>
+</ul>
+</div>
+<p>The go-to Tidyverse package for reshaping data frames is <a
+href="https://tidyr.tidyverse.org" target="_blank"
+rel="noopener"><tt><strong>tidyr</strong></tt></a></p>
+<p><br />
+</p>
+<div class="centerme">
+<p><a href="https://rawgit.com/rstudio/cheatsheets/master/tidyr.pdf"
+target="_blank" rel="noopener"><img
+src="images/tidyr_cheatsheet_600x464x256.png"
+style="border:1px solid grey;" /></a></p>
+</div>
+<p><br />
+</p>
+<h2 id="pivot-functions">Pivot Functions</h2>
+<div class="indented2" style="text-align:center;">
+<p><em><code>pivot_longer()</code></em><br />
+<img src="images/pivot_longer_566x212x256.png" /></p>
+<p><em><code>pivot_wider()</code></em><br />
+<img src="images/pivot_wider_674x336x256.png" /></p>
+</div>
+<p>More info and examples in the tidyr <a
+href="https://tidyr.tidyverse.org/articles/pivot.html" target="_blank"
+rel="noopener"><strong>Pivoting Vignette</strong></a></p>
+<p><br />
+</p>
+</div>
+<div id="caching-data" class="slide section level1 rmethod">
+<h1 class="rmethod">Caching data</h1>
+<!------------------
+OTHER
+
+Tip: Days begin at midnight (`00:00:00`) and end at `23:59:59`. 
+
+Creating tibbles with code
+
+# R Methods: Writing Your Own API Function
+
+
+
+------>
+</div>
+<div id="notebook-time-1" class="slide section level1">
+<h1>Notebook Time</h1>
+</div>
+<div id="end" class="slide section level1">
+<h1>End!</h1>
+</div>
+
+  <!-- dynamically load mathjax for compatibility with self-contained -->
+  <script>
+    (function () {
+      var script = document.createElement("script");
+      script.type = "text/javascript";
+      script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+      document.getElementsByTagName("head")[0].appendChild(script);
+    })();
+  </script>
+
+</body>
+</html>

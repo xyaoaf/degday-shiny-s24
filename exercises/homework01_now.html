@@ -119,13 +119,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>To help you get started, we’ve already downloaded daily weather data for the closest CIMIS station in Williams (station #250) for January - September 2023. These data are saved in a <a href="https://github.com/UCANR-IGIS/degday-shiny-s24/blob/main/exercises/data/williams-cimis-2023.csv">CSV file</a> and can be imported into R as follows.</p>
 <p>First load some packages:</p>
 <div class="cell">
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="op">{</span></span>
-<span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span></span>
-<span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://lubridate.tidyverse.org">lubridate</a></span><span class="op">)</span></span>
-<span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span></span>
-<span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://conflicted.r-lib.org/">conflicted</a></span><span class="op">)</span></span>
-<span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://readr.tidyverse.org">readr</a></span><span class="op">)</span></span>
-<span><span class="op">}</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://lubridate.tidyverse.org">lubridate</a></span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://readr.tidyverse.org">readr</a></span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://conflicted.r-lib.org/">conflicted</a></span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://conflicted.r-lib.org/reference/conflict_prefer.html">conflict_prefer</a></span><span class="op">(</span><span class="st">"filter"</span>, <span class="st">"dplyr"</span>, quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://conflicted.r-lib.org/reference/conflict_prefer.html">conflict_prefer</a></span><span class="op">(</span><span class="st">"count"</span>, <span class="st">"dplyr"</span>, quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://conflicted.r-lib.org/reference/conflict_prefer.html">conflict_prefer</a></span><span class="op">(</span><span class="st">"select"</span>, <span class="st">"dplyr"</span>, quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -172,11 +171,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="header-section-number">4</span> Questions</h1>
 <section id="date-of-the-first-flight" class="level2" data-number="4.1"><h2 data-number="4.1" class="anchored" data-anchor-id="date-of-the-first-flight">
 <span class="header-section-number">4.1</span> Date of the First Flight</h2>
-<p>Write code to find the date when the degree model predicts the first flight. You can assume that you should start counting degree days the day after the biofix event.</p>
-<details style="margin:0 2em;; border:none; padding:0.5em;"><summary style="color: green;">
-Hint
+<p>Write code to find the date when the degree model predicts the first flight. You can assume that you should start counting degree days the day <em>after</em> the biofix event.</p>
+<details style="margin:0 2em;; border:none; padding:0.5em;"><summary style="color: green;"><p>Hint</p>
 </summary><p>See the Exercise we did in Part 1.</p>
-<p>If you’re not sure how to filter a data frame in R by a date column, you could ask Google or ChatGPT a question like, <em>“How do I filter a data frame in R by a date column?”</em></p>
+<p>If you’re not sure how to filter a data frame in R by a date column, you could ask Google or <a href="https://chatgpt.com/">ChatGPT</a> a question like, <em>“How do I filter a data frame in R by a date column?”</em></p>
 </details><div class="cell">
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## Your answer here</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>

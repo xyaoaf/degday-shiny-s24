@@ -19,7 +19,7 @@ Navel Orangeworm (NOW) is a persistent pest for many California tree crops, incl
 
 The biofix (start date) for the degree day model for NOW in Almonds is the date when you start to see a consistent increase of the presence of eggs on egg traps. More specifically:
 
-::: {.blockquote}
+::: blockquote
 *"when at least 75% of the egg traps in a given location show increases in the number of eggs on two consecutive monitoring dates, the biofix is the first of those two dates"*. ([UC IPM](https://ipm.ucanr.edu/calludt.cgi/DDMODEL?MODEL=NOW&CROP=almonds))
 :::
 
@@ -97,14 +97,17 @@ Write code to find the date when the degree model predicts the first flight. You
 
 <details style="margin:0 2em;; border:none; padding:0.5em;">
 
-<summary style="color: green;">Hint</summary>
+<summary style="color: green;">
+
+Hint
+
+</summary>
 
 See the Exercise we did in Part 1.
 
-If you're not sure how to filter a data frame in R by a date column, you could ask Google or ChatGPT a question like, *"How do I filter a data frame in R by a date column?"*
+If you're not sure how to filter a data frame in R by a date column, you could ask Google or [ChatGPT](https://chatgpt.com/) a question like, *"How do I filter a data frame in R by a date column?"*
 
 </details>
-
 
 ```{r}
 library(degday)

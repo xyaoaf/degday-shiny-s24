@@ -151,3 +151,26 @@ div.sidebyside-container-flush {
   flex-direction: row;
   justify-content: space-between;
 }
+
+div.rmethod > h1::before {
+  content: "R Methods:";
+  color: #666;
+  display: block;
+  font-weight: bold;
+  font-style:italic;
+  font-size:80%;
+  margin-top:0.3em;
+}
+
+div.weatherapi > h1::before {
+  content: "Weather APIs:";
+  color: #0080ff;
+  display: block;
+  font-weight: bold;
+  font-style:italic;
+  font-size:80%;
+  margin-top:0.3em;
+}
+
+
+
