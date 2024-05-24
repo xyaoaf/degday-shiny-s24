@@ -11,23 +11,22 @@ format:
 editor: source
 ---
 
-::: {.callout-note}
+::: callout-note
 ## Summary
 
-This Notebook demonstrates how to get for one location: 
+This Notebook demonstrates how to get for one location:
 
-i) 7-day the short-term forecast (Open-Meteo)  
-ii) 90-day seasonal forecast (Open-Meteo)  
-iii) 30-year historic daily averages (gridMet, Cal-Adapt)  
+i)  7-day the short-term forecast (Open-Meteo)\
+ii) 90-day seasonal forecast (Open-Meteo)\
+iii) 30-year historic daily averages (gridMet, Cal-Adapt)
 
 Our desired output are tables with the following columns:
 
-- `loc_id`: location id  
-- `period`: "recnt" (recent past) | "stf" (short term forecast) | "hist_avg" (historic average) | "ssnfcast" (seasonal forecast)
-- `date`: date  
-- `tasmin`: minimum daily temperature  
-- `tasmax`: maximum daily temperature  
-
+-   `loc_id`: location id\
+-   `period`: "recnt" (recent past) \| "stf" (short term forecast) \| "hist_avg" (historic average) \| "ssnfcast" (seasonal forecast)
+-   `date`: date\
+-   `tasmin`: minimum daily temperature\
+-   `tasmax`: maximum daily temperature
 :::
 
 \
@@ -38,15 +37,15 @@ For the first part of this Notebook, we'll be using an API service from [Open-Me
 
 Highlights:
 
-- Open-Meteo's brings together numerous weather forecast models from national weather services.
+-   Open-Meteo's brings together numerous weather forecast models from national weather services.
 
-- API queries are sampled from modeled rasters with resolutions ranging from 1 - 11km , not stations (i.e., you query locations based on coordinates).
+-   API queries are sampled from modeled rasters with resolutions ranging from 1 - 11km , not stations (i.e., you query locations based on coordinates).
 
-- In addition to the 7-day forecast, they have APIs for historic weather, seasonal forecast, ensemble models, air quality, etc.
+-   In addition to the 7-day forecast, they have APIs for historic weather, seasonal forecast, ensemble models, air quality, etc.
 
-- Data are available at both hourly and daily temporal resolution
+-   Data are available at both hourly and daily temporal resolution
 
-- They have both paid and free plans (for non-commercial use)
+-   They have both paid and free plans (for non-commercial use)
 
 \
 
@@ -54,7 +53,7 @@ Highlights:
 
 ## 1. Generate an API token
 
-An API token is not needed for Open-Meteo. 
+An API token is not needed for Open-Meteo.
 
 \
 
@@ -72,12 +71,12 @@ stn_coords <- c(-122.410, 38.434)
 
 ## 3. Determine which Weather Forecast / model end point to use
 
-[https://open-meteo.com/en/docs](https://open-meteo.com/en/docs)
+<https://open-meteo.com/en/docs>
 
 We will use the **US NOAA GFS** weather model. More info at:
 
-[https://open-meteo.com/en/docs/gfs-api](https://open-meteo.com/en/docs/gfs-api)
-    
+<https://open-meteo.com/en/docs/gfs-api>
+
 \
 
 ## 4. Load the `openmeteo` R package
@@ -90,12 +89,11 @@ library(openmeteo)
 
 `openmeteo` has functions to call Open-Meteo's **weather forecast** and **historical weather** APIs.
 
-Read about the arguments for `weather_forecast()`.  
+Read about the arguments for `weather_forecast()`.
 
 ```{r chunk03}
 # help(weather_forecast)
 ```
-
 
 \
 
@@ -169,7 +167,7 @@ conflict_prefer("arrange", "dplyr", quiet = TRUE)
 
 \
 
-Add required columns: 
+Add required columns:
 
 ```{r chunk09}
 stn_shrtfrcst_dlytas_tbl <- om_forecast_dly_tbl |> 
@@ -319,12 +317,18 @@ Another commonly used proxy for the seasonal forecast are the historic daily ave
 
 Some good practices:
 
-- compute daily averages from at least 30 years of data  
-- using modeled data is preferable to simply averaging measurements (which are prone to noise and extreme events)  
+-   compute daily averages from at least 30 years of data\
+-   using modeled data is preferable to simply averaging measurements (which are prone to noise and extreme events)
+
+```{r}
+options(repos = c(ajlyons = 'https://ajlyons.r-universe.dev',
+                  CRAN = 'https://cloud.r-project.org'))
+install.packages('caladaptr')
+```
 
 \
 
-In this section, we'll use 30-years of [gridMet](https://www.drought.gov/data-maps-tools/gridded-surface-meteorological-gridmet-dataset) data imported from Cal-Adapt using [caladaptR](). 
+In this section, we'll use 30-years of [gridMet](https://www.drought.gov/data-maps-tools/gridded-surface-meteorological-gridmet-dataset) data imported from Cal-Adapt using [caladaptR]().
 
 ```{r chunk20}
 library(caladaptr)
@@ -395,21 +399,20 @@ head(stn_hist_tas_tbl)
 stn_hist_tas_tbl$dt |> range()
 ```
 
-
 \
 
 ## Wrangle the data
 
 We now have to transform 30-years of daily data into estimates of daily temperature values for the rest of the current season. This will involve:
 
-1. Computing the Julian days for the historic data  
-2. Using the Julian days to filter the days-of-the-year we want  
-3. Grouping the data by Julian day  
-4. Taking the average minimum and maximum daily temperatures  
-5. Converting the units from Kelvin to Fahrenheit   
-6. Reshaping the data from long to wide  
-7. Converting the Julian numbers to future dates for the current season
-8. Renaming the columns to match the desired template
+1.  Computing the Julian days for the historic data\
+2.  Using the Julian days to filter the days-of-the-year we want\
+3.  Grouping the data by Julian day\
+4.  Taking the average minimum and maximum daily temperatures\
+5.  Converting the units from Kelvin to Fahrenheit\
+6.  Reshaping the data from long to wide\
+7.  Converting the Julian numbers to future dates for the current season
+8.  Renaming the columns to match the desired template
 
 \
 
@@ -476,5 +479,3 @@ Save the final table to disk:
 saveRDS(stn_histavg_dlytas_tbl,
         file = here::here("exercises/data/stn_histavg_dlytas_tbl.Rds"))
 ```
-
-
